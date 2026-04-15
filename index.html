@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>신나는 몽골어 번역기</title>
+<title>🇲🇳 신나는 몽골어 번역기</title>
 
 <style>
 body {
@@ -15,18 +15,18 @@ body {
 h1 { margin-bottom: 20px; }
 
 .container {
-    max-width: 500px;
+    max-width: 520px;
     margin: auto;
 }
 
 input {
     width: 70%;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
 }
 
 button {
-    padding: 10px;
+    padding: 12px;
     background: #2d8cff;
     color: white;
     border: none;
@@ -63,7 +63,7 @@ button {
     cursor: pointer;
 }
 
-/* 📱 진행사항-1: 가로모드 */
+/* 📱 진행사항-1 */
 @media (orientation: landscape) {
     body {
         transform: rotate(90deg);
@@ -81,29 +81,26 @@ button {
 <h1>🇲🇳 신나는 몽골어 번역기</h1>
 
 <div class="container">
-
 <input type="text" id="input" placeholder="한국어 입력">
 <button onclick="run()">변환</button>
 
 <div class="result" id="result"></div>
 <div class="history" id="history"></div>
-
 </div>
 
 <script>
 
-/* 📘 단어장 전체 */
+/* 📘 단어장 FULL */
 const vocab = {
-"안녕하세요":"센배노","안녕":"센배노",
-"감사합니다":"바얄랄라~","감사해요":"바얄랄라~",
-"사랑합니다":"하이르태",
-"예수님":"예수쓰","예수":"예수쓰",
-"하나님":"보르항",
-"교회":"초글랑",
-"기도":"잘브리흐",
-"아멘":"아멘",
-"맛있다":"암트태",
-"예쁘다":"흐-르흥",
+"안녕하세요":"센배노","안녕히가세요":"바얄테이",
+"만나서 반가워요":"올쯔쓴다 바야르테 밴",
+"이름이 뭐예요":"타닉 헨 게뜩 웨?",
+"다음에 또 만나요":"다라 올쯔이",
+"안녕히 계세요":"샌 소-찌 배가래",
+"몇 살입니까":"타 히뜽 나스테 웨?",
+"잘자":"새흥 암라래",
+"실례합니다":"오-칠라래","죄송해요":"오-칠라래",
+"덥네요":"까따 할롱 벤","추워요":"후이튼 벤",
 
 "오늘":"우너두르","내일":"마르가시","시간":"짜끄",
 "음식":"호올","사랑":"하이르","사진":"조락",
@@ -111,129 +108,121 @@ const vocab = {
 "공부":"히첼","과자":"보오브","예":"티",
 "맞습니다":"문","아니오":"우구이","아닙니다":"비시",
 "갑시다":"여우야","오세요":"이레레",
+"감사합니다":"바얄랄라~","죄송합니다":"오칠라레~",
 "빨리빨리":"호르똥호르똥","좋습니다":"샌 밴",
 "괜찮아요":"주-게래",
 
-"1":"넥","2":"호요르","3":"고롭","4":"두릅",
-"5":"탑","6":"조르가","7":"덜러","8":"나임","9":"유스","10":"아롱",
+"이것은 얼마 입니까":"헤덴 투그륵 웨?",
+"이것은 무엇입니까":"엔 요 웨?",
+"주세요":"엔익 우거츠","사랑합니다":"하이르태",
+"환영합니다":"타우모릴로","맛있게 드세요":"사이항 호올로오래",
+"화장실":"아리온 체웨린 오로",
+"왼쪽":"준티쉐","오른쪽":"바론티쉐",
+"똑바로":"치게레","이리오세요":"나쉬 이르",
 
-"빨간색":"올랑-옹고","파란색":"후흐 옹고","하늘색":"쳉헤르 옹고"
+"하나님":"보르항","예수님":"예수쓰","예수":"예수쓰",
+"목사님":"파스테르","십자가":"자갈매","교회":"초글랑",
+"믿음":"이트게르","소망":"레이드와르","은혜":"이웰",
+"예배":"무르굴","기도":"잘브리흐","찬양":"막탈",
+"성경":"비블리","아멘":"아멘",
+
+"맛있다":"암트태","예쁘다":"흐-르흥",
+"귀엽다":"으흐-르뜨므-르","멋지다":"고이",
+"아름답다":"우쭈스갤른태","배부르다":"차들라",
+"차갑다":"후이틍","뜨겁다":"할룽","따뜻하다":"둘랑",
+
+"빨간색":"올랑-옹고","주황색":"올랑 샤르 옹고",
+"노란색":"샤르 옹고","초록색":"너겅 옹고",
+"파란색":"후흐 옹고","하늘색":"쳉헤르 옹고",
+"보라색":"야강 옹고","흰색":"차강 옹고","검정색":"하르 옹고"
 };
 
-/* 🔥 유사 단어 찾기 */
-function findSimilarWord(input) {
-    input = input.replace(/\s/g, "");
-
-    let bestMatch = "";
-    let maxScore = 0;
+/* 🔥 매칭 */
+function findMatch(input) {
+    input = input.replace(/\s/g,"");
 
     for (let key in vocab) {
-        let score = 0;
-
-        if (input.includes(key)) score += 2;
-        if (key.includes(input)) score += 2;
-
-        for (let i = 0; i < key.length; i++) {
-            if (input.includes(key[i])) score += 0.5;
-        }
-
-        if (score > maxScore) {
-            maxScore = score;
-            bestMatch = key;
+        let cleanKey = key.replace(/\s/g,"");
+        if (input.includes(cleanKey) || cleanKey.includes(input)) {
+            return vocab[key];
         }
     }
-
-    return maxScore > 1 ? bestMatch : null;
+    return "";
 }
 
 /* 로마자 */
-function toRoman(text) {
+function toRoman(text){
     return text
-        .replace(/а/g,"a").replace(/б/g,"b").replace(/в/g,"v")
-        .replace(/г/g,"g").replace(/д/g,"d").replace(/е/g,"e")
-        .replace(/ё/g,"yo").replace(/ж/g,"j").replace(/з/g,"z")
-        .replace(/и/g,"i").replace(/й/g,"i").replace(/к/g,"k")
-        .replace(/л/g,"l").replace(/м/g,"m").replace(/н/g,"n")
-        .replace(/о/g,"o").replace(/ө/g,"ö").replace(/п/g,"p")
-        .replace(/р/g,"r").replace(/с/g,"s").replace(/т/g,"t")
-        .replace(/у/g,"u").replace(/ү/g,"ü").replace(/ф/g,"f")
-        .replace(/х/g,"kh").replace(/ц/g,"ts").replace(/ч/g,"ch")
-        .replace(/ш/g,"sh").replace(/ы/g,"y").replace(/э/g,"e")
-        .replace(/ю/g,"yu").replace(/я/g,"ya");
+    .replace(/а/g,"a").replace(/б/g,"b").replace(/в/g,"v")
+    .replace(/г/g,"g").replace(/д/g,"d").replace(/е/g,"e")
+    .replace(/ё/g,"yo").replace(/ж/g,"j").replace(/з/g,"z")
+    .replace(/и/g,"i").replace(/й/g,"i").replace(/к/g,"k")
+    .replace(/л/g,"l").replace(/м/g,"m").replace(/н/g,"n")
+    .replace(/о/g,"o").replace(/ө/g,"ö").replace(/п/g,"p")
+    .replace(/р/g,"r").replace(/с/g,"s").replace(/т/g,"t")
+    .replace(/у/g,"u").replace(/ү/g,"ü").replace(/х/g,"kh")
+    .replace(/ц/g,"ts").replace(/ч/g,"ch").replace(/ш/g,"sh");
 }
 
 /* 한글독 */
-function romanToKorean(text) {
+function romanToKorean(text){
     return text
-        .replace(/sh/g,"쉬").replace(/ch/g,"치").replace(/kh/g,"흐")
-        .replace(/ts/g,"츠").replace(/yo/g,"요").replace(/yu/g,"유")
-        .replace(/ya/g,"야")
-        .replace(/a/g,"아").replace(/e/g,"에").replace(/i/g,"이")
-        .replace(/o/g,"오").replace(/u/g,"우").replace(/ö/g,"어")
-        .replace(/ü/g,"위").replace(/y/g,"으")
-        .replace(/b/g,"ㅂ").replace(/v/g,"ㅂ").replace(/g/g,"ㄱ")
-        .replace(/d/g,"ㄷ").replace(/j/g,"ㅈ").replace(/z/g,"ㅈ")
-        .replace(/k/g,"ㅋ").replace(/l/g,"ㄹ").replace(/m/g,"ㅁ")
-        .replace(/n/g,"ㄴ").replace(/p/g,"ㅍ").replace(/r/g,"르")
-        .replace(/s/g,"ㅅ").replace(/t/g,"ㅌ").replace(/f/g,"ㅍ");
+    .replace(/sh/g,"쉬").replace(/ch/g,"치").replace(/kh/g,"흐")
+    .replace(/ts/g,"츠")
+    .replace(/a/g,"아").replace(/e/g,"에").replace(/i/g,"이")
+    .replace(/o/g,"오").replace(/u/g,"우").replace(/ö/g,"어")
+    .replace(/ü/g,"위")
+    .replace(/b/g,"ㅂ").replace(/v/g,"ㅂ").replace(/g/g,"ㄱ")
+    .replace(/d/g,"ㄷ").replace(/k/g,"ㅋ").replace(/l/g,"ㄹ")
+    .replace(/m/g,"ㅁ").replace(/n/g,"ㄴ").replace(/r/g,"르");
 }
 
-let historyList = [];
+let historyList=[];
 
-async function run() {
-    const input = document.getElementById("input").value;
+async function run(){
+    const input=document.getElementById("input").value;
 
-    const res = await fetch(
-        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" 
-        + encodeURIComponent(input)
-    );
-    const data = await res.json();
+    const res=await fetch(
+    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q="
+    +encodeURIComponent(input));
 
-    const mn = data[0][0][0];
-    const roman = toRoman(mn);
-    const kor = romanToKorean(roman);
+    const data=await res.json();
+    const mn=data[0][0][0];
 
-    /* 📘 단어장 매칭 */
-    let matched = vocab[input] ? input : findSimilarWord(input);
-    let special = matched ? vocab[matched] : "";
+    const roman=toRoman(mn);
+    const kor=romanToKorean(roman);
 
-    let html = `
-        <div>${mn}</div>
-        <div class="roman">${roman}</div>
-    `;
+    const special=findMatch(input);
 
-    if (special) {
-        html += `<div class="special">✝️ ${special}</div>`;
-    }
+    let html=`<div>${mn}</div><div class="roman">${roman}</div>`;
+    if(special) html+=`<div class="special">✝️ ${special}</div>`;
 
-    document.getElementById("result").innerHTML = html;
+    document.getElementById("result").innerHTML=html;
 
-    /* 기록 */
-    let text = `${input} / ${mn} / ${roman} / ${kor}`;
-    if (special) text += ` / ${special}`;
+    let text=`${input} / ${mn} / ${roman} / ${kor}`;
+    if(special) text+=` / ${special}`;
 
     historyList.unshift(text);
-    if (historyList.length > 12) historyList.pop();
+    if(historyList.length>12) historyList.pop();
 
     renderHistory();
 }
 
-/* 기록 출력 */
-function renderHistory() {
-    const box = document.getElementById("history");
-    box.innerHTML = "";
+function renderHistory(){
+    const box=document.getElementById("history");
+    box.innerHTML="";
 
-    historyList.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "item";
+    historyList.forEach(item=>{
+        const div=document.createElement("div");
+        div.className="item";
 
-        const span = document.createElement("span");
-        span.innerText = item;
+        const span=document.createElement("span");
+        span.innerText=item;
 
-        const btn = document.createElement("button");
-        btn.className = "copy-btn";
-        btn.innerText = "복사";
-        btn.onclick = () => navigator.clipboard.writeText(item);
+        const btn=document.createElement("button");
+        btn.className="copy-btn";
+        btn.innerText="복사";
+        btn.onclick=()=>navigator.clipboard.writeText(item);
 
         div.appendChild(span);
         div.appendChild(btn);
@@ -241,9 +230,9 @@ function renderHistory() {
     });
 }
 
-/* 🔥 진행사항-1: 엔터 */
-document.getElementById("input").addEventListener("keydown", function(e){
-    if(e.key === "Enter") run();
+/* 🔥 Enter */
+document.getElementById("input").addEventListener("keydown",e=>{
+if(e.key==="Enter") run();
 });
 </script>
 
