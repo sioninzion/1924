@@ -6,14 +6,13 @@
 
 <style>
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background: #f5f7fb;
     text-align: center;
     margin: 0;
     padding: 0;
 }
 
-/* 버전 */
 .version {
     position: fixed;
     top: 10px;
@@ -22,7 +21,9 @@ body {
     font-size: 12px;
 }
 
-h1 { margin: 15px 0; }
+h1 {
+    margin: 15px 0;
+}
 
 .container {
     max-width: 520px;
@@ -30,14 +31,13 @@ h1 { margin: 15px 0; }
     padding: 10px;
 }
 
-/* 입력 */
 input {
     width: 70%;
     padding: 12px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
-/* 버튼 */
 button {
     padding: 12px;
     background: #2d8cff;
@@ -47,16 +47,37 @@ button {
     cursor: pointer;
 }
 
-/* 결과 */
 .result {
     margin-top: 20px;
-    font-size: 20px;
 }
 
-.mn { font-weight: bold; }
-.roman { color: black; }
-.korean { color: gray; }
-.en { color: green; margin-top: 8px; }
+/* 현재 결과 카드 */
+.current-card {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    line-height: 1.6;
+}
+
+.current-card .mn {
+    font-weight: bold;
+    color: black;
+}
+
+.current-card .roman {
+    color: black;
+}
+
+.current-card .korean {
+    color: gray;
+}
+
+.current-card .en {
+    color: green;
+    margin-top: 6px;
+}
 
 /* 기록 */
 .history {
@@ -74,9 +95,17 @@ button {
     align-items: center;
 }
 
+.item-text {
+    white-space: pre-line;
+    line-height: 1.5;
+    flex: 1;
+    margin-right: 10px;
+}
+
 .buttons {
     display: flex;
     gap: 5px;
+    flex-shrink: 0;
 }
 
 .copy-btn {
@@ -88,7 +117,7 @@ button {
     background: #444;
 }
 
-/* 🔥 스크린 모드 */
+/* 스크린 모드 */
 #screenMode {
     display: none;
     position: fixed;
@@ -101,14 +130,14 @@ button {
     flex-direction: column;
 }
 
-/* 스크린 텍스트 */
 #screenText {
     font-size: 40px;
     text-align: center;
     transition: transform 0.3s;
+    white-space: pre-line;
+    padding: 20px;
 }
 
-/* 버튼 영역 */
 .screen-controls {
     position: absolute;
     bottom: 20px;
@@ -120,9 +149,8 @@ button {
     background: #666;
 }
 
-/* 🔥 모바일 최적화 */
+/* 진행사항-3 모바일 대응 유지 */
 @media (max-width: 768px) {
-
     body {
         padding: 0;
     }
@@ -131,6 +159,7 @@ button {
         width: 100%;
         max-width: none;
         padding: 10px;
+        box-sizing: border-box;
     }
 
     input {
@@ -144,10 +173,6 @@ button {
         font-size: 18px;
     }
 
-    .result {
-        font-size: 26px;
-    }
-
     .item {
         flex-direction: column;
         align-items: flex-start;
@@ -155,6 +180,16 @@ button {
 
     .buttons {
         margin-top: 8px;
+        width: 100%;
+    }
+
+    .buttons button {
+        width: auto;
+        margin-top: 0;
+    }
+
+    #screenText {
+        font-size: 30px;
     }
 }
 </style>
@@ -162,24 +197,20 @@ button {
 
 <body>
 
-<div class="version">ver4</div>
+<div class="version">ver5</div>
 
 <h1>🇲🇳 신나는 몽골어 번역기</h1>
 
 <div class="container">
+    <input type="text" id="input" placeholder="한국어 입력">
+    <button onclick="run()">변환</button>
 
-<input type="text" id="input" placeholder="한국어 입력">
-<button onclick="run()">변환</button>
-
-<div class="result" id="result"></div>
-<div class="history" id="history"></div>
-
+    <div class="result" id="result"></div>
+    <div class="history" id="history"></div>
 </div>
 
-<!-- 🔥 스크린 모드 -->
 <div id="screenMode">
     <div id="screenText"></div>
-
     <div class="screen-controls">
         <button onclick="setVertical()">세로</button>
         <button onclick="setHorizontal()">가로</button>
@@ -188,51 +219,47 @@ button {
 </div>
 
 <script>
-
-/* 로마자 */
-function toRoman(text){
+function toRoman(text) {
     return text
-    .replace(/а/g,"a").replace(/б/g,"b").replace(/в/g,"v")
-    .replace(/г/g,"g").replace(/д/g,"d").replace(/е/g,"e")
-    .replace(/ё/g,"yo").replace(/ж/g,"j").replace(/з/g,"z")
-    .replace(/и/g,"i").replace(/й/g,"i").replace(/к/g,"k")
-    .replace(/л/g,"l").replace(/м/g,"m").replace(/н/g,"n")
-    .replace(/о/g,"o").replace(/ө/g,"ö").replace(/п/g,"p")
-    .replace(/р/g,"r").replace(/с/g,"s").replace(/т/g,"t")
-    .replace(/у/g,"u").replace(/ү/g,"ü").replace(/х/g,"kh")
-    .replace(/ц/g,"ts").replace(/ч/g,"ch").replace(/ш/g,"sh");
+        .replace(/а/g,"a").replace(/б/g,"b").replace(/в/g,"v")
+        .replace(/г/g,"g").replace(/д/g,"d").replace(/е/g,"e")
+        .replace(/ё/g,"yo").replace(/ж/g,"j").replace(/з/g,"z")
+        .replace(/и/g,"i").replace(/й/g,"i").replace(/к/g,"k")
+        .replace(/л/g,"l").replace(/м/g,"m").replace(/н/g,"n")
+        .replace(/о/g,"o").replace(/ө/g,"ö").replace(/п/g,"p")
+        .replace(/р/g,"r").replace(/с/g,"s").replace(/т/g,"t")
+        .replace(/у/g,"u").replace(/ү/g,"ü").replace(/х/g,"kh")
+        .replace(/ц/g,"ts").replace(/ч/g,"ch").replace(/ш/g,"sh");
 }
 
-/* 한글독 */
-function romanToKorean(text){
+function romanToKorean(text) {
     return text
-    .replace(/sh/g,"쉬").replace(/ch/g,"치").replace(/kh/g,"흐")
-    .replace(/ts/g,"츠")
-    .replace(/a/g,"아").replace(/e/g,"에").replace(/i/g,"이")
-    .replace(/o/g,"오").replace(/u/g,"우").replace(/ö/g,"어")
-    .replace(/ü/g,"위")
-    .replace(/b/g,"ㅂ").replace(/v/g,"ㅂ").replace(/g/g,"ㄱ")
-    .replace(/d/g,"ㄷ").replace(/k/g,"ㅋ").replace(/l/g,"ㄹ")
-    .replace(/m/g,"ㅁ").replace(/n/g,"ㄴ").replace(/r/g,"르");
+        .replace(/sh/g,"쉬").replace(/ch/g,"치").replace(/kh/g,"흐")
+        .replace(/ts/g,"츠")
+        .replace(/a/g,"아").replace(/e/g,"에").replace(/i/g,"이")
+        .replace(/o/g,"오").replace(/u/g,"우").replace(/ö/g,"어")
+        .replace(/ü/g,"위")
+        .replace(/b/g,"ㅂ").replace(/v/g,"ㅂ").replace(/g/g,"ㄱ")
+        .replace(/d/g,"ㄷ").replace(/k/g,"ㅋ").replace(/l/g,"ㄹ")
+        .replace(/m/g,"ㅁ").replace(/n/g,"ㄴ").replace(/r/g,"르");
 }
 
 let historyList = [];
 
-async function run(){
-    const input = document.getElementById("input").value;
+async function run() {
+    const input = document.getElementById("input").value.trim();
+    if (!input) return;
 
-    // 몽골어
     const res1 = await fetch(
-        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q="
-        + encodeURIComponent(input)
+        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" +
+        encodeURIComponent(input)
     );
     const data1 = await res1.json();
     const mn = data1[0][0][0];
 
-    // 영어
     const res2 = await fetch(
-        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q="
-        + encodeURIComponent(input)
+        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" +
+        encodeURIComponent(input)
     );
     const data2 = await res2.json();
     const en = data2[0][0][0];
@@ -240,31 +267,39 @@ async function run(){
     const roman = toRoman(mn);
     const kor = romanToKorean(roman);
 
+    // 진행사항-5: 아래 결과 칸도 기록 칸 같은 양식으로 노출
     document.getElementById("result").innerHTML = `
-        <div class="mn">${mn}</div>
-        <div class="roman">${roman}</div>
-        <div class="korean">${kor}</div>
-        <div class="en">${en}</div>
+        <div class="current-card">
+            <div class="mn">${mn}</div>
+            <div class="roman">${roman}</div>
+            <div class="korean">${kor}</div>
+            <div class="en">ENGLISH: ${en}</div>
+        </div>
     `;
 
-    let text = `${mn} / ${roman} / ${kor} / ${en}`;
+    // 기록 형식 유지 + ENGLISH 문구 추가
+    const text =
+`${mn}
+${roman}
+${kor}
+ENGLISH: ${en}`;
 
     historyList.unshift(text);
-    if(historyList.length > 12) historyList.pop();
+    if (historyList.length > 12) historyList.pop();
 
     renderHistory();
 }
 
-/* 기록 */
-function renderHistory(){
+function renderHistory() {
     const box = document.getElementById("history");
     box.innerHTML = "";
 
-    historyList.forEach(item=>{
+    historyList.forEach(item => {
         const div = document.createElement("div");
         div.className = "item";
 
-        const span = document.createElement("span");
+        const span = document.createElement("div");
+        span.className = "item-text";
         span.innerText = item;
 
         const btnBox = document.createElement("div");
@@ -273,12 +308,12 @@ function renderHistory(){
         const copyBtn = document.createElement("button");
         copyBtn.className = "copy-btn";
         copyBtn.innerText = "복사";
-        copyBtn.onclick = ()=>navigator.clipboard.writeText(item);
+        copyBtn.onclick = () => navigator.clipboard.writeText(item);
 
         const screenBtn = document.createElement("button");
         screenBtn.className = "screen-btn";
         screenBtn.innerText = "스크린";
-        screenBtn.onclick = ()=>openScreen(item);
+        screenBtn.onclick = () => openScreen(item);
 
         btnBox.appendChild(copyBtn);
         btnBox.appendChild(screenBtn);
@@ -289,28 +324,25 @@ function renderHistory(){
     });
 }
 
-/* 스크린 */
-function openScreen(text){
+function openScreen(text) {
     document.getElementById("screenText").innerText = text;
     document.getElementById("screenMode").style.display = "flex";
 }
 
-/* 방향 */
-function setVertical(){
+function setVertical() {
     document.getElementById("screenText").style.transform = "rotate(0deg)";
 }
 
-function setHorizontal(){
+function setHorizontal() {
     document.getElementById("screenText").style.transform = "rotate(90deg)";
 }
 
-function closeScreen(){
+function closeScreen() {
     document.getElementById("screenMode").style.display = "none";
 }
 
-/* 엔터 */
-document.getElementById("input").addEventListener("keydown", e=>{
-    if(e.key === "Enter") run();
+document.getElementById("input").addEventListener("keydown", e => {
+    if (e.key === "Enter") run();
 });
 </script>
 
