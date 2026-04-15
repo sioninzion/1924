@@ -2,122 +2,161 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🇲🇳 신나는 몽골어 번역기</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #f5f7fb;
     text-align: center;
     margin: 0;
     padding: 0;
+    color: #111;
 }
 
 .version {
     position: fixed;
     top: 10px;
-    right: 15px;
+    right: 14px;
     color: gray;
     font-size: 12px;
+    z-index: 20;
 }
 
 h1 {
-    margin: 15px 0;
+    margin: 18px 0 14px;
+    font-size: 28px;
 }
 
 .container {
-    max-width: 520px;
-    margin: auto;
-    padding: 10px;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 12px 16px 24px;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
 }
 
 input {
-    width: 70%;
-    padding: 12px;
-    font-size: 16px;
-    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    padding: 14px 16px;
+    font-size: 17px;
+    border: 1px solid #d8deea;
+    border-radius: 10px;
+    outline: none;
+    background: white;
 }
 
-button {
-    padding: 12px;
+input:focus {
+    border-color: #2d8cff;
+}
+
+.main-btn,
+.copy-btn,
+.screen-btn,
+.screen-controls button {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.main-btn {
+    padding: 0 18px;
     background: #2d8cff;
     color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    font-weight: 600;
+}
+
+/* 진행사항-6 추가 */
+.hint {
+    margin-top: 8px;
+    color: gray;
+    font-size: 12px;
+    text-align: left;
+    padding-left: 2px;
 }
 
 .result {
-    margin-top: 20px;
+    margin-top: 18px;
 }
 
-/* 현재 결과 카드 */
-.current-card {
+.result-card {
     background: white;
-    padding: 12px;
-    border-radius: 8px;
+    border-radius: 14px;
+    padding: 16px 18px;
     text-align: left;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    line-height: 1.6;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+    line-height: 1.7;
 }
 
-.current-card .mn {
-    font-weight: bold;
-    color: black;
+.result-main {
+    font-size: 22px;
+    font-weight: 700;
+    word-break: break-word;
 }
 
-.current-card .roman {
-    color: black;
-}
-
-.current-card .korean {
-    color: gray;
-}
-
-.current-card .en {
+.result-english {
+    margin-top: 10px;
     color: green;
-    margin-top: 6px;
+    font-size: 17px;
+    font-weight: 600;
+    word-break: break-word;
 }
 
-/* 기록 */
 .history {
-    margin-top: 20px;
+    margin-top: 18px;
     text-align: left;
 }
 
 .item {
     background: white;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 10px;
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .item-text {
     white-space: pre-line;
-    line-height: 1.5;
+    line-height: 1.55;
     flex: 1;
-    margin-right: 10px;
+    word-break: break-word;
+    font-size: 15px;
 }
 
 .buttons {
     display: flex;
-    gap: 5px;
+    gap: 6px;
     flex-shrink: 0;
 }
 
 .copy-btn {
     background: #ddd;
     color: black;
+    padding: 10px 12px;
 }
 
 .screen-btn {
     background: #444;
+    color: white;
+    padding: 10px 12px;
 }
 
-/* 스크린 모드 */
 #screenMode {
     display: none;
     position: fixed;
@@ -128,14 +167,17 @@ button {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding: 20px;
 }
 
 #screenText {
-    font-size: 40px;
+    font-size: 42px;
     text-align: center;
     transition: transform 0.3s;
     white-space: pre-line;
-    padding: 20px;
+    word-break: break-word;
+    max-width: 90vw;
+    line-height: 1.5;
 }
 
 .screen-controls {
@@ -143,67 +185,121 @@ button {
     bottom: 20px;
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .screen-controls button {
     background: #666;
+    color: white;
+    padding: 12px 16px;
 }
 
-/* 진행사항-3 모바일 대응 유지 */
 @media (max-width: 768px) {
-    body {
-        padding: 0;
+    h1 {
+        font-size: 24px;
+        margin-top: 16px;
     }
 
     .container {
-        width: 100%;
         max-width: none;
-        padding: 10px;
-        box-sizing: border-box;
+        padding: 12px 12px 20px;
+    }
+
+    .input-row {
+        flex-direction: column;
+        gap: 8px;
     }
 
     input {
         width: 100%;
         font-size: 18px;
+        padding: 15px 16px;
     }
 
-    button {
+    .main-btn {
         width: 100%;
-        margin-top: 10px;
+        padding: 14px 16px;
         font-size: 18px;
+    }
+
+    .hint {
+        font-size: 12px;
+        margin-top: 6px;
+        padding-left: 0;
+    }
+
+    .result-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .result-main {
+        font-size: 24px;
+        line-height: 1.8;
+    }
+
+    .result-english {
+        font-size: 18px;
+        line-height: 1.6;
     }
 
     .item {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .item-text {
+        font-size: 16px;
     }
 
     .buttons {
-        margin-top: 8px;
         width: 100%;
     }
 
-    .buttons button {
-        width: auto;
-        margin-top: 0;
+    .copy-btn,
+    .screen-btn {
+        flex: 1;
+        padding: 12px 10px;
+        font-size: 15px;
     }
 
     #screenText {
         font-size: 30px;
+        max-width: 92vw;
+    }
+
+    .screen-controls {
+        left: 12px;
+        right: 12px;
+        bottom: 14px;
+        gap: 8px;
+    }
+
+    .screen-controls button {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 10px;
+        font-size: 15px;
     }
 }
 </style>
 </head>
 
 <body>
-
-<div class="version">ver5</div>
+<div class="version">ver6</div>
 
 <h1>🇲🇳 신나는 몽골어 번역기</h1>
 
 <div class="container">
-    <input type="text" id="input" placeholder="한국어 입력">
-    <button onclick="run()">변환</button>
+    <div class="input-row">
+        <input type="text" id="input" placeholder="한국어 입력">
+        <button class="main-btn" onclick="run()">변환</button>
+    </div>
+
+    <div class="hint">(몽골어)/(로마표기)/(한국독음) 으로 표시됩니다.</div>
 
     <div class="result" id="result"></div>
     <div class="history" id="history"></div>
@@ -212,9 +308,9 @@ button {
 <div id="screenMode">
     <div id="screenText"></div>
     <div class="screen-controls">
-        <button onclick="setVertical()">세로</button>
-        <button onclick="setHorizontal()">가로</button>
-        <button onclick="closeScreen()">닫기</button>
+        <button onclick="setVertical()">세로모드</button>
+        <button onclick="setHorizontal()">가로모드</button>
+        <button onclick="closeScreen()">나가기</button>
     </div>
 </div>
 
@@ -236,12 +332,15 @@ function romanToKorean(text) {
     return text
         .replace(/sh/g,"쉬").replace(/ch/g,"치").replace(/kh/g,"흐")
         .replace(/ts/g,"츠")
+        .replace(/yo/g,"요").replace(/yu/g,"유").replace(/ya/g,"야")
         .replace(/a/g,"아").replace(/e/g,"에").replace(/i/g,"이")
         .replace(/o/g,"오").replace(/u/g,"우").replace(/ö/g,"어")
         .replace(/ü/g,"위")
         .replace(/b/g,"ㅂ").replace(/v/g,"ㅂ").replace(/g/g,"ㄱ")
-        .replace(/d/g,"ㄷ").replace(/k/g,"ㅋ").replace(/l/g,"ㄹ")
-        .replace(/m/g,"ㅁ").replace(/n/g,"ㄴ").replace(/r/g,"르");
+        .replace(/d/g,"ㄷ").replace(/j/g,"ㅈ").replace(/z/g,"ㅈ")
+        .replace(/k/g,"ㅋ").replace(/l/g,"ㄹ").replace(/m/g,"ㅁ")
+        .replace(/n/g,"ㄴ").replace(/p/g,"ㅍ").replace(/r/g,"르")
+        .replace(/s/g,"ㅅ").replace(/t/g,"ㅌ");
 }
 
 let historyList = [];
@@ -250,41 +349,37 @@ async function run() {
     const input = document.getElementById("input").value.trim();
     if (!input) return;
 
-    const res1 = await fetch(
+    const resMn = await fetch(
         "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" +
         encodeURIComponent(input)
     );
-    const data1 = await res1.json();
-    const mn = data1[0][0][0];
+    const dataMn = await resMn.json();
+    const mn = dataMn[0][0][0];
 
-    const res2 = await fetch(
+    const resEn = await fetch(
         "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" +
         encodeURIComponent(input)
     );
-    const data2 = await res2.json();
-    const en = data2[0][0][0];
+    const dataEn = await resEn.json();
+    const en = dataEn[0][0][0];
 
     const roman = toRoman(mn);
     const kor = romanToKorean(roman);
 
-    // 진행사항-5: 아래 결과 칸도 기록 칸 같은 양식으로 노출
     document.getElementById("result").innerHTML = `
-        <div class="current-card">
-            <div class="mn">${mn}</div>
-            <div class="roman">${roman}</div>
-            <div class="korean">${kor}</div>
-            <div class="en">ENGLISH: ${en}</div>
+        <div class="result-card">
+            <div class="result-main">(${mn}) / (${roman}) / (${kor})</div>
+            <div class="result-english">ENGLISH: ${en}</div>
         </div>
     `;
 
-    // 기록 형식 유지 + ENGLISH 문구 추가
-    const text =
+    const historyText =
 `${mn}
 ${roman}
 ${kor}
 ENGLISH: ${en}`;
 
-    historyList.unshift(text);
+    historyList.unshift(historyText);
     if (historyList.length > 12) historyList.pop();
 
     renderHistory();
@@ -298,9 +393,9 @@ function renderHistory() {
         const div = document.createElement("div");
         div.className = "item";
 
-        const span = document.createElement("div");
-        span.className = "item-text";
-        span.innerText = item;
+        const textDiv = document.createElement("div");
+        textDiv.className = "item-text";
+        textDiv.innerText = item;
 
         const btnBox = document.createElement("div");
         btnBox.className = "buttons";
@@ -318,7 +413,7 @@ function renderHistory() {
         btnBox.appendChild(copyBtn);
         btnBox.appendChild(screenBtn);
 
-        div.appendChild(span);
+        div.appendChild(textDiv);
         div.appendChild(btnBox);
         box.appendChild(div);
     });
@@ -326,6 +421,7 @@ function renderHistory() {
 
 function openScreen(text) {
     document.getElementById("screenText").innerText = text;
+    document.getElementById("screenText").style.transform = "rotate(0deg)";
     document.getElementById("screenMode").style.display = "flex";
 }
 
@@ -345,6 +441,5 @@ document.getElementById("input").addEventListener("keydown", e => {
     if (e.key === "Enter") run();
 });
 </script>
-
 </body>
 </html>
