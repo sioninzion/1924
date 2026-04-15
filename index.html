@@ -87,8 +87,22 @@ input:focus {
     font-weight: 600;
 }
 
+.main-btn:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
 .hint {
     margin-top: 8px;
+    color: gray;
+    font-size: 12px;
+    text-align: left;
+    padding-left: 2px;
+}
+
+.loading-text {
+    min-height: 18px;
+    margin-top: 4px;
     color: gray;
     font-size: 12px;
     text-align: left;
@@ -292,6 +306,23 @@ input:focus {
     background: #d64545;
 }
 
+/* 복사됨 토스트 */
+#toast {
+    position: fixed;
+    bottom: 84px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.82);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 2000;
+}
+
 @media (max-width: 768px) {
     h1 {
         font-size: 24px;
@@ -326,7 +357,8 @@ input:focus {
         font-size: 18px;
     }
 
-    .hint {
+    .hint,
+    .loading-text {
         font-size: 12px;
         margin-top: 6px;
         padding-left: 0;
@@ -406,12 +438,17 @@ input:focus {
         padding: 12px 10px;
         font-size: 15px;
     }
+
+    #toast {
+        bottom: 70px;
+        font-size: 13px;
+    }
 }
 </style>
 </head>
 
 <body>
-<div class="version">ver12</div>
+<div class="version">ver13</div>
 
 <h1>🇲🇳 신나는 몽골어 번역기</h1>
 <div class="subtitle">
@@ -422,10 +459,11 @@ input:focus {
 <div class="container">
     <div class="input-row">
         <input type="text" id="input" placeholder="한국어 입력">
-        <button class="main-btn" onclick="run()">변환</button>
+        <button class="main-btn" id="translateBtn" onclick="run()">변환</button>
     </div>
 
     <div class="hint">(몽골어)/(로마표기)/(한국독음) 으로 표시됩니다.</div>
+    <div class="loading-text" id="loadingText"></div>
 
     <div class="result" id="result"></div>
     <div class="history" id="history"></div>
@@ -445,6 +483,8 @@ input:focus {
         <button class="screen-btn-close" onclick="closeScreen()">나가기</button>
     </div>
 </div>
+
+<div id="toast">복사됨!</div>
 
 <script>
 const glossaryBook = [
@@ -728,18 +768,17 @@ function romanToKorean(text) {
 
 let historyList = [];
 let screenFontSize = 48;
-let currentScreenOrientation = "vertical";
 const screenFontMin = 28;
 const screenFontMax = 120;
+let loadingInterval = null;
+let toastTimeout = null;
 
 function applyScreenTextSize() {
-    const screenText = document.getElementById("screenText");
-    screenText.style.fontSize = screenFontSize + "px";
+    document.getElementById("screenText").style.fontSize = screenFontSize + "px";
 }
 
 function resetScreenStyle() {
     screenFontSize = window.innerWidth <= 768 ? 34 : 48;
-    currentScreenOrientation = "vertical";
     document.getElementById("screenContent").style.transform = "rotate(0deg)";
     document.getElementById("screenMode").classList.remove("inverted");
     applyScreenTextSize();
@@ -756,14 +795,12 @@ function decreaseScreenText() {
 }
 
 function setVertical() {
-    currentScreenOrientation = "vertical";
     document.getElementById("screenContent").style.transform = "rotate(0deg)";
     screenFontSize = window.innerWidth <= 768 ? 34 : 48;
     applyScreenTextSize();
 }
 
 function setHorizontal() {
-    currentScreenOrientation = "horizontal";
     document.getElementById("screenContent").style.transform = "rotate(90deg)";
     screenFontSize = window.innerWidth <= 768 ? 44 : 64;
     applyScreenTextSize();
@@ -773,59 +810,116 @@ function toggleInvert() {
     document.getElementById("screenMode").classList.toggle("inverted");
 }
 
+function openScreen(mongolianText) {
+    document.getElementById("screenText").innerText = mongolianText;
+    resetScreenStyle();
+    document.getElementById("screenMode").style.display = "flex";
+}
+
+function closeScreen() {
+    document.getElementById("screenMode").style.display = "none";
+}
+
+function showToast() {
+    const toast = document.getElementById("toast");
+    clearTimeout(toastTimeout);
+    toast.style.opacity = "1";
+    toastTimeout = setTimeout(() => {
+        toast.style.opacity = "0";
+    }, 1200);
+}
+
+function startLoadingMessage() {
+    const loadingText = document.getElementById("loadingText");
+    const button = document.getElementById("translateBtn");
+    let dots = 1;
+
+    button.disabled = true;
+    loadingText.textContent = "기다려 주세요" + ".".repeat(dots);
+
+    loadingInterval = setInterval(() => {
+        dots = dots >= 3 ? 1 : dots + 1;
+        loadingText.textContent = "기다려 주세요" + ".".repeat(dots);
+    }, 300);
+}
+
+function stopLoadingMessage() {
+    const loadingText = document.getElementById("loadingText");
+    const button = document.getElementById("translateBtn");
+
+    clearInterval(loadingInterval);
+    loadingInterval = null;
+    loadingText.textContent = "";
+    button.disabled = false;
+}
+
 async function run() {
     const input = document.getElementById("input").value.trim();
     if (!input) return;
 
-    const resMn = await fetch(
-        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" +
-        encodeURIComponent(input)
-    );
-    const dataMn = await resMn.json();
-    const mn = dataMn[0][0][0];
+    startLoadingMessage();
 
-    const resEn = await fetch(
-        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" +
-        encodeURIComponent(input)
-    );
-    const dataEn = await resEn.json();
-    const en = dataEn[0][0][0];
+    try {
+        const resMn = await fetch(
+            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" +
+            encodeURIComponent(input)
+        );
+        const dataMn = await resMn.json();
+        const mn = dataMn[0][0][0];
 
-    const roman = toRoman(mn);
-    const kor = romanToKorean(roman);
-    const glossaryMatches = findGlossaryMatches(input);
+        const resEn = await fetch(
+            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" +
+            encodeURIComponent(input)
+        );
+        const dataEn = await resEn.json();
+        const en = dataEn[0][0][0];
 
-    const glossaryHtml = glossaryMatches.length
-        ? `
-            <div class="glossary-wrap">
-                ${glossaryMatches.map(item => `<div class="glossary-line">✝️: ${item.pronunciation}</div>`).join("")}
+        const roman = toRoman(mn);
+        const kor = romanToKorean(roman);
+        const glossaryMatches = findGlossaryMatches(input);
+
+        const glossaryHtml = glossaryMatches.length
+            ? `
+                <div class="glossary-wrap">
+                    ${glossaryMatches.map(item => `<div class="glossary-line">✝️: ${item.pronunciation}</div>`).join("")}
+                </div>
+            `
+            : "";
+
+        const highlightedInputHtml = glossaryMatches.length
+            ? `<div class="highlighted-input">${highlightMatchedOrigins(input, glossaryMatches)}</div>`
+            : `<div class="highlighted-input">${input}</div>`;
+
+        document.getElementById("result").innerHTML = `
+            <div class="result-card">
+                ${highlightedInputHtml}
+                <div class="result-main">${mn} / ${roman} / ${kor}</div>
+                <div class="result-english">ENGLISH: ${en}</div>
+                ${glossaryHtml}
             </div>
-        `
-        : "";
+        `;
 
-    const highlightedInputHtml = glossaryMatches.length
-        ? `<div class="highlighted-input">${highlightMatchedOrigins(input, glossaryMatches)}</div>`
-        : `<div class="highlighted-input">${input}</div>`;
+        historyList.unshift({
+            input,
+            mn,
+            roman,
+            kor,
+            glossaryMatches
+        });
 
-    document.getElementById("result").innerHTML = `
-        <div class="result-card">
-            ${highlightedInputHtml}
-            <div class="result-main">${mn} / ${roman} / ${kor}</div>
-            <div class="result-english">ENGLISH: ${en}</div>
-            ${glossaryHtml}
-        </div>
-    `;
+        if (historyList.length > 12) historyList.pop();
 
-    historyList.unshift({
-        mn,
-        roman,
-        kor,
-        glossaryMatches
-    });
-
-    if (historyList.length > 12) historyList.pop();
-
-    renderHistory();
+        renderHistory();
+    } catch (error) {
+        document.getElementById("result").innerHTML = `
+            <div class="result-card">
+                <div class="result-main">번역 중 오류가 발생했습니다.</div>
+            </div>
+        `;
+        console.error(error);
+    } finally {
+        stopLoadingMessage();
+    }
 }
 
 function renderHistory() {
@@ -848,7 +942,7 @@ function renderHistory() {
         content.className = "item-content";
         content.innerHTML = `
             <div class="history-card">
-                <div class="history-main">${item.mn} / ${item.roman} / ${item.kor}</div>
+                <div class="history-main">${item.input} / ${item.mn} / ${item.roman} / ${item.kor}</div>
                 ${glossaryHtml}
             </div>
         `;
@@ -861,8 +955,16 @@ function renderHistory() {
         copyBtn.innerText = "복사";
         copyBtn.onclick = () => {
             const glossaryText = item.glossaryMatches.map(match => `✝️: ${match.pronunciation}`).join("\n");
-            const copyText = [item.mn, item.roman, item.kor, glossaryText].filter(Boolean).join("\n");
+            const copyText = [
+                item.input,
+                item.mn,
+                item.roman,
+                item.kor,
+                glossaryText
+            ].filter(Boolean).join("\n");
+
             navigator.clipboard.writeText(copyText);
+            showToast();
         };
 
         const screenBtn = document.createElement("button");
@@ -877,16 +979,6 @@ function renderHistory() {
         div.appendChild(btnBox);
         box.appendChild(div);
     });
-}
-
-function openScreen(mongolianText) {
-    document.getElementById("screenText").innerText = mongolianText;
-    resetScreenStyle();
-    document.getElementById("screenMode").style.display = "flex";
-}
-
-function closeScreen() {
-    document.getElementById("screenMode").style.display = "none";
 }
 
 document.getElementById("input").addEventListener("keydown", e => {
