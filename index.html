@@ -2,55 +2,48 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>신나는 몽골어 번역기</title>
 
 <style>
 body {
     font-family: Arial;
     background: #f5f7fb;
-    margin: 0;
-    padding: 10px;
     text-align: center;
+    padding: 20px;
 }
 
-h1 { margin: 15px 0; }
+h1 { margin-bottom: 20px; }
 
 .container {
-    max-width: 600px;
+    max-width: 500px;
     margin: auto;
 }
 
 input {
-    width: 100%;
-    padding: 14px;
-    font-size: 18px;
+    width: 70%;
+    padding: 10px;
+    font-size: 16px;
 }
 
-button.main {
-    width: 100%;
-    padding: 14px;
-    font-size: 18px;
+button {
+    padding: 10px;
     background: #2d8cff;
     color: white;
     border: none;
     border-radius: 6px;
-    margin-top: 10px;
+    cursor: pointer;
 }
 
 .result {
     margin-top: 20px;
     font-size: 18px;
-    font-weight: bold;
 }
 
-.en {
-    color: #00c853;
-    margin-top: 5px;
-}
+.roman { color: green; }
+.special { color: purple; font-weight: bold; }
 
 .history {
-    margin-top: 25px;
+    margin-top: 30px;
     text-align: left;
 }
 
@@ -59,78 +52,26 @@ button.main {
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 8px;
-}
-
-.buttons {
-    margin-top: 8px;
     display: flex;
-    gap: 5px;
+    justify-content: space-between;
 }
 
-.copy-btn, .screen-btn {
-    flex: 1;
+.copy-btn {
+    background: #ddd;
     border: none;
-    padding: 8px;
-    border-radius: 5px;
+    padding: 5px;
     cursor: pointer;
 }
 
-.copy-btn { background: #ddd; }
-.screen-btn { background: #ffd54f; }
-
-/* 🔥 스크린 모드 */
-#screenMode {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: black;
-    color: white;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 999;
-}
-
-#screenText {
-    font-size: 40px;
-    padding: 20px;
-    word-break: break-word;
-}
-
-/* 🔥 가로 모드 스타일 */
-.landscape #screenText {
-    font-size: 60px;
-}
-
-/* 🔘 모드 버튼 */
-.mode-buttons {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-}
-
-.mode-buttons button {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.land-btn { background: #81c784; }
-.port-btn { background: #64b5f6; }
-
-#backBtn {
-    margin-top: 20px;
-    padding: 12px 20px;
-    font-size: 18px;
-    background: white;
-    border: none;
-    border-radius: 6px;
+/* 📱 진행사항-1: 가로모드 */
+@media (orientation: landscape) {
+    body {
+        transform: rotate(90deg);
+        transform-origin: center;
+    }
+    .result {
+        font-size: 28px;
+    }
 }
 </style>
 </head>
@@ -141,33 +82,71 @@ button.main {
 
 <div class="container">
 
-<input type="text" id="koreanText" placeholder="한국어 입력">
-<button class="main" onclick="run()">변환</button>
+<input type="text" id="input" placeholder="한국어 입력">
+<button onclick="run()">변환</button>
 
 <div class="result" id="result"></div>
-<div class="en" id="english"></div>
-
 <div class="history" id="history"></div>
 
 </div>
 
-<!-- 🔥 스크린 모드 -->
-<div id="screenMode">
-    <div id="screenText"></div>
-
-    <!-- 🔥 가로/세로 버튼 -->
-    <div class="mode-buttons">
-        <button class="land-btn" onclick="setLandscape()">가로 모드</button>
-        <button class="port-btn" onclick="setPortrait()">세로 모드</button>
-    </div>
-
-    <button id="backBtn" onclick="closeScreen()">돌아가기</button>
-</div>
-
 <script>
-let historyList = [];
 
-// 로마자
+/* 📘 단어장 전체 */
+const vocab = {
+"안녕하세요":"센배노","안녕":"센배노",
+"감사합니다":"바얄랄라~","감사해요":"바얄랄라~",
+"사랑합니다":"하이르태",
+"예수님":"예수쓰","예수":"예수쓰",
+"하나님":"보르항",
+"교회":"초글랑",
+"기도":"잘브리흐",
+"아멘":"아멘",
+"맛있다":"암트태",
+"예쁘다":"흐-르흥",
+
+"오늘":"우너두르","내일":"마르가시","시간":"짜끄",
+"음식":"호올","사랑":"하이르","사진":"조락",
+"대학생":"오욧땅","회사원":"아질띤","선생님":"박싀",
+"공부":"히첼","과자":"보오브","예":"티",
+"맞습니다":"문","아니오":"우구이","아닙니다":"비시",
+"갑시다":"여우야","오세요":"이레레",
+"빨리빨리":"호르똥호르똥","좋습니다":"샌 밴",
+"괜찮아요":"주-게래",
+
+"1":"넥","2":"호요르","3":"고롭","4":"두릅",
+"5":"탑","6":"조르가","7":"덜러","8":"나임","9":"유스","10":"아롱",
+
+"빨간색":"올랑-옹고","파란색":"후흐 옹고","하늘색":"쳉헤르 옹고"
+};
+
+/* 🔥 유사 단어 찾기 */
+function findSimilarWord(input) {
+    input = input.replace(/\s/g, "");
+
+    let bestMatch = "";
+    let maxScore = 0;
+
+    for (let key in vocab) {
+        let score = 0;
+
+        if (input.includes(key)) score += 2;
+        if (key.includes(input)) score += 2;
+
+        for (let i = 0; i < key.length; i++) {
+            if (input.includes(key[i])) score += 0.5;
+        }
+
+        if (score > maxScore) {
+            maxScore = score;
+            bestMatch = key;
+        }
+    }
+
+    return maxScore > 1 ? bestMatch : null;
+}
+
+/* 로마자 */
 function toRoman(text) {
     return text
         .replace(/а/g,"a").replace(/б/g,"b").replace(/в/g,"v")
@@ -183,7 +162,7 @@ function toRoman(text) {
         .replace(/ю/g,"yu").replace(/я/g,"ya");
 }
 
-// 한글독
+/* 한글독 */
 function romanToKorean(text) {
     return text
         .replace(/sh/g,"쉬").replace(/ch/g,"치").replace(/kh/g,"흐")
@@ -199,97 +178,73 @@ function romanToKorean(text) {
         .replace(/s/g,"ㅅ").replace(/t/g,"ㅌ").replace(/f/g,"ㅍ");
 }
 
+let historyList = [];
+
 async function run() {
-    const text = document.getElementById("koreanText").value;
+    const input = document.getElementById("input").value;
 
-    const mnRes = await fetch(
+    const res = await fetch(
         "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" 
-        + encodeURIComponent(text)
+        + encodeURIComponent(input)
     );
-    const mnData = await mnRes.json();
-    const mongol = mnData[0][0][0];
+    const data = await res.json();
 
-    const enRes = await fetch(
-        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" 
-        + encodeURIComponent(text)
-    );
-    const enData = await enRes.json();
-    const english = enData[0][0][0];
+    const mn = data[0][0][0];
+    const roman = toRoman(mn);
+    const kor = romanToKorean(roman);
 
-    const roman = toRoman(mongol);
-    const koreanRead = romanToKorean(roman);
+    /* 📘 단어장 매칭 */
+    let matched = vocab[input] ? input : findSimilarWord(input);
+    let special = matched ? vocab[matched] : "";
 
-    document.getElementById("result").innerText =
-        mongol + " / " + roman + " / " + koreanRead;
+    let html = `
+        <div>${mn}</div>
+        <div class="roman">${roman}</div>
+    `;
 
-    document.getElementById("english").innerText =
-        "EN: " + english;
+    if (special) {
+        html += `<div class="special">✝️ ${special}</div>`;
+    }
 
-    historyList.unshift({ko:text, mn:mongol, ro:roman, kr:koreanRead});
+    document.getElementById("result").innerHTML = html;
+
+    /* 기록 */
+    let text = `${input} / ${mn} / ${roman} / ${kor}`;
+    if (special) text += ` / ${special}`;
+
+    historyList.unshift(text);
     if (historyList.length > 12) historyList.pop();
 
     renderHistory();
 }
 
-// 스크린
-function openScreen(text) {
-    document.getElementById("screenText").innerText = text;
-    document.getElementById("screenMode").style.display = "flex";
-    document.body.classList.remove("landscape");
-}
-
-function closeScreen() {
-    document.getElementById("screenMode").style.display = "none";
-}
-
-// 가로 / 세로 모드
-function setLandscape() {
-    document.body.classList.add("landscape");
-}
-
-function setPortrait() {
-    document.body.classList.remove("landscape");
-}
-
-// 기록 렌더링
+/* 기록 출력 */
 function renderHistory() {
-    const container = document.getElementById("history");
-    container.innerHTML = "";
+    const box = document.getElementById("history");
+    box.innerHTML = "";
 
-    historyList.forEach((item) => {
+    historyList.forEach(item => {
         const div = document.createElement("div");
         div.className = "item";
 
-        const textDiv = document.createElement("div");
-        textDiv.innerText =
-            `${item.ko} / ${item.mn} / ${item.ro} / ${item.kr}`;
+        const span = document.createElement("span");
+        span.innerText = item;
 
-        const btns = document.createElement("div");
-        btns.className = "buttons";
+        const btn = document.createElement("button");
+        btn.className = "copy-btn";
+        btn.innerText = "복사";
+        btn.onclick = () => navigator.clipboard.writeText(item);
 
-        const copyBtn = document.createElement("button");
-        copyBtn.className = "copy-btn";
-        copyBtn.innerText = "복사";
-        copyBtn.onclick = () => {
-            navigator.clipboard.writeText(
-                `${item.ko} / ${item.mn} / ${item.ro} / ${item.kr}`
-            );
-        };
-
-        const screenBtn = document.createElement("button");
-        screenBtn.className = "screen-btn";
-        screenBtn.innerText = "스크린";
-        screenBtn.onclick = () => openScreen(item.mn);
-
-        btns.appendChild(copyBtn);
-        btns.appendChild(screenBtn);
-
-        div.appendChild(textDiv);
-        div.appendChild(btns);
-
-        container.appendChild(div);
+        div.appendChild(span);
+        div.appendChild(btn);
+        box.appendChild(div);
     });
 }
+
+/* 🔥 진행사항-1: 엔터 */
+document.getElementById("input").addEventListener("keydown", function(e){
+    if(e.key === "Enter") run();
+});
 </script>
 
 </body>
