@@ -73,15 +73,17 @@ input:focus {
 .main-btn,
 .copy-btn,
 .screen-btn,
-.screen-controls button {
+.gear-button,
+.gear-menu button,
+.exit-button {
     border: none;
-    border-radius: 10px;
     cursor: pointer;
     font-size: 15px;
 }
 
 .main-btn {
     padding: 0 18px;
+    border-radius: 10px;
     background: #2d8cff;
     color: white;
     font-weight: 600;
@@ -204,12 +206,14 @@ input:focus {
     background: #ddd;
     color: black;
     padding: 10px 12px;
+    border-radius: 10px;
 }
 
 .screen-btn {
     background: #444;
     color: white;
     padding: 10px 12px;
+    border-radius: 10px;
 }
 
 /* 스크린 모드 */
@@ -257,53 +261,96 @@ input:focus {
     color: #cfcfcf;
     text-align: center;
     line-height: 1.5;
-    transition: color 0.2s;
+    transition: color 0.2s, opacity 0.2s;
 }
 
 #screenMode.inverted #screenSub {
     color: #666;
 }
 
-.screen-controls {
+/* 진행사항-14 */
+.screen-ui {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    inset: 0;
+    pointer-events: none;
+}
+
+.gear-cluster {
+    position: absolute;
+    left: 18px;
+    bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
-    max-width: 760px;
-    margin: 0 auto;
+    pointer-events: auto;
 }
 
-.screen-controls button {
-    padding: 12px 14px;
+.gear-button {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
     color: white;
-    font-weight: 600;
+    font-size: 24px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.22);
 }
 
-.screen-btn-vertical {
-    background: #4b5563;
+#screenMode.inverted .gear-button {
+    background: rgba(17,17,17,0.10);
+    color: #111;
 }
 
-.screen-btn-horizontal {
-    background: #374151;
+.gear-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
-.screen-btn-minus {
-    background: #6b7280;
+.gear-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
-.screen-btn-plus {
-    background: #5b6472;
+.gear-menu button {
+    min-width: 170px;
+    padding: 11px 16px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    color: white;
+    text-align: left;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
 }
 
-.screen-btn-invert {
-    background: #475569;
+#screenMode.inverted .gear-menu button {
+    background: rgba(17,17,17,0.08);
+    color: #111;
 }
 
-.screen-btn-close {
+.exit-cluster {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    pointer-events: auto;
+}
+
+.exit-button {
+    min-width: 92px;
+    padding: 12px 16px;
+    border-radius: 999px;
     background: #d64545;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.24);
 }
 
 /* 복사됨 토스트 */
@@ -312,7 +359,7 @@ input:focus {
     bottom: 84px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.82);
+    background: rgba(0,0,0,0.82);
     color: white;
     padding: 10px 16px;
     border-radius: 999px;
@@ -425,18 +472,32 @@ input:focus {
         margin-top: 14px;
     }
 
-    .screen-controls {
+    .gear-cluster {
         left: 12px;
-        right: 12px;
-        bottom: 14px;
-        gap: 8px;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        bottom: 12px;
     }
 
-    .screen-controls button {
-        min-width: 0;
-        padding: 12px 10px;
-        font-size: 15px;
+    .gear-button {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+    }
+
+    .gear-menu button {
+        min-width: 148px;
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .exit-cluster {
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .exit-button {
+        min-width: 82px;
+        padding: 11px 14px;
+        font-size: 14px;
     }
 
     #toast {
@@ -448,7 +509,7 @@ input:focus {
 </head>
 
 <body>
-<div class="version">ver13</div>
+<div class="version">ver14</div>
 
 <h1>🇲🇳 신나는 몽골어 번역기</h1>
 <div class="subtitle">
@@ -474,13 +535,25 @@ input:focus {
         <div id="screenText"></div>
         <div id="screenSub">Орчуулга муу байвал уучлаарай.</div>
     </div>
-    <div class="screen-controls">
-        <button class="screen-btn-vertical" onclick="setVertical()">세로모드</button>
-        <button class="screen-btn-horizontal" onclick="setHorizontal()">가로모드</button>
-        <button class="screen-btn-minus" onclick="decreaseScreenText()">A-</button>
-        <button class="screen-btn-plus" onclick="increaseScreenText()">A+</button>
-        <button class="screen-btn-invert" onclick="toggleInvert()">반전</button>
-        <button class="screen-btn-close" onclick="closeScreen()">나가기</button>
+
+    <div class="screen-ui" id="screenUiBackdrop">
+        <div class="gear-cluster" id="gearCluster">
+            <div class="gear-menu" id="gearMenu">
+                <button onclick="copyScreenResult()">결과 복사</button>
+                <button onclick="clearAllData()">전체 초기화</button>
+                <button id="labelToggleBtn" onclick="toggleScreenLabel()">라벨 숨기기</button>
+                <button onclick="setVertical()">세로모드</button>
+                <button onclick="setHorizontal()">가로모드</button>
+                <button onclick="decreaseScreenText()">A-</button>
+                <button onclick="increaseScreenText()">A+</button>
+                <button onclick="toggleInvert()">반전</button>
+            </div>
+            <button class="gear-button" onclick="toggleGearMenu(event)">⚙️</button>
+        </div>
+
+        <div class="exit-cluster">
+            <button class="exit-button" onclick="closeScreen()">나가기</button>
+        </div>
     </div>
 </div>
 
@@ -682,9 +755,7 @@ function escapeRegExp(string) {
 
 function highlightMatchedOrigins(input, matches) {
     let output = input;
-    const sortedOrigins = [...matches]
-        .map(item => item.origin)
-        .sort((a, b) => b.length - a.length);
+    const sortedOrigins = [...matches].map(item => item.origin).sort((a, b) => b.length - a.length);
 
     for (const origin of sortedOrigins) {
         if (!origin) continue;
@@ -772,6 +843,9 @@ const screenFontMin = 28;
 const screenFontMax = 120;
 let loadingInterval = null;
 let toastTimeout = null;
+let gearMenuOpen = false;
+let screenLabelVisible = true;
+let currentScreenTextValue = "";
 
 function applyScreenTextSize() {
     document.getElementById("screenText").style.fontSize = screenFontSize + "px";
@@ -781,7 +855,11 @@ function resetScreenStyle() {
     screenFontSize = window.innerWidth <= 768 ? 34 : 48;
     document.getElementById("screenContent").style.transform = "rotate(0deg)";
     document.getElementById("screenMode").classList.remove("inverted");
+    screenLabelVisible = true;
+    document.getElementById("screenSub").style.opacity = "1";
+    document.getElementById("labelToggleBtn").innerText = "라벨 숨기기";
     applyScreenTextSize();
+    closeGearMenu();
 }
 
 function increaseScreenText() {
@@ -810,19 +888,10 @@ function toggleInvert() {
     document.getElementById("screenMode").classList.toggle("inverted");
 }
 
-function openScreen(mongolianText) {
-    document.getElementById("screenText").innerText = mongolianText;
-    resetScreenStyle();
-    document.getElementById("screenMode").style.display = "flex";
-}
-
-function closeScreen() {
-    document.getElementById("screenMode").style.display = "none";
-}
-
-function showToast() {
+function showToast(message = "복사됨!") {
     const toast = document.getElementById("toast");
     clearTimeout(toastTimeout);
+    toast.textContent = message;
     toast.style.opacity = "1";
     toastTimeout = setTimeout(() => {
         toast.style.opacity = "0";
@@ -851,6 +920,65 @@ function stopLoadingMessage() {
     loadingInterval = null;
     loadingText.textContent = "";
     button.disabled = false;
+}
+
+function renderHistory() {
+    const box = document.getElementById("history");
+    box.innerHTML = "";
+
+    historyList.forEach(item => {
+        const glossaryHtml = item.glossaryMatches.length
+            ? `
+                <div class="glossary-wrap">
+                    ${item.glossaryMatches.map(match => `<div class="glossary-line">✝️: ${match.pronunciation}</div>`).join("")}
+                </div>
+            `
+            : "";
+
+        const div = document.createElement("div");
+        div.className = "item";
+
+        const content = document.createElement("div");
+        content.className = "item-content";
+        content.innerHTML = `
+            <div class="history-card">
+                <div class="history-main">${item.input} / ${item.mn} / ${item.roman} / ${item.kor}</div>
+                ${glossaryHtml}
+            </div>
+        `;
+
+        const btnBox = document.createElement("div");
+        btnBox.className = "buttons";
+
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.innerText = "복사";
+        copyBtn.onclick = () => {
+            const glossaryText = item.glossaryMatches.map(match => `✝️: ${match.pronunciation}`).join("\n");
+            const copyText = [
+                item.input,
+                item.mn,
+                item.roman,
+                item.kor,
+                glossaryText
+            ].filter(Boolean).join("\n");
+
+            navigator.clipboard.writeText(copyText);
+            showToast();
+        };
+
+        const screenBtn = document.createElement("button");
+        screenBtn.className = "screen-btn";
+        screenBtn.innerText = "스크린";
+        screenBtn.onclick = () => openScreen(item.mn);
+
+        btnBox.appendChild(copyBtn);
+        btnBox.appendChild(screenBtn);
+
+        div.appendChild(content);
+        div.appendChild(btnBox);
+        box.appendChild(div);
+    });
 }
 
 async function run() {
@@ -922,67 +1050,69 @@ async function run() {
     }
 }
 
-function renderHistory() {
-    const box = document.getElementById("history");
-    box.innerHTML = "";
+function openScreen(mongolianText) {
+    currentScreenTextValue = mongolianText;
+    document.getElementById("screenText").innerText = mongolianText;
+    resetScreenStyle();
+    document.getElementById("screenMode").style.display = "flex";
+}
 
-    historyList.forEach(item => {
-        const glossaryHtml = item.glossaryMatches.length
-            ? `
-                <div class="glossary-wrap">
-                    ${item.glossaryMatches.map(match => `<div class="glossary-line">✝️: ${match.pronunciation}</div>`).join("")}
-                </div>
-            `
-            : "";
+function closeScreen() {
+    document.getElementById("screenMode").style.display = "none";
+    closeGearMenu();
+}
 
-        const div = document.createElement("div");
-        div.className = "item";
+function copyScreenResult() {
+    if (!currentScreenTextValue) return;
+    navigator.clipboard.writeText(currentScreenTextValue);
+    showToast();
+    closeGearMenu();
+}
 
-        const content = document.createElement("div");
-        content.className = "item-content";
-        content.innerHTML = `
-            <div class="history-card">
-                <div class="history-main">${item.input} / ${item.mn} / ${item.roman} / ${item.kor}</div>
-                ${glossaryHtml}
-            </div>
-        `;
+function clearAllData() {
+    document.getElementById("result").innerHTML = "";
+    document.getElementById("history").innerHTML = "";
+    document.getElementById("input").value = "";
+    historyList = [];
+    currentScreenTextValue = "";
+    closeScreen();
+    showToast("초기화됨!");
+}
 
-        const btnBox = document.createElement("div");
-        btnBox.className = "buttons";
+function toggleScreenLabel() {
+    screenLabelVisible = !screenLabelVisible;
+    document.getElementById("screenSub").style.opacity = screenLabelVisible ? "1" : "0";
+    document.getElementById("labelToggleBtn").innerText = screenLabelVisible ? "라벨 숨기기" : "라벨 보이기";
+}
 
-        const copyBtn = document.createElement("button");
-        copyBtn.className = "copy-btn";
-        copyBtn.innerText = "복사";
-        copyBtn.onclick = () => {
-            const glossaryText = item.glossaryMatches.map(match => `✝️: ${match.pronunciation}`).join("\n");
-            const copyText = [
-                item.input,
-                item.mn,
-                item.roman,
-                item.kor,
-                glossaryText
-            ].filter(Boolean).join("\n");
+function toggleGearMenu(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById("gearMenu");
+    gearMenuOpen = !gearMenuOpen;
+    menu.classList.toggle("open", gearMenuOpen);
+}
 
-            navigator.clipboard.writeText(copyText);
-            showToast();
-        };
-
-        const screenBtn = document.createElement("button");
-        screenBtn.className = "screen-btn";
-        screenBtn.innerText = "스크린";
-        screenBtn.onclick = () => openScreen(item.mn);
-
-        btnBox.appendChild(copyBtn);
-        btnBox.appendChild(screenBtn);
-
-        div.appendChild(content);
-        div.appendChild(btnBox);
-        box.appendChild(div);
-    });
+function closeGearMenu() {
+    gearMenuOpen = false;
+    document.getElementById("gearMenu").classList.remove("open");
 }
 
 document.getElementById("input").addEventListener("keydown", e => {
     if (e.key === "Enter") run();
+});
+
+document.getElementById("screenMode").addEventListener("click", (e) => {
+    const gearCluster = document.getElementById("gearCluster");
+    const exitCluster = document.querySelector(".exit-cluster");
+    const screenContent = document.getElementById("screenContent");
+
+    const clickedInsideGear = gearCluster.contains(e.target);
+    const clickedInsideExit = exitCluster.contains(e.target);
+    const clickedInsideContent = screenContent.contains(e.target);
+
+    if (!clickedInsideGear && !clickedInsideExit && !clickedInsideContent) {
+        closeGearMenu();
+    }
 });
 </script>
 </body>
