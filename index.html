@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🇲🇳 신나는 몽골어 번역기 ver19.7</title>
+<title>🇲🇳 신나는 몽골어 번역기 ver19.10</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 * { box-sizing: border-box; }
@@ -438,6 +438,50 @@ input:focus { border-color: #2d8cff; }
     margin: 0;
 }
 
+.camera-size-panel {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 146px;
+    z-index: 20;
+    display: none;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: rgba(0,0,0,0.42);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: white;
+}
+.camera-size-panel.active { display: block; }
+.camera-size-row + .camera-size-row { margin-top: 10px; }
+.camera-size-row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+.camera-size-value { min-width: 54px; text-align: right; }
+.camera-size-slider { width: 100%; margin: 0; }
+.camera-scan-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, transparent 34%, rgba(45,140,255,0.0) 44%, rgba(45,140,255,0.72) 50%, rgba(45,140,255,0.0) 56%, transparent 66%);
+    opacity: 0;
+    pointer-events: none;
+}
+.camera-scan-overlay.active {
+    opacity: 1;
+    animation: cameraGuideScan 0.4s linear forwards;
+}
+@keyframes cameraGuideScan {
+    from { transform: translate(-110%, -110%); }
+    to { transform: translate(110%, 110%); }
+}
+
 #cameraFullscreen {
     position: fixed;
     inset: 0;
@@ -870,6 +914,20 @@ input:focus { border-color: #2d8cff; }
         gap: 8px;
     }
 
+    .camera-size-panel {
+        left: 10px;
+        right: 10px;
+        bottom: 150px;
+        padding: 10px 12px;
+    }
+
+    .camera-zoom-panel {
+        left: 10px;
+        right: 10px;
+        bottom: 84px;
+        padding: 10px 12px;
+    }
+
     .camera-control-btn {
         padding: 12px 8px;
         font-size: 14px;
@@ -939,7 +997,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver19.9</div>
+<div class="version">ver19.10</div>
 <button class="mode-switch" id="modeSwitchBtn" onclick="handleModeSwitch()">📷</button>
 
 <div id="mainPage" class="page">
@@ -1007,6 +1065,24 @@ input:focus { border-color: #2d8cff; }
         <div class="handle ne" data-handle="ne"></div>
         <div class="handle sw" data-handle="sw"></div>
         <div class="handle se" data-handle="se"></div>
+        <div class="camera-scan-overlay" id="cameraScanOverlay"></div>
+    </div>
+
+    <div class="camera-size-panel" id="cameraSizePanel">
+        <div class="camera-size-row">
+            <div class="camera-size-row-top">
+                <span>가로 크기</span>
+                <span class="camera-size-value" id="cameraWidthValue">78vw</span>
+            </div>
+            <input type="range" class="camera-size-slider" id="cameraWidthSlider" min="56" max="90" step="1" value="78" />
+        </div>
+        <div class="camera-size-row">
+            <div class="camera-size-row-top">
+                <span>세로 크기</span>
+                <span class="camera-size-value" id="cameraHeightValue">16:9</span>
+            </div>
+            <input type="range" class="camera-size-slider" id="cameraHeightSlider" min="38" max="74" step="1" value="56" />
+        </div>
     </div>
 
     <div class="camera-zoom-panel" id="cameraZoomPanel">
@@ -1018,9 +1094,7 @@ input:focus { border-color: #2d8cff; }
     </div>
 
     <div class="camera-fs-controls" id="cameraControls">
-        <button class="camera-control-btn" id="captureBtn" onclick="captureOrRetake()">촬영</button>
-        <button class="camera-control-btn" id="rangeBtn" onclick="toggleRangeBox()" disabled style="display:none;">범위 선택</button>
-        <button class="camera-control-btn primary" id="recognizeBtn" onclick="startRecognitionFlow()">인식</button>
+        <button class="camera-control-btn primary" id="captureBtn" onclick="captureAndRecognize()">촬영</button>
     </div>
 </div>
 
@@ -1242,11 +1316,15 @@ const cameraGuideText = document.getElementById("cameraGuideText");
 const cameraZoomPanel = document.getElementById("cameraZoomPanel");
 const cameraZoomSlider = document.getElementById("cameraZoomSlider");
 const cameraZoomValue = document.getElementById("cameraZoomValue");
+const cameraSizePanel = document.getElementById("cameraSizePanel");
+const cameraWidthSlider = document.getElementById("cameraWidthSlider");
+const cameraHeightSlider = document.getElementById("cameraHeightSlider");
+const cameraWidthValue = document.getElementById("cameraWidthValue");
+const cameraHeightValue = document.getElementById("cameraHeightValue");
 const cameraFullscreen = document.getElementById("cameraFullscreen");
 const captureBtn = document.getElementById("captureBtn");
-const rangeBtn = document.getElementById("rangeBtn");
-const recognizeBtn = document.getElementById("recognizeBtn");
 const ocrBox = document.getElementById("ocrBox");
+const cameraScanOverlay = document.getElementById("cameraScanOverlay");
 const cameraProgress = document.getElementById("cameraProgress");
 const cameraRecognizedText = document.getElementById("cameraRecognizedText");
 const cameraTranslatedText = document.getElementById("cameraTranslatedText");
@@ -1256,6 +1334,19 @@ if (cameraZoomSlider) {
         applyCameraZoom(event.target.value);
     });
 }
+if (cameraWidthSlider) {
+    cameraWidthSlider.addEventListener("input", () => {
+        updateGuideSizeUi();
+        resetGuideBox();
+    });
+}
+if (cameraHeightSlider) {
+    cameraHeightSlider.addEventListener("input", () => {
+        updateGuideSizeUi();
+        resetGuideBox();
+    });
+}
+updateGuideSizeUi();
 
 /* =========================
    공통 유틸
@@ -2035,17 +2126,25 @@ function setCameraProgress(text) {
 }
 
 
+function updateGuideSizeUi() {
+    const widthPercent = Math.round(Number(cameraWidthSlider?.value || 78));
+    const heightPercent = Math.round(Number(cameraHeightSlider?.value || 56));
+    if (cameraWidthValue) cameraWidthValue.textContent = `${widthPercent}vw`;
+    if (cameraHeightValue) cameraHeightValue.textContent = `${heightPercent}%`;
+}
+
 function resetGuideBox() {
-    const maxWidth = Math.min(window.innerWidth * 0.82, 520);
-    const minWidth = Math.min(window.innerWidth * 0.62, 240);
-    const boxWidth = Math.max(minWidth, maxWidth);
-    const boxHeight = Math.round(boxWidth * 9 / 16);
+    const widthPercent = Number(cameraWidthSlider?.value || 78) / 100;
+    const heightPercent = Number(cameraHeightSlider?.value || 56) / 100;
+    const boxWidth = Math.max(220, Math.min(window.innerWidth * widthPercent, 620));
+    const boxHeight = Math.max(90, Math.min(window.innerHeight * 0.42, Math.round(boxWidth * heightPercent)));
 
     ocrBox.style.width = boxWidth + "px";
     ocrBox.style.height = boxHeight + "px";
     ocrBox.style.left = "50%";
     ocrBox.style.top = "50%";
     ocrBox.style.transform = "translate(-50%, -50%)";
+    updateGuideSizeUi();
 }
 
 function getGuideRectRelativeToElement(element, sourceWidth, sourceHeight) {
@@ -2152,6 +2251,17 @@ async function applyCameraZoom(value) {
 }
 
 
+function playCameraScanAnimation() {
+    if (!cameraScanOverlay) return Promise.resolve();
+    cameraScanOverlay.classList.remove("active");
+    void cameraScanOverlay.offsetWidth;
+    cameraScanOverlay.classList.add("active");
+    return new Promise(resolve => setTimeout(() => {
+        cameraScanOverlay.classList.remove("active");
+        resolve();
+    }, 400));
+}
+
 function resetCameraUi() {
     stopCameraStream();
     hideFullscreenCamera();
@@ -2171,15 +2281,12 @@ function resetCameraUi() {
     ocrBox.style.pointerEvents = "none";
     cameraGuideText.style.display = "none";
     if (cameraZoomPanel) cameraZoomPanel.classList.remove("active");
+    if (cameraSizePanel) cameraSizePanel.classList.remove("active");
     resetCameraZoomState();
+    updateGuideSizeUi();
 
     captureBtn.disabled = false;
     captureBtn.textContent = "촬영";
-    if (rangeBtn) {
-        if (rangeBtn) rangeBtn.disabled = true;
-        rangeBtn.textContent = "범위 선택";
-    }
-    recognizeBtn.disabled = true;
 
     setCameraProgress("");
     setCameraText("인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
@@ -2224,18 +2331,14 @@ async function openFullscreenCamera() {
         ocrBox.style.display = "block";
         ocrBox.style.pointerEvents = "none";
         cameraGuideText.style.display = "block";
+        if (cameraSizePanel) cameraSizePanel.classList.add("active");
         resetGuideBox();
 
         captureBtn.disabled = false;
         captureBtn.textContent = "촬영";
-        if (rangeBtn) {
-            if (rangeBtn) rangeBtn.disabled = true;
-            rangeBtn.textContent = "범위 선택";
-        }
-        recognizeBtn.disabled = true;
 
         showFullscreenCamera();
-        setCameraProgress("가이드 안에 몽골어를 넣고 촬영하세요.");
+        setCameraProgress("가이드 안에 몽골어를 넣고 촬영하세요. 촬영하면 바로 인식합니다.");
     } catch (error) {
         console.error(error);
         cameraPlaceholder.style.display = "flex";
@@ -2260,13 +2363,31 @@ function closeFullscreenCamera() {
 }
 
 function captureOrRetake() {
-    if (!cameraShotTaken) captureShot();
-    else openFullscreenCamera();
+    if (cameraOcrRunning) return;
+    if (!cameraShotTaken) {
+        captureAndRecognize();
+        return;
+    }
+    openFullscreenCamera();
 }
 
+async function captureAndRecognize() {
+    if (cameraOcrRunning || cameraShotTaken) return;
+    captureBtn.disabled = true;
+    captureBtn.textContent = "처리중";
+    const captured = captureShot();
+    if (!captured) {
+        captureBtn.disabled = false;
+        captureBtn.textContent = "촬영";
+        return;
+    }
+    setCameraProgress("스캔 준비중");
+    await playCameraScanAnimation();
+    await startRecognitionFlow();
+}
 
 function captureShot() {
-    if (!cameraVideo.videoWidth || !cameraVideo.videoHeight) return;
+    if (!cameraVideo.videoWidth || !cameraVideo.videoHeight) return false;
 
     const fullCanvas = document.createElement("canvas");
     fullCanvas.width = cameraVideo.videoWidth;
@@ -2298,21 +2419,14 @@ function captureShot() {
 
     cameraShotTaken = true;
     rangeVisible = true;
-    ocrBox.style.display = "none";
     cameraGuideText.style.display = "none";
+    if (cameraZoomPanel) cameraZoomPanel.classList.remove("active");
+    if (cameraSizePanel) cameraSizePanel.classList.remove("active");
     resetCameraZoomState();
 
-    captureBtn.textContent = "다시 찍기";
-    if (rangeBtn) {
-        if (rangeBtn) rangeBtn.disabled = true;
-        rangeBtn.textContent = "범위 선택";
-    }
-    recognizeBtn.disabled = false;
-
-    setCameraProgress("가이드 영역만 잘라 저장했습니다. 바로 인식할 수 있습니다.");
+    setCameraProgress("촬영 완료. 인식을 시작합니다.");
+    return true;
 }
-
-
 
 function toggleRangeBox() {
     return;
@@ -2780,8 +2894,6 @@ async function startRecognitionFlow() {
     const runId = ++currentRecognitionRunId;
 
     captureBtn.disabled = true;
-    if (rangeBtn) rangeBtn.disabled = true;
-    recognizeBtn.disabled = true;
     ocrBox.style.pointerEvents = "none";
 
     hideFullscreenCamera();
@@ -2940,9 +3052,7 @@ ${winner.detail}
         if (runId === currentRecognitionRunId && localAbortToken === cameraAbortToken) {
             cameraOcrRunning = false;
             captureBtn.disabled = false;
-            if (rangeBtn) rangeBtn.disabled = true;
-            recognizeBtn.disabled = false;
-            ocrBox.style.pointerEvents = "none";
+                                    ocrBox.style.pointerEvents = "none";
         }
     }
 }
@@ -2957,8 +3067,7 @@ function abortCameraRecognition(reopenCamera = false) {
     setCameraText("작업을 중단했습니다.", "다시 시도해 주세요.", true, true);
 
     captureBtn.disabled = false;
-    if (rangeBtn) rangeBtn.disabled = !cameraShotTaken;
-    recognizeBtn.disabled = !rangeVisible;
+    captureBtn.textContent = cameraShotTaken ? "다시 찍기" : "촬영";
 
     if (reopenCamera) {
         openFullscreenCamera();
