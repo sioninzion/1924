@@ -845,7 +845,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver19.4</div>
+<div class="version">ver19.5</div>
 <button class="mode-switch" id="modeSwitchBtn" onclick="handleModeSwitch()">📷</button>
 
 <div id="mainPage" class="page">
@@ -1099,6 +1099,48 @@ const glossaryBook = [
     ["무지개", "솔롱고"]
 ];
 
+let historyList = [];
+let screenFontSize = 48;
+const screenFontMin = 28;
+const screenFontMax = 120;
+let loadingInterval = null;
+let toastTimeout = null;
+let gearMenuOpen = false;
+let screenLabelVisible = true;
+let currentScreenTextValue = "";
+let openCopyPanelId = null;
+let isCameraMode = false;
+
+let currentStream = null;
+let cameraShotTaken = false;
+let rangeVisible = false;
+let cameraOcrRunning = false;
+let cameraAbortToken = 0;
+let currentRecognitionRunId = 0;
+
+const OCR_ATTEMPT_TIMEOUT_MS = 12000;
+const OCR_ATTEMPT_SLEEP_MS = 150;
+const OCR_SECONDARY_TIMEOUT_MS = 10000;
+
+let currentSpeakingId = null;
+let currentUtterance = null;
+let cachedVoices = [];
+
+const cameraVideo = document.getElementById("cameraVideo");
+const cameraSnapshot = document.getElementById("cameraSnapshot");
+const cameraPlaceholder = document.getElementById("cameraPlaceholder");
+const cameraFullscreen = document.getElementById("cameraFullscreen");
+const captureBtn = document.getElementById("captureBtn");
+const rangeBtn = document.getElementById("rangeBtn");
+const recognizeBtn = document.getElementById("recognizeBtn");
+const ocrBox = document.getElementById("ocrBox");
+const cameraProgress = document.getElementById("cameraProgress");
+const cameraRecognizedText = document.getElementById("cameraRecognizedText");
+const cameraTranslatedText = document.getElementById("cameraTranslatedText");
+
+/* =========================
+   공통 유틸
+========================= */
 function normalizeForMatch(text) {
     return String(text)
         .toLowerCase()
@@ -1155,7 +1197,21 @@ function highlightMatchedOrigins(input, matches) {
     return output;
 }
 
-/* 19.4: 대문자 먼저 소문자로 변환 */
+function showToast(message = "복사됨!") {
+    const toast = document.getElementById("toast");
+    clearTimeout(toastTimeout);
+    toast.textContent = message;
+    toast.style.opacity = "1";
+    toastTimeout = setTimeout(() => toast.style.opacity = "0", 1200);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/* =========================
+   일반모드 번역 영역
+========================= */
 function toRoman(text) {
     return String(text || "").toLowerCase()
         .replace(/щ/g, "sh")
@@ -1227,122 +1283,6 @@ function romanToKorean(text) {
         .replace(/f/g, "ㅍ");
 }
 
-let historyList = [];
-let screenFontSize = 48;
-const screenFontMin = 28;
-const screenFontMax = 120;
-let loadingInterval = null;
-let toastTimeout = null;
-let gearMenuOpen = false;
-let screenLabelVisible = true;
-let currentScreenTextValue = "";
-let openCopyPanelId = null;
-let isCameraMode = false;
-
-let currentStream = null;
-let cameraShotTaken = false;
-let rangeVisible = false;
-let cameraOcrRunning = false;
-let cameraAbortToken = 0;
-let currentRecognitionRunId = 0;
-
-const OCR_ATTEMPT_TIMEOUT_MS = 12000;
-const OCR_ATTEMPT_SLEEP_MS = 150;
-const OCR_SECONDARY_TIMEOUT_MS = 10000;
-
-let currentSpeakingId = null;
-let currentUtterance = null;
-let cachedVoices = [];
-
-const cameraVideo = document.getElementById("cameraVideo");
-const cameraSnapshot = document.getElementById("cameraSnapshot");
-const cameraPlaceholder = document.getElementById("cameraPlaceholder");
-const cameraFullscreen = document.getElementById("cameraFullscreen");
-const captureBtn = document.getElementById("captureBtn");
-const rangeBtn = document.getElementById("rangeBtn");
-const recognizeBtn = document.getElementById("recognizeBtn");
-const ocrBox = document.getElementById("ocrBox");
-const cameraProgress = document.getElementById("cameraProgress");
-const cameraRecognizedText = document.getElementById("cameraRecognizedText");
-const cameraTranslatedText = document.getElementById("cameraTranslatedText");
-
-function handleModeSwitch() {
-    if (cameraOcrRunning) {
-        abortCameraRecognition(true);
-        return;
-    }
-
-    if (isCameraMode) {
-        closeCameraModeToMain();
-    } else {
-        toggleMode("camera");
-    }
-}
-
-function toggleMode(forceMode) {
-    if (forceMode === "camera") isCameraMode = true;
-    else if (forceMode === "main") isCameraMode = false;
-    else isCameraMode = !isCameraMode;
-
-    document.getElementById("mainPage").style.display = isCameraMode ? "none" : "block";
-    document.getElementById("cameraPage").style.display = isCameraMode ? "block" : "none";
-    document.getElementById("modeSwitchBtn").textContent = isCameraMode ? "✏️" : "📷";
-
-    if (!isCameraMode) {
-        stopCameraStream();
-        hideFullscreenCamera();
-    }
-}
-
-function applyScreenTextSize() {
-    document.getElementById("screenText").style.fontSize = screenFontSize + "px";
-}
-
-function resetScreenStyle() {
-    screenFontSize = window.innerWidth <= 768 ? 34 : 48;
-    document.getElementById("screenContent").style.transform = "rotate(0deg)";
-    document.getElementById("screenMode").classList.remove("inverted");
-    screenLabelVisible = true;
-    document.getElementById("screenSub").style.opacity = "1";
-    document.getElementById("labelToggleBtn").innerText = "라벨 숨기기";
-    applyScreenTextSize();
-    closeGearMenu();
-}
-
-function increaseScreenText() {
-    screenFontSize = Math.min(screenFontSize + 6, screenFontMax);
-    applyScreenTextSize();
-}
-
-function decreaseScreenText() {
-    screenFontSize = Math.max(screenFontSize - 6, screenFontMin);
-    applyScreenTextSize();
-}
-
-function setVertical() {
-    document.getElementById("screenContent").style.transform = "rotate(0deg)";
-    screenFontSize = window.innerWidth <= 768 ? 34 : 48;
-    applyScreenTextSize();
-}
-
-function setHorizontal() {
-    document.getElementById("screenContent").style.transform = "rotate(90deg)";
-    screenFontSize = window.innerWidth <= 768 ? 44 : 64;
-    applyScreenTextSize();
-}
-
-function toggleInvert() {
-    document.getElementById("screenMode").classList.toggle("inverted");
-}
-
-function showToast(message = "복사됨!") {
-    const toast = document.getElementById("toast");
-    clearTimeout(toastTimeout);
-    toast.textContent = message;
-    toast.style.opacity = "1";
-    toastTimeout = setTimeout(() => toast.style.opacity = "0", 1200);
-}
-
 function startLoadingMessage() {
     const loadingText = document.getElementById("loadingText");
     const button = document.getElementById("translateBtn");
@@ -1372,49 +1312,59 @@ function buildGlossaryHtml(matches) {
         : "";
 }
 
-function toggleCopyPanel(id, event) {
-    event.stopPropagation();
-    if (openCopyPanelId === id) {
+async function run() {
+    const input = document.getElementById("input").value.trim();
+    if (!input) return;
+
+    startLoadingMessage();
+
+    try {
+        const resMn = await fetch(
+            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" + encodeURIComponent(input)
+        );
+        const dataMn = await resMn.json();
+        const mn = dataMn[0][0][0];
+
+        const resEn = await fetch(
+            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" + encodeURIComponent(input)
+        );
+        const dataEn = await resEn.json();
+        const en = dataEn[0][0][0];
+
+        const roman = toRoman(mn);
+        const kor = romanToKorean(roman);
+        const glossaryMatches = findGlossaryMatches(input);
+
+        document.getElementById("result").innerHTML = `
+            <div class="result-card">
+                <div class="highlighted-input">${glossaryMatches.length ? highlightMatchedOrigins(input, glossaryMatches) : input}</div>
+                <div class="result-main">${mn} / ${roman} / ${kor}</div>
+                <div class="result-english">ENGLISH: ${en}</div>
+                ${buildGlossaryHtml(glossaryMatches)}
+            </div>
+        `;
+
+        historyList.unshift({
+            id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+            input, mn, roman, kor, glossaryMatches
+        });
+
+        if (historyList.length > 12) historyList.pop();
         closeCopyPanels();
         renderHistory();
-        return;
+    } catch (error) {
+        document.getElementById("result").innerHTML = `
+            <div class="result-card"><div class="result-main">번역 중 오류가 발생했습니다.</div></div>
+        `;
+        console.error(error);
+    } finally {
+        stopLoadingMessage();
     }
-    openCopyPanelId = id;
-    renderHistory();
 }
 
-function closeCopyPanels() {
-    openCopyPanelId = null;
-}
-
-function copySelectedFields(id) {
-    const item = historyList.find(entry => entry.id === id);
-    if (!item) return;
-
-    const panel = document.getElementById(`copyPanel-${id}`);
-    if (!panel) return;
-
-    const includeInput = panel.querySelector(".copy-check-input").checked;
-    const includeMn = panel.querySelector(".copy-check-mn").checked;
-    const includeRoman = panel.querySelector(".copy-check-roman").checked;
-    const includeKor = panel.querySelector(".copy-check-kor").checked;
-
-    const lines = [];
-    if (includeInput) lines.push(item.input);
-    if (includeMn) lines.push(item.mn);
-    if (includeRoman) lines.push(item.roman);
-    if (includeKor) lines.push(item.kor);
-
-    const glossaryText = item.glossaryMatches.map(match => `✝️: ${match.pronunciation}`).join("\n");
-    if (glossaryText) lines.push(glossaryText);
-
-    navigator.clipboard.writeText(lines.join("\n"));
-    showToast();
-    closeCopyPanels();
-    renderHistory();
-}
-
-/* TTS */
+/* =========================
+   TTS 영역 (위계방식)
+========================= */
 function refreshVoices() {
     if (!("speechSynthesis" in window)) return [];
     cachedVoices = window.speechSynthesis.getVoices() || [];
@@ -1437,71 +1387,102 @@ function getBestEnglishVoice() {
     return voices[0] || null;
 }
 
-/* 19.4: 몽골어 발음 근사 TTS 규칙 */
+function applyRuleList(text, rules) {
+    let output = text;
+    for (const [pattern, replacement] of rules) {
+        output = output.replace(pattern, replacement);
+    }
+    return output;
+}
+
 function romanToTtsEnglish(text) {
     let t = String(text || "").trim().toLowerCase();
 
-    t = t.replace(/[()]/g, " ");
-    t = t.replace(/[\/]/g, " ");
-    t = t.replace(/-/g, " ");
-    t = t.replace(/~/g, " ");
-    t = t.replace(/\s+/g, " ");
+    /* 0단계: 기초 정리 */
+    t = t
+        .replace(/[()]/g, " ")
+        .replace(/[\/]/g, " ")
+        .replace(/-/g, " ")
+        .replace(/~/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
 
-    t = t.replace(/ö/g, "uh");
-    t = t.replace(/ü/g, "oo");
+    /* 1단계: 문장 예외 */
+    const phraseRules = [
+        [/\bta khen be\b/g, "tah hen beh"],
+        [/\bchi khen be\b/g, "chee hen beh"],
+        [/\bsain baina uu\b/g, "sine bye nah oo"],
+        [/\bbayarlalaa\b/g, "bayar lalaa"],
+        [/\buuchlaarai\b/g, "ooch laa rai"],
+        [/\bta khen gedeg ve\b/g, "tah hen geh deg veh"],
+        [/\bta khen gej baina\b/g, "tah hen gej bye nah"]
+    ];
+    t = applyRuleList(t, phraseRules);
 
-    t = t.replace(/yaa/g, "yaa");
-    t = t.replace(/ya/g, "yaa");
-    t = t.replace(/yo/g, "yoh");
-    t = t.replace(/yu/g, "yoo");
-    t = t.replace(/ye/g, "yeh");
+    /* 2단계: 단어 예외 */
+    const wordRules = [
+        [/\bta\b/g, "tah"],
+        [/\bchi\b/g, "chee"],
+        [/\bkhen\b/g, "hen"],
+        [/\bbe\b/g, "beh"],
+        [/\bve\b/g, "veh"],
+        [/\bwe\b/g, "veh"],
+        [/\buu\b/g, "oo"],
+        [/\bbaina\b/g, "bye nah"],
+        [/\bsain\b/g, "sine"],
+        [/\bgedeg\b/g, "geh deg"],
+        [/\bgej\b/g, "gej"],
+        [/\bnamaig\b/g, "nah maig"],
+        [/\bmini\b/g, "mee nee"],
+        [/\bchini\b/g, "chee nee"],
+        [/\btanii\b/g, "tah nii"],
+        [/\bbid\b/g, "beed"],
+        [/\bymar\b/g, "ee mar"],
+        [/\byaj\b/g, "yaaj"],
+        [/\byuu\b/g, "yoo"],
+        [/\bireerei\b/g, "ee reh reh"],
+        [/\byavna\b/g, "yav na"],
+        [/\bsum\b/g, "soom"],
+        [/\bger\b/g, "ger"],
+        [/\bborhan\b/g, "bor han"],
+        [/\byesus\b/g, "yeh soos"]
+    ];
+    t = applyRuleList(t, wordRules);
 
-    t = t.replace(/kh/g, "h");
-    t = t.replace(/sh/g, "sh");
-    t = t.replace(/ch/g, "ch");
-    t = t.replace(/ts/g, "ts");
-    t = t.replace(/zh/g, "j");
+    /* 3단계: 글자 묶음 규칙 */
+    const clusterRules = [
+        [/kh/g, "h"],
+        [/sh/g, "sh"],
+        [/ch/g, "ch"],
+        [/ts/g, "ts"],
+        [/zh/g, "j"],
+        [/yaa/g, "yaa"],
+        [/ya/g, "yaa"],
+        [/yo/g, "yoh"],
+        [/yu/g, "yoo"],
+        [/ye/g, "yeh"],
+        [/ai/g, "eye"],
+        [/ei/g, "ey"],
+        [/oi/g, "oy"],
+        [/ui/g, "oo ee"],
+        [/au/g, "ow"]
+    ];
+    t = applyRuleList(t, clusterRules);
 
-    t = t.replace(/ai/g, "eye");
-    t = t.replace(/ei/g, "ey");
-    t = t.replace(/oi/g, "oy");
-    t = t.replace(/ui/g, "oo ee");
-    t = t.replace(/au/g, "ow");
+    /* 4단계: 단순 문자/모음 정리 */
+    const finalRules = [
+        [/ö/g, "uh"],
+        [/ü/g, "oo"],
+        [/aa/g, "ah"],
+        [/ee/g, "eh"],
+        [/ii/g, "ee"],
+        [/oo/g, "oh"]
+    ];
+    t = applyRuleList(t, finalRules);
 
-    t = t.replace(/aa/g, "ah");
-    t = t.replace(/ee/g, "eh");
-    t = t.replace(/ii/g, "ee");
-    t = t.replace(/oo/g, "oh");
-
-    t = t.replace(/\bta\b/g, "tah");
-    t = t.replace(/\bchi\b/g, "chee");
-    t = t.replace(/\bkhen\b/g, "hen");
-    t = t.replace(/\bbe\b/g, "beh");
-    t = t.replace(/\bve\b/g, "veh");
-    t = t.replace(/\bwe\b/g, "veh");
-    t = t.replace(/\buu\b/g, "oo");
-    t = t.replace(/\bbaina\b/g, "bye nah");
-    t = t.replace(/\bsain\b/g, "sine");
-    t = t.replace(/\bgedeg\b/g, "geh deg");
-    t = t.replace(/\bgej\b/g, "gej");
-    t = t.replace(/\bnamaig\b/g, "nah maig");
-    t = t.replace(/\bmini\b/g, "mee nee");
-    t = t.replace(/\bchini\b/g, "chee nee");
-    t = t.replace(/\btanii\b/g, "tah nii");
-    t = t.replace(/\bbid\b/g, "beed");
-    t = t.replace(/\bymar\b/g, "ee mar");
-    t = t.replace(/\byaj\b/g, "yaaj");
-    t = t.replace(/\byuu\b/g, "yoo");
-    t = t.replace(/\bireerei\b/g, "ee reh reh");
-    t = t.replace(/\byavna\b/g, "yav na");
-    t = t.replace(/\bbayarlalaa\b/g, "bayar lala");
-    t = t.replace(/\buuchlaarai\b/g, "ooch laa rai");
-    t = t.replace(/\bsum\b/g, "soom");
-    t = t.replace(/\bger\b/g, "ger");
-    t = t.replace(/\bborhan\b/g, "bor han");
-    t = t.replace(/\byesus\b/g, "yeh soos");
-
+    /* 5단계: 최종 정리 */
     t = t.replace(/\s+/g, " ").trim();
+
     return t;
 }
 
@@ -1590,6 +1571,51 @@ function speakHistoryRoman(id) {
     }
 }
 
+/* =========================
+   히스토리 / UI 영역
+========================= */
+function toggleCopyPanel(id, event) {
+    event.stopPropagation();
+    if (openCopyPanelId === id) {
+        closeCopyPanels();
+        renderHistory();
+        return;
+    }
+    openCopyPanelId = id;
+    renderHistory();
+}
+
+function closeCopyPanels() {
+    openCopyPanelId = null;
+}
+
+function copySelectedFields(id) {
+    const item = historyList.find(entry => entry.id === id);
+    if (!item) return;
+
+    const panel = document.getElementById(`copyPanel-${id}`);
+    if (!panel) return;
+
+    const includeInput = panel.querySelector(".copy-check-input").checked;
+    const includeMn = panel.querySelector(".copy-check-mn").checked;
+    const includeRoman = panel.querySelector(".copy-check-roman").checked;
+    const includeKor = panel.querySelector(".copy-check-kor").checked;
+
+    const lines = [];
+    if (includeInput) lines.push(item.input);
+    if (includeMn) lines.push(item.mn);
+    if (includeRoman) lines.push(item.roman);
+    if (includeKor) lines.push(item.kor);
+
+    const glossaryText = item.glossaryMatches.map(match => `✝️: ${match.pronunciation}`).join("\n");
+    if (glossaryText) lines.push(glossaryText);
+
+    navigator.clipboard.writeText(lines.join("\n"));
+    showToast();
+    closeCopyPanels();
+    renderHistory();
+}
+
 function renderHistory() {
     const box = document.getElementById("history");
     box.innerHTML = "";
@@ -1662,54 +1688,45 @@ function renderHistory() {
     });
 }
 
-async function run() {
-    const input = document.getElementById("input").value.trim();
-    if (!input) return;
+function applyScreenTextSize() {
+    document.getElementById("screenText").style.fontSize = screenFontSize + "px";
+}
 
-    startLoadingMessage();
+function resetScreenStyle() {
+    screenFontSize = window.innerWidth <= 768 ? 34 : 48;
+    document.getElementById("screenContent").style.transform = "rotate(0deg)";
+    document.getElementById("screenMode").classList.remove("inverted");
+    screenLabelVisible = true;
+    document.getElementById("screenSub").style.opacity = "1";
+    document.getElementById("labelToggleBtn").innerText = "라벨 숨기기";
+    applyScreenTextSize();
+    closeGearMenu();
+}
 
-    try {
-        const resMn = await fetch(
-            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" + encodeURIComponent(input)
-        );
-        const dataMn = await resMn.json();
-        const mn = dataMn[0][0][0];
+function increaseScreenText() {
+    screenFontSize = Math.min(screenFontSize + 6, screenFontMax);
+    applyScreenTextSize();
+}
 
-        const resEn = await fetch(
-            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" + encodeURIComponent(input)
-        );
-        const dataEn = await resEn.json();
-        const en = dataEn[0][0][0];
+function decreaseScreenText() {
+    screenFontSize = Math.max(screenFontSize - 6, screenFontMin);
+    applyScreenTextSize();
+}
 
-        const roman = toRoman(mn);
-        const kor = romanToKorean(roman);
-        const glossaryMatches = findGlossaryMatches(input);
+function setVertical() {
+    document.getElementById("screenContent").style.transform = "rotate(0deg)";
+    screenFontSize = window.innerWidth <= 768 ? 34 : 48;
+    applyScreenTextSize();
+}
 
-        document.getElementById("result").innerHTML = `
-            <div class="result-card">
-                <div class="highlighted-input">${glossaryMatches.length ? highlightMatchedOrigins(input, glossaryMatches) : input}</div>
-                <div class="result-main">${mn} / ${roman} / ${kor}</div>
-                <div class="result-english">ENGLISH: ${en}</div>
-                ${buildGlossaryHtml(glossaryMatches)}
-            </div>
-        `;
+function setHorizontal() {
+    document.getElementById("screenContent").style.transform = "rotate(90deg)";
+    screenFontSize = window.innerWidth <= 768 ? 44 : 64;
+    applyScreenTextSize();
+}
 
-        historyList.unshift({
-            id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
-            input, mn, roman, kor, glossaryMatches
-        });
-
-        if (historyList.length > 12) historyList.pop();
-        closeCopyPanels();
-        renderHistory();
-    } catch (error) {
-        document.getElementById("result").innerHTML = `
-            <div class="result-card"><div class="result-main">번역 중 오류가 발생했습니다.</div></div>
-        `;
-        console.error(error);
-    } finally {
-        stopLoadingMessage();
-    }
+function toggleInvert() {
+    document.getElementById("screenMode").classList.toggle("inverted");
 }
 
 function openScreen(mongolianText) {
@@ -1761,6 +1778,37 @@ function closeGearMenu() {
     document.getElementById("gearMenu").classList.remove("open");
 }
 
+function handleModeSwitch() {
+    if (cameraOcrRunning) {
+        abortCameraRecognition(true);
+        return;
+    }
+
+    if (isCameraMode) {
+        closeCameraModeToMain();
+    } else {
+        toggleMode("camera");
+    }
+}
+
+function toggleMode(forceMode) {
+    if (forceMode === "camera") isCameraMode = true;
+    else if (forceMode === "main") isCameraMode = false;
+    else isCameraMode = !isCameraMode;
+
+    document.getElementById("mainPage").style.display = isCameraMode ? "none" : "block";
+    document.getElementById("cameraPage").style.display = isCameraMode ? "block" : "none";
+    document.getElementById("modeSwitchBtn").textContent = isCameraMode ? "✏️" : "📷";
+
+    if (!isCameraMode) {
+        stopCameraStream();
+        hideFullscreenCamera();
+    }
+}
+
+/* =========================
+   카메라 OCR 영역
+========================= */
 function setCameraText(recognized, translated, recognizedPlaceholder = false, translatedPlaceholder = false) {
     cameraRecognizedText.textContent = recognized;
     cameraTranslatedText.textContent = translated;
@@ -1941,10 +1989,6 @@ function getBoxRectRelativeToImage() {
     sh = Math.max(1, Math.min(sh, cameraSnapshot.naturalHeight - sy));
 
     return { sx, sy, sw, sh };
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function cleanupOcrText(text) {
@@ -2618,6 +2662,9 @@ window.addEventListener("touchmove", (e) => {
 
 window.addEventListener("touchend", endBoxAction);
 
+/* =========================
+   이벤트 / 초기화
+========================= */
 document.getElementById("input").addEventListener("keydown", e => {
     if (e.key === "Enter") run();
 });
