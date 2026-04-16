@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -845,7 +845,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver19.1</div>
+<div class="version">ver19.3</div>
 <button class="mode-switch" id="modeSwitchBtn" onclick="handleModeSwitch()">📷</button>
 
 <div id="mainPage" class="page">
@@ -1413,6 +1413,9 @@ function copySelectedFields(id) {
     renderHistory();
 }
 
+/* =========================
+   TTS 관련
+   ========================= */
 function refreshVoices() {
     if (!("speechSynthesis" in window)) return [];
     cachedVoices = window.speechSynthesis.getVoices() || [];
@@ -1423,13 +1426,16 @@ function getBestEnglishVoice() {
     const voices = cachedVoices.length ? cachedVoices : refreshVoices();
     if (!voices.length) return null;
 
-    const preferred = voices.find(v => /^en[-_]/i.test(v.lang) && /google|samantha|daniel|alex|serena|victoria|zira/i.test(v.name));
-    if (preferred) return preferred;
+    const highPriority = voices.find(v =>
+        /^en[-_]/i.test(v.lang) &&
+        /google|samantha|daniel|alex|victoria|serena|karen|moira/i.test(v.name)
+    );
+    if (highPriority) return highPriority;
 
-    const english = voices.find(v => /^en[-_]/i.test(v.lang));
-    if (english) return english;
+    const englishVoice = voices.find(v => /^en[-_]/i.test(v.lang));
+    if (englishVoice) return englishVoice;
 
-    return voices[0];
+    return voices[0] || null;
 }
 
 function romanToTtsEnglish(text) {
@@ -1437,60 +1443,43 @@ function romanToTtsEnglish(text) {
 
     t = t.replace(/[()]/g, " ");
     t = t.replace(/[\/]/g, " ");
-    t = t.replace(/~/g, " ");
     t = t.replace(/-/g, " ");
-    t = t.replace(/\s+/g, " ").trim();
+    t = t.replace(/~/g, " ");
+    t = t.replace(/\s+/g, " ");
 
     t = t.replace(/ö/g, "uh");
-    t = t.replace(/ü/g, "yuu");
+    t = t.replace(/ü/g, "oo");
 
-    t = t.replace(/kh/g, "kha");
-    t = t.replace(/ts/g, "tss");
-    t = t.replace(/ch/g, "chee");
-    t = t.replace(/sh/g, "shee");
-    t = t.replace(/\bj/g, "zh");
-    t = t.replace(/j/g, "zh");
-
-    t = t.replace(/yaa/g, "yaa");
     t = t.replace(/ya/g, "yaa");
     t = t.replace(/yo/g, "yoh");
     t = t.replace(/yu/g, "yoo");
     t = t.replace(/ye/g, "yeh");
 
-    t = t.replace(/aa/g, "aaa");
-    t = t.replace(/oo/g, "ooo");
-    t = t.replace(/uu/g, "uuu");
-    t = t.replace(/ee/g, "ehh");
-    t = t.replace(/ii/g, "eee");
+    t = t.replace(/kh/g, "h");
+    t = t.replace(/ts/g, "ts");
+    t = t.replace(/sh/g, "sh");
+    t = t.replace(/ch/g, "ch");
+    t = t.replace(/zh/g, "j");
 
-    t = t.replace(/\buu\b/g, "ooo");
+    t = t.replace(/\bta\b/g, "tah");
+    t = t.replace(/\bchi\b/g, "chee");
+    t = t.replace(/\bkhen\b/g, "hen");
+    t = t.replace(/\bbe\b/g, "beh");
+    t = t.replace(/\buu\b/g, "oo");
+    t = t.replace(/\bbaina\b/g, "bye nah");
+    t = t.replace(/\bsain\b/g, "sine");
+    t = t.replace(/\bge(de)?g\b/g, "gedeg");
+    t = t.replace(/\bvee\b/g, "veh");
+    t = t.replace(/\bwe\b/g, "veh");
     t = t.replace(/\bui\b/g, "oo ee");
     t = t.replace(/\bai\b/g, "eye");
     t = t.replace(/\boi\b/g, "oy");
     t = t.replace(/\bau\b/g, "ow");
 
-    t = t.replace(/\bö\b/g, "uh");
-    t = t.replace(/\bü\b/g, "yuu");
-
-    t = t.replace(/\bya\b/g, "yaa");
-    t = t.replace(/\byo\b/g, "yoh");
-    t = t.replace(/\byu\b/g, "yoo");
-
-    t = t.replace(/\bain\b/g, "ine");
-    t = t.replace(/\bbain\b/g, "bine");
-    t = t.replace(/\bsain\b/g, "sine");
-    t = t.replace(/\bbaina\b/g, "baina");
-    t = t.replace(/\bbainaa\b/g, "bainaa");
-    t = t.replace(/\bbayar\b/g, "bayaar");
-    t = t.replace(/\blalaa\b/g, "laalaa");
-    t = t.replace(/\bbayarlalaa\b/g, "bayaarlaalaa");
-    t = t.replace(/\bamar\b/g, "aamar");
-    t = t.replace(/\bsain\b/g, "sine");
-    t = t.replace(/\buu?\b/g, "ooo");
-
-    t = t.replace(/\by\b/g, "ee");
-    t = t.replace(/\br\b/g, "r");
-    t = t.replace(/\bq\b/g, "k");
+    t = t.replace(/aa/g, "ah");
+    t = t.replace(/ee/g, "eh");
+    t = t.replace(/ii/g, "ee");
+    t = t.replace(/oo/g, "oh");
 
     t = t.replace(/\s+/g, " ").trim();
     return t;
@@ -1498,7 +1487,11 @@ function romanToTtsEnglish(text) {
 
 function stopTts() {
     if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
+    try {
+        window.speechSynthesis.cancel();
+    } catch (e) {
+        console.error(e);
+    }
     currentSpeakingId = null;
     currentUtterance = null;
 }
@@ -1531,19 +1524,26 @@ function speakHistoryRoman(id) {
     const utterance = new SpeechSynthesisUtterance(ttsText);
     const voice = getBestEnglishVoice();
 
-    if (voice) utterance.voice = voice;
-    utterance.lang = voice?.lang || "en-US";
-    utterance.rate = 0.74;
-    utterance.pitch = 0.96;
-    utterance.volume = 1;
+    if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang || "en-US";
+    } else {
+        utterance.lang = "en-US";
+    }
+
+    utterance.rate = 0.72;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
 
     utterance.onstart = () => {
         currentSpeakingId = id;
     };
+
     utterance.onend = () => {
         if (currentSpeakingId === id) currentSpeakingId = null;
         currentUtterance = null;
     };
+
     utterance.onerror = (e) => {
         console.error("TTS 오류", e);
         currentSpeakingId = null;
@@ -1552,8 +1552,22 @@ function speakHistoryRoman(id) {
     };
 
     currentUtterance = utterance;
-    window.speechSynthesis.speak(utterance);
-    showToast("듣기 시작");
+
+    try {
+        window.speechSynthesis.cancel();
+        setTimeout(() => {
+            try {
+                window.speechSynthesis.speak(utterance);
+                showToast("듣기 시작");
+            } catch (e) {
+                console.error("TTS speak 실패", e);
+                showToast("듣기 실패");
+            }
+        }, 40);
+    } catch (e) {
+        console.error("TTS 시작 실패", e);
+        showToast("듣기 실패");
+    }
 }
 
 function renderHistory() {
