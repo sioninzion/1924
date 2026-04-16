@@ -93,6 +93,7 @@ input:focus { border-color: #2d8cff; }
 
 .main-btn,
 .copy-btn,
+.listen-btn,
 .screen-btn,
 .gear-button,
 .gear-menu button,
@@ -194,23 +195,46 @@ input:focus { border-color: #2d8cff; }
     line-height: 1.7;
 }
 .buttons {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto;
     gap: 6px;
     flex-shrink: 0;
     align-self: stretch;
     position: relative;
+    align-items: stretch;
+}
+.action-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 88px;
+}
+.copy-wrap {
+    position: relative;
+    width: 100%;
 }
 .copy-btn {
+    width: 100%;
     background: #ddd;
     color: black;
     padding: 10px 12px;
     border-radius: 10px;
 }
+.listen-btn {
+    width: 100%;
+    background: #8a8f99;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
 .screen-btn {
+    min-width: 88px;
     background: #444;
     color: white;
     padding: 10px 12px;
     border-radius: 10px;
+    grid-column: 2;
+    grid-row: 1 / span 2;
 }
 
 .copy-panel {
@@ -678,14 +702,31 @@ input:focus { border-color: #2d8cff; }
 
     .buttons {
         width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
         align-self: auto;
-        justify-content: stretch;
     }
 
-    .copy-btn, .screen-btn {
-        flex: 1;
+    .action-stack {
+        display: contents;
+        min-width: 0;
+    }
+
+    .copy-wrap {
+        width: 100%;
+    }
+
+    .copy-btn, .listen-btn, .screen-btn {
+        width: 100%;
+        min-width: 0;
         padding: 12px 10px;
         font-size: 15px;
+    }
+
+    .screen-btn {
+        grid-column: auto;
+        grid-row: auto;
     }
 
     .copy-panel {
@@ -804,7 +845,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver18.8</div>
+<div class="version">ver19</div>
 <button class="mode-switch" id="modeSwitchBtn" onclick="handleModeSwitch()">📷</button>
 
 <div id="mainPage" class="page">
@@ -1208,6 +1249,10 @@ const OCR_ATTEMPT_TIMEOUT_MS = 12000;
 const OCR_ATTEMPT_SLEEP_MS = 150;
 const OCR_SECONDARY_TIMEOUT_MS = 10000;
 
+let currentSpeakingId = null;
+let currentUtterance = null;
+let cachedVoices = [];
+
 const cameraVideo = document.getElementById("cameraVideo");
 const cameraSnapshot = document.getElementById("cameraSnapshot");
 const cameraPlaceholder = document.getElementById("cameraPlaceholder");
@@ -1368,6 +1413,126 @@ function copySelectedFields(id) {
     renderHistory();
 }
 
+function refreshVoices() {
+    if (!("speechSynthesis" in window)) return [];
+    cachedVoices = window.speechSynthesis.getVoices() || [];
+    return cachedVoices;
+}
+
+function getBestEnglishVoice() {
+    const voices = cachedVoices.length ? cachedVoices : refreshVoices();
+    if (!voices.length) return null;
+
+    const preferred = voices.find(v => /^en[-_]/i.test(v.lang) && /google|samantha|daniel|alex|serena|victoria/i.test(v.name));
+    if (preferred) return preferred;
+
+    const english = voices.find(v => /^en[-_]/i.test(v.lang));
+    if (english) return english;
+
+    return voices[0];
+}
+
+function romanToTtsEnglish(text) {
+    let t = String(text || "").trim().toLowerCase();
+
+    t = t.replace(/[()]/g, " ");
+    t = t.replace(/[\/]/g, " ");
+    t = t.replace(/-/g, " ");
+    t = t.replace(/~/g, " ");
+    t = t.replace(/\s+/g, " ");
+
+    t = t.replace(/ö/g, "uh");
+    t = t.replace(/ü/g, "oo");
+
+    t = t.replace(/ya/g, "yaa");
+    t = t.replace(/yo/g, "yoh");
+    t = t.replace(/yu/g, "yoo");
+    t = t.replace(/ye/g, "yeh");
+
+    t = t.replace(/kh/g, "h");
+    t = t.replace(/ts/g, "ts");
+    t = t.replace(/sh/g, "sh");
+    t = t.replace(/ch/g, "ch");
+    t = t.replace(/aa/g, "ah");
+    t = t.replace(/oo/g, "oh");
+    t = t.replace(/ee/g, "eh");
+    t = t.replace(/ii/g, "ee");
+
+    t = t.replace(/\buu\b/g, "oo");
+    t = t.replace(/\bui\b/g, "oo-ee");
+    t = t.replace(/\bai\b/g, "eye");
+    t = t.replace(/\boi\b/g, "oy");
+    t = t.replace(/\bau\b/g, "ow");
+
+    t = t.replace(/\bmn\b/g, "men");
+    t = t.replace(/\buu?\b/g, "oo");
+    t = t.replace(/\bj\b/g, "j");
+    t = t.replace(/\by\b/g, "ee");
+
+    t = t.replace(/\s+/g, " ").trim();
+    return t;
+}
+
+function stopTts() {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    currentSpeakingId = null;
+    currentUtterance = null;
+}
+
+function speakHistoryRoman(id) {
+    const item = historyList.find(entry => entry.id === id);
+    if (!item) return;
+
+    if (!("speechSynthesis" in window)) {
+        showToast("이 기기는 TTS 미지원");
+        return;
+    }
+
+    refreshVoices();
+
+    if (currentSpeakingId === id && window.speechSynthesis.speaking) {
+        stopTts();
+        showToast("듣기 중지");
+        return;
+    }
+
+    stopTts();
+
+    const ttsText = romanToTtsEnglish(item.roman);
+    if (!ttsText) {
+        showToast("읽을 내용 없음");
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(ttsText);
+    const voice = getBestEnglishVoice();
+
+    if (voice) utterance.voice = voice;
+    utterance.lang = voice?.lang || "en-US";
+    utterance.rate = 0.82;
+    utterance.pitch = 1.0;
+    utterance.volume = 1;
+
+    utterance.onstart = () => {
+        currentSpeakingId = id;
+    };
+    utterance.onend = () => {
+        if (currentSpeakingId === id) currentSpeakingId = null;
+        currentUtterance = null;
+    };
+    utterance.onerror = (e) => {
+        console.error("TTS 오류", e);
+        currentSpeakingId = null;
+        currentUtterance = null;
+        showToast("듣기 실패");
+    };
+
+    currentUtterance = utterance;
+    window.speechSynthesis.speak(utterance);
+    showToast("듣기 시작");
+}
+
 function renderHistory() {
     const box = document.getElementById("history");
     box.innerHTML = "";
@@ -1391,9 +1556,11 @@ function renderHistory() {
         const btnBox = document.createElement("div");
         btnBox.className = "buttons";
 
+        const actionStack = document.createElement("div");
+        actionStack.className = "action-stack";
+
         const copyWrap = document.createElement("div");
-        copyWrap.style.position = "relative";
-        copyWrap.style.flex = "1";
+        copyWrap.className = "copy-wrap";
 
         const copyBtn = document.createElement("button");
         copyBtn.className = "copy-btn";
@@ -1416,12 +1583,20 @@ function renderHistory() {
         copyWrap.appendChild(copyBtn);
         copyWrap.appendChild(copyPanel);
 
+        const listenBtn = document.createElement("button");
+        listenBtn.className = "listen-btn";
+        listenBtn.innerText = "듣기";
+        listenBtn.onclick = () => speakHistoryRoman(item.id);
+
         const screenBtn = document.createElement("button");
         screenBtn.className = "screen-btn";
         screenBtn.innerText = "스크린";
         screenBtn.onclick = () => openScreen(item.mn);
 
-        btnBox.appendChild(copyWrap);
+        actionStack.appendChild(copyWrap);
+        actionStack.appendChild(listenBtn);
+
+        btnBox.appendChild(actionStack);
         btnBox.appendChild(screenBtn);
 
         div.appendChild(content);
@@ -1507,6 +1682,7 @@ function clearAllData() {
     currentScreenTextValue = "";
     closeCopyPanels();
     closeScreen();
+    stopTts();
     resetCameraUi();
     showToast("초기화됨!");
 }
@@ -2418,6 +2594,15 @@ window.addEventListener("resize", () => {
         ocrBox.style.top = Math.max(36, top) + "px";
     }
 });
+
+if ("speechSynthesis" in window) {
+    refreshVoices();
+    if (typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
+        window.speechSynthesis.onvoiceschanged = () => {
+            refreshVoices();
+        };
+    }
+}
 
 resetCameraUi();
 toggleMode("main");
