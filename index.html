@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>🇲🇳 신나는 몽골어 번역기</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
 <style>
 * { box-sizing: border-box; }
 
@@ -45,7 +44,6 @@ body {
     justify-content: center;
     transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-
 .mode-switch:active { transform: scale(0.96); }
 
 .page { width: 100%; }
@@ -113,11 +111,7 @@ input:focus { border-color: #2d8cff; }
     color: white;
     font-weight: 600;
 }
-
-.main-btn:disabled {
-    opacity: 0.7;
-    cursor: default;
-}
+.main-btn:disabled { opacity: 0.7; cursor: default; }
 
 .hint,
 .loading-text {
@@ -127,7 +121,6 @@ input:focus { border-color: #2d8cff; }
     text-align: left;
     padding-left: 2px;
 }
-
 .loading-text {
     min-height: 18px;
     margin-top: 4px;
@@ -152,18 +145,15 @@ input:focus { border-color: #2d8cff; }
     margin-bottom: 8px;
     word-break: break-word;
 }
-
 .highlight-word {
     color: purple;
     font-weight: 700;
 }
-
 .result-main {
     font-size: 22px;
     font-weight: 700;
     word-break: break-word;
 }
-
 .result-english {
     margin-top: 10px;
     color: green;
@@ -171,9 +161,7 @@ input:focus { border-color: #2d8cff; }
     font-weight: 600;
     word-break: break-word;
 }
-
 .glossary-wrap { margin-top: 10px; }
-
 .glossary-line {
     color: purple;
     font-size: 16px;
@@ -185,7 +173,6 @@ input:focus { border-color: #2d8cff; }
     margin-top: 18px;
     text-align: left;
 }
-
 .item {
     background: white;
     padding: 12px;
@@ -198,21 +185,14 @@ input:focus { border-color: #2d8cff; }
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     position: relative;
 }
-
-.item-content {
-    flex: 1;
-    min-width: 0;
-}
-
+.item-content { flex: 1; min-width: 0; }
 .history-card { padding: 14px 16px; }
-
 .history-main {
     font-size: 18px;
     font-weight: 700;
     word-break: break-word;
     line-height: 1.7;
 }
-
 .buttons {
     display: flex;
     gap: 6px;
@@ -220,14 +200,12 @@ input:focus { border-color: #2d8cff; }
     align-self: stretch;
     position: relative;
 }
-
 .copy-btn {
     background: #ddd;
     color: black;
     padding: 10px 12px;
     border-radius: 10px;
 }
-
 .screen-btn {
     background: #444;
     color: white;
@@ -250,13 +228,11 @@ input:focus { border-color: #2d8cff; }
     transition: opacity 0.22s ease, transform 0.22s ease;
     z-index: 40;
 }
-
 .copy-panel.open {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
 }
-
 .copy-option {
     display: flex;
     align-items: center;
@@ -267,14 +243,12 @@ input:focus { border-color: #2d8cff; }
     color: #333;
     white-space: nowrap;
 }
-
 .copy-option input {
     width: 18px;
     height: 18px;
     margin: 0;
     flex: 0 0 18px;
 }
-
 .copy-action-btn {
     width: 100%;
     margin-top: 4px;
@@ -287,21 +261,19 @@ input:focus { border-color: #2d8cff; }
     cursor: pointer;
 }
 
-/* camera page */
+/* 카메라 페이지 */
 .camera-page-wrap {
     width: 100%;
     max-width: 760px;
     margin: 0 auto;
     padding: 12px 16px 24px;
 }
-
 .camera-title {
     margin: 12px 0 10px;
     font-size: 24px;
     padding-top: 10px;
     font-weight: 700;
 }
-
 .camera-subtitle {
     color: gray;
     font-size: 12px;
@@ -310,7 +282,6 @@ input:focus { border-color: #2d8cff; }
     max-width: 760px;
     padding: 0 12px;
 }
-
 .camera-start-btn {
     display: inline-flex;
     align-items: center;
@@ -325,42 +296,7 @@ input:focus { border-color: #2d8cff; }
     box-shadow: 0 6px 16px rgba(45,140,255,0.24);
     margin: 4px auto 14px;
 }
-
 .camera-start-btn:active { transform: scale(0.98); }
-
-.camera-result-wrap {
-    margin-top: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.camera-box-label {
-    font-size: 13px;
-    color: #777;
-    margin-bottom: 8px;
-    font-weight: 700;
-}
-
-.camera-box-content {
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.7;
-    word-break: break-word;
-    white-space: pre-wrap;
-}
-
-.camera-box-content.placeholder {
-    color: #a2a9b3;
-    font-weight: 600;
-    font-size: 17px;
-}
-
-.camera-arrow {
-    font-size: 28px;
-    color: #7d8896;
-    line-height: 1;
-}
 
 .camera-progress {
     margin-top: 8px;
@@ -369,9 +305,41 @@ input:focus { border-color: #2d8cff; }
     font-size: 13px;
     text-align: left;
     padding-left: 2px;
+    white-space: pre-wrap;
+    line-height: 1.5;
 }
 
-/* fullscreen camera */
+.camera-result-wrap {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.camera-box-label {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+.camera-box-content {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.7;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+.camera-box-content.placeholder {
+    color: #a2a9b3;
+    font-weight: 600;
+    font-size: 17px;
+}
+.camera-arrow {
+    font-size: 28px;
+    color: #7d8896;
+    line-height: 1;
+}
+
+/* 카메라 전체화면 */
 #cameraFullscreen {
     position: fixed;
     inset: 0;
@@ -379,10 +347,7 @@ input:focus { border-color: #2d8cff; }
     z-index: 1000;
     display: none;
 }
-
-#cameraFullscreen.active {
-    display: block;
-}
+#cameraFullscreen.active { display: block; }
 
 #cameraVideo,
 #cameraSnapshot {
@@ -432,7 +397,6 @@ input:focus { border-color: #2d8cff; }
     display: flex;
     gap: 10px;
 }
-
 .camera-control-btn {
     flex: 1;
     padding: 13px 14px;
@@ -442,12 +406,10 @@ input:focus { border-color: #2d8cff; }
     color: #111;
     box-shadow: 0 6px 16px rgba(0,0,0,0.22);
 }
-
 .camera-control-btn.primary {
     background: #2d8cff;
     color: white;
 }
-
 .camera-control-btn:disabled {
     opacity: 0.55;
     cursor: default;
@@ -467,7 +429,6 @@ input:focus { border-color: #2d8cff; }
     display: none;
     touch-action: none;
 }
-
 .ocr-box-label {
     position: absolute;
     top: -28px;
@@ -479,7 +440,6 @@ input:focus { border-color: #2d8cff; }
     border-radius: 999px;
     white-space: nowrap;
 }
-
 .handle {
     position: absolute;
     width: 16px;
@@ -489,13 +449,12 @@ input:focus { border-color: #2d8cff; }
     border: 2px solid #2d8cff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
-
 .handle.nw { left: -9px; top: -9px; cursor: nwse-resize; }
 .handle.ne { right: -9px; top: -9px; cursor: nesw-resize; }
 .handle.sw { left: -9px; bottom: -9px; cursor: nesw-resize; }
 .handle.se { right: -9px; bottom: -9px; cursor: nwse-resize; }
 
-/* screen mode */
+/* 스크린 모드 */
 #screenMode {
     display: none;
     position: fixed;
@@ -509,12 +468,10 @@ input:focus { border-color: #2d8cff; }
     padding: 20px;
     transition: background 0.2s, color 0.2s;
 }
-
 #screenMode.inverted {
     background: #f8f8f8;
     color: #111;
 }
-
 #screenContent {
     display: flex;
     flex-direction: column;
@@ -523,7 +480,6 @@ input:focus { border-color: #2d8cff; }
     transition: transform 0.3s;
     max-width: 90vw;
 }
-
 #screenText {
     font-size: 48px;
     text-align: center;
@@ -533,7 +489,6 @@ input:focus { border-color: #2d8cff; }
     font-weight: 700;
     transition: font-size 0.2s, color 0.2s;
 }
-
 #screenSub {
     margin-top: 18px;
     font-size: 18px;
@@ -542,17 +497,13 @@ input:focus { border-color: #2d8cff; }
     line-height: 1.5;
     transition: color 0.2s, opacity 0.2s;
 }
-
-#screenMode.inverted #screenSub {
-    color: #666;
-}
+#screenMode.inverted #screenSub { color: #666; }
 
 .screen-ui {
     position: absolute;
     inset: 0;
     pointer-events: none;
 }
-
 .gear-cluster {
     position: absolute;
     left: 18px;
@@ -563,7 +514,6 @@ input:focus { border-color: #2d8cff; }
     gap: 10px;
     pointer-events: auto;
 }
-
 .gear-button {
     width: 56px;
     height: 56px;
@@ -575,12 +525,10 @@ input:focus { border-color: #2d8cff; }
     -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.22);
 }
-
 #screenMode.inverted .gear-button {
     background: rgba(17,17,17,0.10);
     color: #111;
 }
-
 .gear-menu {
     display: flex;
     flex-direction: column;
@@ -590,13 +538,11 @@ input:focus { border-color: #2d8cff; }
     pointer-events: none;
     transition: opacity 0.22s ease, transform 0.22s ease;
 }
-
 .gear-menu.open {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
 }
-
 .gear-menu button {
     min-width: 170px;
     padding: 11px 16px;
@@ -608,19 +554,16 @@ input:focus { border-color: #2d8cff; }
     -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.18);
 }
-
 #screenMode.inverted .gear-menu button {
     background: rgba(17,17,17,0.08);
     color: #111;
 }
-
 .exit-cluster {
     position: absolute;
     right: 18px;
     bottom: 18px;
     pointer-events: auto;
 }
-
 .exit-button {
     min-width: 92px;
     padding: 12px 16px;
@@ -861,7 +804,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver18.2</div>
+<div class="version">ver18.3</div>
 <button class="mode-switch" id="modeSwitchBtn" onclick="handleModeSwitch()">📷</button>
 
 <div id="mainPage" class="page">
@@ -873,7 +816,7 @@ input:focus { border-color: #2d8cff; }
 
     <div class="container">
         <div class="input-row">
-            <input type="text" id="input" placeholder="한국어 입력">
+            <input type="text" id="input" placeholder="한국어 입력" />
             <button class="main-btn" id="translateBtn" onclick="run()">변환</button>
         </div>
 
@@ -914,7 +857,7 @@ input:focus { border-color: #2d8cff; }
 
 <div id="cameraFullscreen">
     <video id="cameraVideo" autoplay playsinline muted></video>
-    <img id="cameraSnapshot" alt="촬영 이미지">
+    <img id="cameraSnapshot" alt="촬영 이미지" />
 
     <div class="camera-fs-placeholder" id="cameraPlaceholder">
         카메라를 열면 이곳에 크게 표시됩니다
@@ -933,7 +876,7 @@ input:focus { border-color: #2d8cff; }
     <div class="camera-fs-controls" id="cameraControls">
         <button class="camera-control-btn" id="captureBtn" onclick="captureOrRetake()">촬영</button>
         <button class="camera-control-btn" id="rangeBtn" onclick="toggleRangeBox()" disabled>범위 선택</button>
-        <button class="camera-control-btn primary" id="recognizeBtn" onclick="startRecognitionFlow()" disabled>인식</button>
+        <button class="camera-control-btn primary" id="recognizeBtn" onclick="startRecognitionFlow()">인식</button>
     </div>
 </div>
 
@@ -1254,7 +1197,6 @@ let currentScreenTextValue = "";
 let openCopyPanelId = null;
 let isCameraMode = false;
 
-/* camera states */
 let currentStream = null;
 let cameraShotTaken = false;
 let rangeVisible = false;
@@ -1264,12 +1206,12 @@ let cameraAbortToken = 0;
 let progressInterval = null;
 let progressBaseText = "";
 let progressDots = 1;
+let currentAttemptName = "";
 
 const cameraVideo = document.getElementById("cameraVideo");
 const cameraSnapshot = document.getElementById("cameraSnapshot");
 const cameraPlaceholder = document.getElementById("cameraPlaceholder");
 const cameraFullscreen = document.getElementById("cameraFullscreen");
-const cameraExitBtn = document.getElementById("cameraExitBtn");
 const captureBtn = document.getElementById("captureBtn");
 const rangeBtn = document.getElementById("rangeBtn");
 const recognizeBtn = document.getElementById("recognizeBtn");
@@ -1292,13 +1234,9 @@ function handleModeSwitch() {
 }
 
 function toggleMode(forceMode) {
-    if (forceMode === "camera") {
-        isCameraMode = true;
-    } else if (forceMode === "main") {
-        isCameraMode = false;
-    } else {
-        isCameraMode = !isCameraMode;
-    }
+    if (forceMode === "camera") isCameraMode = true;
+    else if (forceMode === "main") isCameraMode = false;
+    else isCameraMode = !isCameraMode;
 
     document.getElementById("mainPage").style.display = isCameraMode ? "none" : "block";
     document.getElementById("cameraPage").style.display = isCameraMode ? "block" : "none";
@@ -1356,9 +1294,7 @@ function showToast(message = "복사됨!") {
     clearTimeout(toastTimeout);
     toast.textContent = message;
     toast.style.opacity = "1";
-    toastTimeout = setTimeout(() => {
-        toast.style.opacity = "0";
-    }, 1200);
+    toastTimeout = setTimeout(() => toast.style.opacity = "0", 1200);
 }
 
 function startLoadingMessage() {
@@ -1378,7 +1314,6 @@ function startLoadingMessage() {
 function stopLoadingMessage() {
     const loadingText = document.getElementById("loadingText");
     const button = document.getElementById("translateBtn");
-
     clearInterval(loadingInterval);
     loadingInterval = null;
     loadingText.textContent = "";
@@ -1387,11 +1322,7 @@ function stopLoadingMessage() {
 
 function buildGlossaryHtml(matches) {
     return matches.length
-        ? `
-            <div class="glossary-wrap">
-                ${matches.map(match => `<div class="glossary-line">✝️: ${match.pronunciation}</div>`).join("")}
-            </div>
-        `
+        ? `<div class="glossary-wrap">${matches.map(match => `<div class="glossary-line">✝️: ${match.pronunciation}</div>`).join("")}</div>`
         : "";
 }
 
@@ -1507,15 +1438,13 @@ async function run() {
 
     try {
         const resMn = await fetch(
-            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" +
-            encodeURIComponent(input)
+            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=mn&dt=t&q=" + encodeURIComponent(input)
         );
         const dataMn = await resMn.json();
         const mn = dataMn[0][0][0];
 
         const resEn = await fetch(
-            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" +
-            encodeURIComponent(input)
+            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=" + encodeURIComponent(input)
         );
         const dataEn = await resEn.json();
         const en = dataEn[0][0][0];
@@ -1524,39 +1453,26 @@ async function run() {
         const kor = romanToKorean(roman);
         const glossaryMatches = findGlossaryMatches(input);
 
-        const glossaryHtml = buildGlossaryHtml(glossaryMatches);
-
-        const highlightedInputHtml = glossaryMatches.length
-            ? `<div class="highlighted-input">${highlightMatchedOrigins(input, glossaryMatches)}</div>`
-            : `<div class="highlighted-input">${input}</div>`;
-
         document.getElementById("result").innerHTML = `
             <div class="result-card">
-                ${highlightedInputHtml}
+                <div class="highlighted-input">${glossaryMatches.length ? highlightMatchedOrigins(input, glossaryMatches) : input}</div>
                 <div class="result-main">${mn} / ${roman} / ${kor}</div>
                 <div class="result-english">ENGLISH: ${en}</div>
-                ${glossaryHtml}
+                ${buildGlossaryHtml(glossaryMatches)}
             </div>
         `;
 
         historyList.unshift({
             id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
-            input,
-            mn,
-            roman,
-            kor,
-            glossaryMatches
+            input, mn, roman, kor, glossaryMatches
         });
 
         if (historyList.length > 12) historyList.pop();
-
         closeCopyPanels();
         renderHistory();
     } catch (error) {
         document.getElementById("result").innerHTML = `
-            <div class="result-card">
-                <div class="result-main">번역 중 오류가 발생했습니다.</div>
-            </div>
+            <div class="result-card"><div class="result-main">번역 중 오류가 발생했습니다.</div></div>
         `;
         console.error(error);
     } finally {
@@ -1603,9 +1519,8 @@ function toggleScreenLabel() {
 
 function toggleGearMenu(event) {
     if (event) event.stopPropagation();
-    const menu = document.getElementById("gearMenu");
     gearMenuOpen = !gearMenuOpen;
-    menu.classList.toggle("open", gearMenuOpen);
+    document.getElementById("gearMenu").classList.toggle("open", gearMenuOpen);
 }
 
 function closeGearMenu() {
@@ -1613,37 +1528,11 @@ function closeGearMenu() {
     document.getElementById("gearMenu").classList.remove("open");
 }
 
-/* camera ui */
 function setCameraText(recognized, translated, recognizedPlaceholder = false, translatedPlaceholder = false) {
     cameraRecognizedText.textContent = recognized;
     cameraTranslatedText.textContent = translated;
-
     cameraRecognizedText.classList.toggle("placeholder", recognizedPlaceholder);
     cameraTranslatedText.classList.toggle("placeholder", translatedPlaceholder);
-}
-
-function updateCameraProgress(text) {
-    cameraProgress.textContent = text;
-}
-
-function updateOcrStage(baseText) {
-    cameraRecognizedText.textContent = baseText + ".".repeat(progressDots);
-    cameraRecognizedText.classList.add("placeholder");
-}
-
-function startProgressDots(baseText) {
-    stopProgressDots();
-    progressBaseText = baseText;
-    progressDots = 1;
-    cameraProgress.textContent = progressBaseText + ".".repeat(progressDots);
-    updateOcrStage(progressBaseText);
-
-    progressInterval = setInterval(() => {
-        progressDots = progressDots >= 3 ? 1 : progressDots + 1;
-        const text = progressBaseText + ".".repeat(progressDots);
-        cameraProgress.textContent = text;
-        cameraRecognizedText.textContent = text;
-    }, 300);
 }
 
 function stopProgressDots(finalText = "") {
@@ -1651,9 +1540,34 @@ function stopProgressDots(finalText = "") {
         clearInterval(progressInterval);
         progressInterval = null;
     }
-    if (finalText !== "") {
-        cameraProgress.textContent = finalText;
-    }
+    if (finalText !== "") cameraProgress.textContent = finalText;
+}
+
+function startProgressDots(baseText, target = "recognized") {
+    stopProgressDots();
+    progressBaseText = baseText;
+    progressDots = 1;
+
+    const paint = () => {
+        const text = progressBaseText + ".".repeat(progressDots);
+        const extra = currentAttemptName ? `\n${currentAttemptName}` : "";
+        cameraProgress.textContent = text + extra;
+
+        if (target === "recognized") {
+            cameraRecognizedText.textContent = text;
+            cameraRecognizedText.classList.add("placeholder");
+        } else if (target === "translated") {
+            cameraTranslatedText.textContent = text;
+            cameraTranslatedText.classList.add("placeholder");
+        }
+    };
+
+    paint();
+
+    progressInterval = setInterval(() => {
+        progressDots = progressDots >= 3 ? 1 : progressDots + 1;
+        paint();
+    }, 300);
 }
 
 function resetCameraUi() {
@@ -1663,6 +1577,7 @@ function resetCameraUi() {
     rangeVisible = false;
     cameraOcrRunning = false;
     cameraAbortToken++;
+    currentAttemptName = "";
     stopProgressDots();
 
     cameraVideo.style.display = "none";
@@ -1679,7 +1594,7 @@ function resetCameraUi() {
     rangeBtn.textContent = "범위 선택";
     recognizeBtn.disabled = true;
 
-    updateCameraProgress("");
+    cameraProgress.textContent = "";
     setCameraText("인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
 }
 
@@ -1724,7 +1639,7 @@ async function openFullscreenCamera() {
         recognizeBtn.disabled = true;
 
         showFullscreenCamera();
-        updateCameraProgress("장면이 보이면 촬영 버튼을 누르세요.");
+        cameraProgress.textContent = "장면이 보이면 촬영 버튼을 누르세요.";
     } catch (error) {
         console.error(error);
         cameraPlaceholder.style.display = "flex";
@@ -1747,11 +1662,8 @@ function closeFullscreenCamera() {
 }
 
 function captureOrRetake() {
-    if (!cameraShotTaken) {
-        captureShot();
-    } else {
-        openFullscreenCamera();
-    }
+    if (!cameraShotTaken) captureShot();
+    else openFullscreenCamera();
 }
 
 function captureShot() {
@@ -1763,7 +1675,7 @@ function captureShot() {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
 
-    cameraSnapshot.src = canvas.toDataURL("image/jpeg", 0.95);
+    cameraSnapshot.src = canvas.toDataURL("image/jpeg", 0.92);
     cameraSnapshot.style.display = "block";
     cameraVideo.style.display = "none";
     stopCameraStream();
@@ -1777,7 +1689,7 @@ function captureShot() {
     recognizeBtn.disabled = true;
     rangeBtn.textContent = "범위 선택";
 
-    updateCameraProgress("촬영되었습니다. '범위 선택'을 눌러 범위를 지정하세요.");
+    cameraProgress.textContent = "촬영되었습니다. '범위 선택'을 눌러 범위를 지정하세요.";
 }
 
 function toggleRangeBox() {
@@ -1789,10 +1701,10 @@ function toggleRangeBox() {
         rangeVisible = true;
         recognizeBtn.disabled = false;
         rangeBtn.textContent = "범위 다시 지정";
-        updateCameraProgress("상자의 위치와 크기를 조절한 뒤 '인식'을 누르세요.");
+        cameraProgress.textContent = "상자의 위치와 크기를 조절한 뒤 '인식'을 누르세요.";
     } else {
         resetRangeBox();
-        updateCameraProgress("범위를 초기 상태로 되돌렸습니다.");
+        cameraProgress.textContent = "범위를 초기 상태로 되돌렸습니다.";
     }
 }
 
@@ -1830,122 +1742,182 @@ function getBoxRectRelativeToImage() {
 
 async function ensureCameraWorker() {
     if (cameraWorker) return cameraWorker;
-    cameraWorker = await Tesseract.createWorker("mon");
+    cameraWorker = await Tesseract.createWorker("mon", 1, {
+        logger: () => {}
+    });
     return cameraWorker;
 }
 
-/* 18.2 multiple preprocess */
-function createBaseCropCanvas() {
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function cleanupOcrText(text) {
+    return text
+        .replace(/\r/g, "\n")
+        .replace(/[ \t]+/g, " ")
+        .replace(/\n{2,}/g, "\n")
+        .trim();
+}
+
+function scoreCandidate(text) {
+    const cleaned = cleanupOcrText(text || "");
+    if (!cleaned) return 0;
+
+    const normalized = cleaned.replace(/\s/g, "");
+    if (!normalized) return 0;
+
+    const cyrillicMatches = normalized.match(/[\u0400-\u04FF]/g) || [];
+    const latinMatches = normalized.match(/[A-Za-z]/g) || [];
+    const digitMatches = normalized.match(/[0-9]/g) || [];
+
+    let score = 0;
+    score += cleaned.length;
+    score += cyrillicMatches.length * 3;
+    score -= latinMatches.length * 1.5;
+    score += digitMatches.length * 0.5;
+
+    if (cleaned.length < 2) score -= 8;
+    if (cyrillicMatches.length === 0) score -= 12;
+
+    return score;
+}
+
+function makeBaseCropCanvas() {
     const { sx, sy, sw, sh } = getBoxRectRelativeToImage();
 
-    const rawCanvas = document.createElement("canvas");
-    rawCanvas.width = sw;
-    rawCanvas.height = sh;
-    const rawCtx = rawCanvas.getContext("2d");
-    rawCtx.drawImage(cameraSnapshot, sx, sy, sw, sh, 0, 0, sw, sh);
-
-    return rawCanvas;
+    const baseCanvas = document.createElement("canvas");
+    baseCanvas.width = sw;
+    baseCanvas.height = sh;
+    const ctx = baseCanvas.getContext("2d");
+    ctx.drawImage(cameraSnapshot, sx, sy, sw, sh, 0, 0, sw, sh);
+    return baseCanvas;
 }
 
-function resizeCanvas(canvas, targetWidth) {
-    const scale = Math.min(1, targetWidth / canvas.width);
-    const finalW = Math.max(1, Math.round(canvas.width * scale));
-    const finalH = Math.max(1, Math.round(canvas.height * scale));
-
-    const out = document.createElement("canvas");
-    out.width = finalW;
-    out.height = finalH;
-
-    const ctx = out.getContext("2d");
-    ctx.drawImage(canvas, 0, 0, finalW, finalH);
-    return out;
+function cloneCanvas(source) {
+    const c = document.createElement("canvas");
+    c.width = source.width;
+    c.height = source.height;
+    const ctx = c.getContext("2d");
+    ctx.drawImage(source, 0, 0);
+    return c;
 }
 
-function upscaleCanvas(canvas, factor) {
-    const out = document.createElement("canvas");
-    out.width = Math.max(1, Math.round(canvas.width * factor));
-    out.height = Math.max(1, Math.round(canvas.height * factor));
-
-    const ctx = out.getContext("2d");
-    ctx.imageSmoothingEnabled = true;
-    ctx.drawImage(canvas, 0, 0, out.width, out.height);
-    return out;
+function resizeCanvas(source, maxWidth) {
+    const scale = Math.min(1, maxWidth / source.width);
+    const w = Math.max(1, Math.round(source.width * scale));
+    const h = Math.max(1, Math.round(source.height * scale));
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    ctx.drawImage(source, 0, 0, w, h);
+    return c;
 }
 
-function cloneCanvas(canvas) {
-    const out = document.createElement("canvas");
-    out.width = canvas.width;
-    out.height = canvas.height;
-    const ctx = out.getContext("2d");
-    ctx.drawImage(canvas, 0, 0);
-    return out;
+function upscaleCanvas(source, scaleFactor) {
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(source.width * scaleFactor));
+    c.height = Math.max(1, Math.round(source.height * scaleFactor));
+    const ctx = c.getContext("2d");
+    ctx.drawImage(source, 0, 0, c.width, c.height);
+    return c;
 }
 
-function grayscaleCanvas(canvas) {
-    const out = cloneCanvas(canvas);
-    const ctx = out.getContext("2d", { willReadFrequently: true });
-    const imageData = ctx.getImageData(0, 0, out.width, out.height);
-    const data = imageData.data;
+function getImageDataCanvas(canvas) {
+    return canvas.getContext("2d", { willReadFrequently: true });
+}
 
-    for (let i = 0; i < data.length; i += 4) {
-        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
-        data[i] = gray;
-        data[i + 1] = gray;
-        data[i + 2] = gray;
+function applyGrayscale(canvas) {
+    const ctx = getImageDataCanvas(canvas);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = img.data;
+
+    for (let i = 0; i < d.length; i += 4) {
+        const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+        d[i] = d[i + 1] = d[i + 2] = gray;
+    }
+    ctx.putImageData(img, 0, 0);
+    return canvas;
+}
+
+function applyContrast(canvas, factor = 1.5) {
+    const ctx = getImageDataCanvas(canvas);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = img.data;
+    const intercept = 128 * (1 - factor);
+
+    for (let i = 0; i < d.length; i += 4) {
+        d[i] = Math.max(0, Math.min(255, d[i] * factor + intercept));
+        d[i + 1] = Math.max(0, Math.min(255, d[i + 1] * factor + intercept));
+        d[i + 2] = Math.max(0, Math.min(255, d[i + 2] * factor + intercept));
+    }
+    ctx.putImageData(img, 0, 0);
+    return canvas;
+}
+
+function applyThreshold(canvas, threshold = 145) {
+    const ctx = getImageDataCanvas(canvas);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = img.data;
+
+    for (let i = 0; i < d.length; i += 4) {
+        const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+        const v = gray >= threshold ? 255 : 0;
+        d[i] = d[i + 1] = d[i + 2] = v;
+    }
+    ctx.putImageData(img, 0, 0);
+    return canvas;
+}
+
+function applyAdaptiveLike(canvas) {
+    const ctx = getImageDataCanvas(canvas);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = img.data;
+
+    let sum = 0;
+    let count = 0;
+    for (let i = 0; i < d.length; i += 4) {
+        const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+        sum += gray;
+        count++;
     }
 
-    ctx.putImageData(imageData, 0, 0);
-    return out;
-}
+    const avg = sum / Math.max(1, count);
+    const threshold = avg > 140 ? avg - 10 : avg + 5;
 
-function thresholdCanvas(canvas, low, high) {
-    const out = grayscaleCanvas(canvas);
-    const ctx = out.getContext("2d", { willReadFrequently: true });
-    const imageData = ctx.getImageData(0, 0, out.width, out.height);
-    const data = imageData.data;
-
-    for (let i = 0; i < data.length; i += 4) {
-        let gray = data[i];
-        gray = gray > high ? 255 : gray < low ? 0 : gray;
-        data[i] = gray;
-        data[i + 1] = gray;
-        data[i + 2] = gray;
+    for (let i = 0; i < d.length; i += 4) {
+        const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+        const v = gray >= threshold ? 255 : 0;
+        d[i] = d[i + 1] = d[i + 2] = v;
     }
 
-    ctx.putImageData(imageData, 0, 0);
-    return out;
+    ctx.putImageData(img, 0, 0);
+    return canvas;
 }
 
-function contrastCanvas(canvas, contrastValue = 40, brightness = 0) {
-    const out = cloneCanvas(canvas);
-    const ctx = out.getContext("2d", { willReadFrequently: true });
-    const imageData = ctx.getImageData(0, 0, out.width, out.height);
-    const data = imageData.data;
+function applyInvert(canvas) {
+    const ctx = getImageDataCanvas(canvas);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = img.data;
 
-    const factor = (259 * (contrastValue + 255)) / (255 * (259 - contrastValue));
-
-    for (let i = 0; i < data.length; i += 4) {
-        data[i] = clampColor(factor * (data[i] - 128) + 128 + brightness);
-        data[i + 1] = clampColor(factor * (data[i + 1] - 128) + 128 + brightness);
-        data[i + 2] = clampColor(factor * (data[i + 2] - 128) + 128 + brightness);
+    for (let i = 0; i < d.length; i += 4) {
+        d[i] = 255 - d[i];
+        d[i + 1] = 255 - d[i + 1];
+        d[i + 2] = 255 - d[i + 2];
     }
-
-    ctx.putImageData(imageData, 0, 0);
-    return out;
+    ctx.putImageData(img, 0, 0);
+    return canvas;
 }
 
-function sharpenCanvas(canvas) {
-    const out = cloneCanvas(canvas);
-    const ctx = out.getContext("2d", { willReadFrequently: true });
-    const src = ctx.getImageData(0, 0, out.width, out.height);
-    const dst = ctx.createImageData(out.width, out.height);
+function applySharpen(canvas) {
+    const w = canvas.width;
+    const h = canvas.height;
+    const srcCtx = getImageDataCanvas(canvas);
+    const src = srcCtx.getImageData(0, 0, w, h);
+    const dst = srcCtx.createImageData(w, h);
 
-    const w = out.width;
-    const h = out.height;
-    const srcData = src.data;
-    const dstData = dst.data;
-
-    const kernel = [
+    const weights = [
          0, -1,  0,
         -1,  5, -1,
          0, -1,  0
@@ -1953,222 +1925,137 @@ function sharpenCanvas(canvas) {
 
     for (let y = 1; y < h - 1; y++) {
         for (let x = 1; x < w - 1; x++) {
-            let r = 0, g = 0, b = 0;
-
-            let k = 0;
-            for (let ky = -1; ky <= 1; ky++) {
-                for (let kx = -1; kx <= 1; kx++) {
-                    const idx = ((y + ky) * w + (x + kx)) * 4;
-                    const weight = kernel[k++];
-                    r += srcData[idx] * weight;
-                    g += srcData[idx + 1] * weight;
-                    b += srcData[idx + 2] * weight;
+            for (let c = 0; c < 3; c++) {
+                let sum = 0;
+                let idx = 0;
+                for (let ky = -1; ky <= 1; ky++) {
+                    for (let kx = -1; kx <= 1; kx++) {
+                        const px = ((y + ky) * w + (x + kx)) * 4 + c;
+                        sum += src.data[px] * weights[idx++];
+                    }
                 }
+                const outIndex = (y * w + x) * 4 + c;
+                dst.data[outIndex] = Math.max(0, Math.min(255, sum));
             }
-
-            const outIdx = (y * w + x) * 4;
-            dstData[outIdx] = clampColor(r);
-            dstData[outIdx + 1] = clampColor(g);
-            dstData[outIdx + 2] = clampColor(b);
-            dstData[outIdx + 3] = srcData[outIdx + 3];
+            const alphaIndex = (y * w + x) * 4 + 3;
+            dst.data[alphaIndex] = 255;
         }
     }
 
-    ctx.putImageData(dst, 0, 0);
-    return out;
+    srcCtx.putImageData(dst, 0, 0);
+    return canvas;
 }
 
-function clampColor(value) {
-    return Math.max(0, Math.min(255, Math.round(value)));
+function padCanvas(source, pad = 8) {
+    const c = document.createElement("canvas");
+    c.width = source.width + pad * 2;
+    c.height = source.height + pad * 2;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(source, pad, pad);
+    return c;
 }
 
-function buildOcrVariants() {
-    const baseCrop = createBaseCropCanvas();
-    const resized = resizeCanvas(baseCrop, 1100);
-    const upscaled = upscaleCanvas(resized, 1.5);
+function buildAttemptCanvases() {
+    const base = makeBaseCropCanvas();
+    const cropped = resizeCanvas(base, 780);
 
-    const variants = [];
+    const attempts = [];
 
-    const original = cloneCanvas(upscaled);
-    variants.push({ name: "원본 확대", canvas: original });
-
-    const gray = grayscaleCanvas(upscaled);
-    variants.push({ name: "회색조", canvas: gray });
-
-    const contrastStrong = contrastCanvas(gray, 65, 6);
-    variants.push({ name: "고대비", canvas: contrastStrong });
-
-    const thresholdSoft = thresholdCanvas(upscaled, 105, 165);
-    variants.push({ name: "약한 흑백", canvas: thresholdSoft });
-
-    const thresholdStrong = thresholdCanvas(upscaled, 120, 150);
-    variants.push({ name: "강한 흑백", canvas: thresholdStrong });
-
-    const sharp = sharpenCanvas(contrastCanvas(gray, 45, 0));
-    variants.push({ name: "선명화", canvas: sharp });
-
-    return variants;
-}
-
-function cleanupOcrText(text) {
-    return String(text || "")
-        .replace(/\r/g, "\n")
-        .replace(/[ \t]+/g, " ")
-        .replace(/\n{2,}/g, "\n")
-        .replace(/[|`´]/g, "")
-        .trim();
-}
-
-function normalizeCompareText(text) {
-    return cleanupOcrText(text)
-        .toLowerCase()
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-function getMongolianRatio(text) {
-    if (!text) return 0;
-    const chars = [...text];
-    const validChars = chars.filter(ch => /[A-Za-zА-Яа-яЁёҮүӨө0-9]/.test(ch));
-    if (!validChars.length) return 0;
-
-    const mongolianLike = validChars.filter(ch => /[А-Яа-яЁёҮүӨө]/.test(ch));
-    return mongolianLike.length / validChars.length;
-}
-
-function getWeirdCharRatio(text) {
-    if (!text) return 1;
-    const chars = [...text];
-    if (!chars.length) return 1;
-
-    const weird = chars.filter(ch => !/[A-Za-zА-Яа-яЁёҮүӨө0-9\s.,!?'"()\-]/.test(ch));
-    return weird.length / chars.length;
-}
-
-function similarityScore(a, b) {
-    if (!a || !b) return 0;
-    if (a === b) return 1;
-
-    const aSet = new Set(a.split(" "));
-    const bSet = new Set(b.split(" "));
-    const union = new Set([...aSet, ...bSet]);
-    let inter = 0;
-
-    for (const value of aSet) {
-        if (bSet.has(value)) inter++;
-    }
-
-    const wordScore = union.size ? inter / union.size : 0;
-
-    const charA = new Set([...a.replace(/\s/g, "")]);
-    const charB = new Set([...b.replace(/\s/g, "")]);
-    const charUnion = new Set([...charA, ...charB]);
-    let charInter = 0;
-
-    for (const value of charA) {
-        if (charB.has(value)) charInter++;
-    }
-
-    const charScore = charUnion.size ? charInter / charUnion.size : 0;
-    return (wordScore * 0.55) + (charScore * 0.45);
-}
-
-function scoreOcrResult(result, allResults) {
-    const raw = cleanupOcrText(result.text);
-    const normalized = normalizeCompareText(raw);
-
-    if (!normalized) return -9999;
-
-    const lengthScore = Math.min(raw.length, 60) * 1.1;
-    const lineBonus = raw.includes("\n") ? 4 : 0;
-    const mongolianBonus = getMongolianRatio(raw) * 34;
-    const weirdPenalty = getWeirdCharRatio(raw) * 38;
-    const confidenceScore = Math.max(0, (result.confidence || 0)) * 0.42;
-
-    let similarityBonus = 0;
-    for (const other of allResults) {
-        if (other === result) continue;
-        const otherNorm = normalizeCompareText(other.text);
-        if (!otherNorm) continue;
-        similarityBonus += similarityScore(normalized, otherNorm) * 9;
-    }
-
-    return lengthScore + lineBonus + mongolianBonus + confidenceScore + similarityBonus - weirdPenalty;
-}
-
-function dedupeAndRankResults(results) {
-    const grouped = new Map();
-
-    for (const result of results) {
-        const cleaned = cleanupOcrText(result.text);
-        const key = normalizeCompareText(cleaned);
-        if (!key) continue;
-
-        if (!grouped.has(key)) {
-            grouped.set(key, {
-                text: cleaned,
-                variants: [result.variantName],
-                confidenceList: [result.confidence || 0],
-                rawItems: [result]
-            });
-        } else {
-            const group = grouped.get(key);
-            group.variants.push(result.variantName);
-            group.confidenceList.push(result.confidence || 0);
-            group.rawItems.push(result);
-        }
-    }
-
-    const merged = [...grouped.values()].map(group => {
-        const avgConfidence = group.confidenceList.reduce((a, b) => a + b, 0) / group.confidenceList.length;
-        return {
-            text: group.text,
-            confidence: avgConfidence,
-            repeatCount: group.variants.length,
-            variants: group.variants,
-            rawItems: group.rawItems
-        };
+    attempts.push({
+        name: "1/10 기본 축소",
+        canvas: cloneCanvas(cropped)
     });
 
-    const scored = merged.map(item => {
-        const score = scoreOcrResult(
-            {
-                text: item.text,
-                confidence: item.confidence
-            },
-            merged.map(v => ({ text: v.text, confidence: v.confidence }))
-        ) + (item.repeatCount - 1) * 10;
-
-        return {
-            ...item,
-            score
-        };
+    attempts.push({
+        name: "2/10 흑백",
+        canvas: applyGrayscale(cloneCanvas(cropped))
     });
 
-    scored.sort((a, b) => b.score - a.score);
-    return scored;
+    attempts.push({
+        name: "3/10 흑백 + 대비강화",
+        canvas: applyContrast(applyGrayscale(cloneCanvas(cropped)), 1.8)
+    });
+
+    attempts.push({
+        name: "4/10 흑백 + 임계값 145",
+        canvas: applyThreshold(applyGrayscale(cloneCanvas(cropped)), 145)
+    });
+
+    attempts.push({
+        name: "5/10 흑백 + 강한 임계값 120",
+        canvas: applyThreshold(applyGrayscale(cloneCanvas(cropped)), 120)
+    });
+
+    attempts.push({
+        name: "6/10 흑백 + 적응형 임계값",
+        canvas: applyAdaptiveLike(applyGrayscale(cloneCanvas(cropped)))
+    });
+
+    attempts.push({
+        name: "7/10 1.6배 확대 + 흑백",
+        canvas: applyGrayscale(upscaleCanvas(cloneCanvas(cropped), 1.6))
+    });
+
+    attempts.push({
+        name: "8/10 1.6배 확대 + 흑백 + 대비",
+        canvas: applyContrast(applyGrayscale(upscaleCanvas(cloneCanvas(cropped), 1.6)), 1.8)
+    });
+
+    attempts.push({
+        name: "9/10 흑백 + 샤픈 + 임계값",
+        canvas: applyThreshold(applySharpen(applyGrayscale(cloneCanvas(cropped))), 138)
+    });
+
+    attempts.push({
+        name: "10/10 반전 대비용",
+        canvas: applyThreshold(applyInvert(applyGrayscale(cloneCanvas(cropped))), 138)
+    });
+
+    return attempts.map(item => ({
+        name: item.name,
+        canvas: padCanvas(item.canvas, 6)
+    }));
 }
 
-async function recognizeSingleVariant(worker, variantCanvas, variantName) {
-    const { data } = await worker.recognize(variantCanvas);
-    return {
-        variantName,
-        text: data?.text || "",
-        confidence: data?.confidence || 0
-    };
+async function ensureCameraWorker() {
+    if (cameraWorker) return cameraWorker;
+    cameraWorker = await Tesseract.createWorker("mon", 1, {
+        logger: () => {}
+    });
+    return cameraWorker;
+}
+
+async function recognizeWithTimeout(worker, canvas, timeoutMs = 8000) {
+    return Promise.race([
+        worker.recognize(canvas),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("OCR_TIMEOUT")), timeoutMs))
+    ]);
+}
+
+async function fetchWithTimeout(url, timeoutMs = 10000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await fetch(url, { signal: controller.signal });
+    } finally {
+        clearTimeout(timer);
+    }
 }
 
 async function translateMnToKo(text) {
-    const response = await fetch(
-        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=mn&tl=ko&dt=t&q=" +
-        encodeURIComponent(text)
-    );
-    const data = await response.json();
-    return data?.[0]?.map(row => row[0]).join("")?.trim() || "";
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    try {
+        const response = await fetchWithTimeout(
+            "https://translate.googleapis.com/translate_a/single?client=gtx&sl=mn&tl=ko&dt=t&q=" + encodeURIComponent(text),
+            10000
+        );
+        const data = await response.json();
+        return data?.[0]?.map(row => row[0]).join("")?.trim() || "";
+    } catch (error) {
+        console.error(error);
+        return "";
+    }
 }
 
 async function startRecognitionFlow() {
@@ -2183,102 +2070,104 @@ async function startRecognitionFlow() {
     ocrBox.style.pointerEvents = "none";
 
     hideFullscreenCamera();
-
-    setCameraText("이미지 준비 중.", "번역 대기 중...", true, true);
+    setCameraText("OCR 인식 중...", "번역 대기 중...", true, true);
 
     try {
-        /* 1단계 */
-        startProgressDots("1/6 이미지 준비 중");
-        await sleep(180);
-        if (token !== cameraAbortToken) return;
-
-        /* 2단계 */
-        stopProgressDots();
-        startProgressDots("2/6 OCR 영역 처리 중");
-        const baseCrop = createBaseCropCanvas();
-        await sleep(180);
-        if (token !== cameraAbortToken) return;
-
-        /* 3단계 */
-        stopProgressDots();
-        startProgressDots("3/6 이미지 최적화 중");
-        const variants = buildOcrVariants(baseCrop);
-        await sleep(220);
-        if (token !== cameraAbortToken) return;
-
-        if (!variants.length) {
-            stopProgressDots("전처리 실패");
-            setCameraText("전처리에 실패했습니다.", "다시 시도해 주세요.", true, true);
-            showToast("전처리 실패");
-            return;
-        }
-
-        /* 4단계 */
-        stopProgressDots();
         const worker = await ensureCameraWorker();
         if (token !== cameraAbortToken) return;
 
-        const ocrResults = [];
-        for (let i = 0; i < variants.length; i++) {
-            const current = variants[i];
-            progressDots = 1;
-            progressBaseText = `4/6 OCR 실행 중 (${i + 1}/${variants.length})`;
-            stopProgressDots();
-            startProgressDots(progressBaseText);
+        const attempts = buildAttemptCanvases();
 
-            cameraTranslatedText.textContent = `${current.name} 분석 중.`;
-            cameraTranslatedText.classList.add("placeholder");
+        let bestText = "";
+        let bestScore = -9999;
+        let bestAttempt = "";
+        let failReason = "";
 
-            const result = await recognizeSingleVariant(worker, current.canvas, current.name);
+        for (let i = 0; i < attempts.length; i++) {
             if (token !== cameraAbortToken) return;
 
-            ocrResults.push(result);
-            await sleep(80);
+            const attempt = attempts[i];
+            currentAttemptName = attempt.name;
+            startProgressDots("OCR 인식 중", "recognized");
+
+            let raw = "";
+            try {
+                const { data } = await recognizeWithTimeout(worker, attempt.canvas, 7000);
+                raw = (data.text || "").trim();
+            } catch (error) {
+                failReason = error?.message || String(error);
+                continue;
+            }
+
+            if (token !== cameraAbortToken) return;
+
+            startProgressDots("텍스트 후처리 중", "recognized");
+            await sleep(180);
+            if (token !== cameraAbortToken) return;
+
+            const cleaned = cleanupOcrText(raw);
+            const score = scoreCandidate(cleaned);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestText = cleaned;
+                bestAttempt = attempt.name;
+            }
+
+            if (score >= 14) {
+                break;
+            }
         }
 
-        /* 5단계 */
+        currentAttemptName = bestAttempt ? `채택: ${bestAttempt}` : "";
         stopProgressDots();
-        startProgressDots("5/6 결과 정리 중");
-        await sleep(180);
+
         if (token !== cameraAbortToken) return;
 
-        const ranked = dedupeAndRankResults(ocrResults);
-        const best = ranked[0];
+        if (!bestText) {
+            const msg = failReason === "OCR_TIMEOUT"
+                ? "인식 시간이 너무 오래 걸렸습니다."
+                : "인식 가능한 결과를 찾지 못했습니다.";
 
-        if (!best || !cleanupOcrText(best.text)) {
-            stopProgressDots("인식에 실패했습니다. 범위를 다시 조정해 주세요.");
-            setCameraText("인식에 실패했습니다.", "범위를 다시 조정해 주세요.", true, true);
+            cameraProgress.textContent = `${msg}\n10가지 전처리를 시도했지만 적절한 텍스트를 얻지 못했습니다.`;
+            setCameraText("인식에 실패했습니다.", "범위를 다시 줄이거나 글자가 더 선명한 사진을 시도해 주세요.", true, true);
             showToast("인식 실패");
             return;
         }
 
-        cameraRecognizedText.textContent = cleanupOcrText(best.text);
+        cameraRecognizedText.textContent = bestText;
         cameraRecognizedText.classList.remove("placeholder");
 
-        /* 6단계 */
-        stopProgressDots();
-        startProgressDots("6/6 번역 중");
-        cameraTranslatedText.textContent = "번역 중.";
-        cameraTranslatedText.classList.add("placeholder");
-
-        const translatedKo = await translateMnToKo(best.text);
+        currentAttemptName = bestAttempt ? `${bestAttempt} 사용` : "";
+        startProgressDots("번역 요청 중", "translated");
+        await sleep(180);
         if (token !== cameraAbortToken) return;
 
-        stopProgressDots("완료되었습니다.");
+        startProgressDots("번역 중", "translated");
+        const translatedKo = await translateMnToKo(bestText);
+        if (token !== cameraAbortToken) return;
+
+        stopProgressDots(bestAttempt ? `완료되었습니다.\n선택된 방식: ${bestAttempt}` : "완료되었습니다.");
 
         if (!translatedKo) {
-            setCameraText(cleanupOcrText(best.text), "번역에 실패했습니다.", false, true);
+            setCameraText(bestText, "번역에 실패했습니다.", false, true);
             showToast("번역 실패");
             return;
         }
 
-        setCameraText(cleanupOcrText(best.text), translatedKo, false, false);
+        setCameraText(bestText, translatedKo, false, false);
         showToast("인식 완료");
     } catch (error) {
         console.error(error);
         if (token !== cameraAbortToken) return;
-        stopProgressDots("인식에 실패했습니다. 다시 시도해 주세요.");
-        setCameraText("인식에 실패했습니다.", "다시 시도해 주세요.", true, true);
+
+        stopProgressDots("인식에 실패했습니다.");
+        setCameraText(
+            "인식에 실패했습니다.",
+            "초기화 오류 또는 언어 로드 오류일 수 있습니다. 다른 시도나 정식형 구조가 더 적합할 수 있습니다.",
+            true,
+            true
+        );
         showToast("인식 실패");
     } finally {
         if (token === cameraAbortToken) {
@@ -2287,6 +2176,7 @@ async function startRecognitionFlow() {
             rangeBtn.disabled = false;
             recognizeBtn.disabled = false;
             ocrBox.style.pointerEvents = "";
+            currentAttemptName = "";
         }
     }
 }
@@ -2300,11 +2190,14 @@ function abortCameraRecognition(reopenCamera = false) {
     setCameraText("작업을 중단했습니다.", "다시 시도해 주세요.", true, true);
 
     if (reopenCamera) {
+        if (cameraWorker) {
+            cameraWorker.terminate().catch(() => {});
+            cameraWorker = null;
+        }
         openFullscreenCamera();
     }
 }
 
-/* OCR box drag & resize */
 let dragMode = null;
 let startX = 0;
 let startY = 0;
