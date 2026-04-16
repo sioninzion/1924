@@ -939,7 +939,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver19.8</div>
+<div class="version">ver19.9</div>
 <button class="mode-switch" id="modeSwitchBtn" onclick="handleModeSwitch()">📷</button>
 
 <div id="mainPage" class="page">
@@ -1228,7 +1228,7 @@ let cameraAbortToken = 0;
 let currentRecognitionRunId = 0;
 
 const OCR_ATTEMPT_TIMEOUT_MS = 12000;
-const OCR_ATTEMPT_SLEEP_MS = 150;
+const OCR_ATTEMPT_SLEEP_MS = 80;
 const OCR_SECONDARY_TIMEOUT_MS = 10000;
 
 let currentSpeakingId = null;
@@ -2637,6 +2637,14 @@ function createAttemptsForResolution(baseCanvas, width, startIndex) {
             resolution: width,
             preprocess: "threshold_158",
             canvas: padCanvas(applyThreshold(applyGrayscale(cloneCanvas(resized)), 158), 6)
+        },
+        {
+            index: startIndex + 8,
+            name: `${startIndex + 8}번째 전처리중`,
+            detail: `${width}px + threshold_120`,
+            resolution: width,
+            preprocess: "threshold_120",
+            canvas: padCanvas(applyThreshold(applyGrayscale(cloneCanvas(resized)), 120), 6)
         }
     ];
 
@@ -2860,7 +2868,7 @@ ${attempt.detail}
                 releaseAttemptCanvases(attempts);
             }
 
-            startIndex += 7;
+            startIndex += 8;
             await sleep(OCR_ATTEMPT_SLEEP_MS);
         }
 
