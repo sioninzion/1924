@@ -3935,5 +3935,118 @@ resetCameraUi();
 setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
 switchAppMode("main");
 </script>
+
+<!-- ===== ver20.1 ADDITIONS START ===== -->
+
+<style>
+/* voice aura */
+.voice-aura{
+    position:absolute;
+    width:160px;
+    height:160px;
+    border-radius:50%;
+    background:rgba(100,180,255,0.25);
+    filter:blur(20px);
+    transform:scale(1);
+    pointer-events:none;
+}
+
+/* impact */
+.voice-impact-start{animation:impactGreen 0.4s ease-out;}
+.voice-impact-stop{animation:impactRed 0.4s ease-out;}
+
+@keyframes impactGreen{
+0%{transform:scale(0.2);background:rgba(0,255,120,0.7);}
+100%{transform:scale(2.2);opacity:0;}
+}
+@keyframes impactRed{
+0%{transform:scale(0.2);background:rgba(255,60,60,0.7);}
+100%{transform:scale(2.2);opacity:0;}
+}
+
+/* apple switch */
+.switch{position:relative;width:50px;height:28px;}
+.switch input{display:none;}
+.slider{
+position:absolute;inset:0;background:#ccc;border-radius:999px;transition:0.3s;
+}
+.slider:before{
+content:"";position:absolute;width:22px;height:22px;left:3px;bottom:3px;
+background:white;border-radius:50%;transition:0.3s;
+}
+input:checked + .slider{background:#2d8cff;}
+input:checked + .slider:before{transform:translateX(22px);}
+</style>
+
+<script>
+// ===== REAL AUDIO REACTIVE AURA =====
+let audioCtx, analyser, dataArray, micStream;
+let auraEl;
+
+async function startAudioAura(btn){
+    try{
+        micStream = await navigator.mediaDevices.getUserMedia({audio:true});
+        audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+        const source = audioCtx.createMediaStreamSource(micStream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        source.connect(analyser);
+
+        auraEl = document.createElement("div");
+        auraEl.className = "voice-aura";
+        btn.appendChild(auraEl);
+
+        function loop(){
+            if(!analyser) return;
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for(let i=0;i<dataArray.length;i++) sum += dataArray[i];
+            let avg = sum / dataArray.length;
+            let scale = 1 + (avg / 128);
+            auraEl.style.transform = "scale("+scale+")";
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+    }catch(e){
+        alert("마이크 권한 필요");
+    }
+}
+
+function stopAudioAura(){
+    if(auraEl) auraEl.remove();
+    if(micStream){
+        micStream.getTracks().forEach(t=>t.stop());
+    }
+    if(audioCtx) audioCtx.close();
+    analyser = null;
+}
+
+// ===== TOGGLE VOICE =====
+function toggleVoiceNew(){
+    const btn = document.getElementById("voiceMicBtn");
+    if(!window.voiceListening){
+        startAudioAura(btn);
+        createImpact(btn,"start");
+        window.voiceListening = true;
+    }else{
+        stopAudioAura();
+        createImpact(btn,"stop");
+        window.voiceListening = false;
+    }
+}
+
+function createImpact(btn,type){
+    const el = document.createElement("div");
+    el.className = type==="start" ? "voice-impact-start" : "voice-impact-stop";
+    btn.appendChild(el);
+    setTimeout(()=>el.remove(),400);
+}
+</script>
+
+<!-- ===== ver20.1 ADDITIONS END ===== -->
+
 </body>
 </html>
