@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🇲🇳 신나는 몽골어 번역기 ver19.11</title>
+<title>🇲🇳 신나는 몽골어 번역기 ver20.0</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 * { box-sizing: border-box; }
@@ -46,9 +46,11 @@ body {
 }
 .mode-switch:active { transform: scale(0.96); }
 
-.page { width: 100%; }
+.page { width: 100%; display: none; min-height: 100vh; padding-bottom: 108px; }
 #mainPage { display: block; }
 #cameraPage { display: none; }
+#voicePage { display: none; }
+#studyPage { display: none; }
 
 h1 {
     margin: 12px 0 8px;
@@ -778,6 +780,254 @@ input:focus { border-color: #2d8cff; }
     z-index: 2000;
 }
 
+
+.page-title-offset {
+    padding-top: 10px;
+}
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 180;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.08);
+    border-top: 1px solid rgba(0,0,0,0.06);
+}
+.bottom-nav-btn {
+    border: none;
+    background: transparent;
+    color: #7b8696;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 54px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.bottom-nav-btn:active { transform: scale(0.97); }
+.bottom-nav-btn.active {
+    color: #2d8cff;
+    background: rgba(45,140,255,0.10);
+}
+.bottom-nav-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+.bottom-nav-label {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+}
+.voice-page-wrap,
+.study-page-wrap {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 12px 16px 24px;
+}
+.voice-title,
+.study-title {
+    margin: 12px 0 10px;
+    font-size: 24px;
+    padding-top: 10px;
+    font-weight: 700;
+}
+.voice-subtitle,
+.study-subtitle {
+    color: gray;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 auto 16px;
+    max-width: 760px;
+    padding: 0 12px;
+}
+.voice-mic-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0 14px;
+}
+.voice-mic-btn {
+    width: 124px;
+    height: 124px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(180deg, #49a1ff 0%, #2d8cff 100%);
+    color: white;
+    font-size: 52px;
+    font-weight: 700;
+    box-shadow: 0 10px 26px rgba(45,140,255,0.28);
+    cursor: pointer;
+}
+.voice-mic-btn.listening {
+    animation: voicePulse 1s ease-in-out infinite;
+}
+@keyframes voicePulse {
+    0% { transform: scale(1); box-shadow: 0 10px 26px rgba(45,140,255,0.28); }
+    50% { transform: scale(1.05); box-shadow: 0 12px 30px rgba(45,140,255,0.40); }
+    100% { transform: scale(1); box-shadow: 0 10px 26px rgba(45,140,255,0.28); }
+}
+.voice-btn-caption {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #5f6875;
+    font-weight: 700;
+    text-align: center;
+}
+.voice-progress {
+    margin-top: 10px;
+    min-height: 20px;
+    color: #5f6875;
+    font-size: 13px;
+    text-align: left;
+    padding-left: 2px;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+.study-start-wrap {
+    min-height: calc(100vh - 300px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.study-start-btn {
+    width: 156px;
+    height: 156px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(180deg, #4ba5ff 0%, #2d8cff 100%);
+    color: white;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    box-shadow: 0 12px 28px rgba(45,140,255,0.28);
+    cursor: pointer;
+}
+.study-card-area {
+    display: none;
+    margin-top: 14px;
+}
+.study-card-shell {
+    display: flex;
+    justify-content: center;
+}
+.study-card {
+    width: min(100%, 520px);
+    min-height: 340px;
+    background: linear-gradient(180deg, #fffdf8 0%, #fff8ea 100%);
+    border: 1px solid #f0e3c9;
+    border-radius: 28px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+    padding: 28px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+.study-card::before {
+    content: "단어장";
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 12px;
+    color: #c69b5c;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+.study-card-top {
+    padding-top: 28px;
+}
+.study-card-label {
+    color: #8a8f99;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: left;
+}
+.study-word {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.45;
+    text-align: center;
+    color: #24292f;
+    word-break: keep-all;
+}
+.study-pron-wrap {
+    margin-top: 28px;
+}
+.study-pron-note {
+    width: 100%;
+    border: none;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px #ece3cf;
+    padding: 18px 16px;
+    min-height: 88px;
+    cursor: pointer;
+}
+.study-pron-title {
+    display: block;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #8a8f99;
+    margin-bottom: 8px;
+}
+.study-pron-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+    color: #3d2e12;
+    line-height: 1.5;
+}
+.study-pron-note.hidden .study-pron-value {
+    filter: blur(8px);
+    user-select: none;
+}
+.study-pron-note.hidden::after {
+    content: "눌러서 공개";
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #b18443;
+    font-weight: 700;
+}
+.study-card-bottom {
+    margin-top: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.study-nav-btn {
+    min-width: 96px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 999px;
+    background: #2d8cff;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(45,140,255,0.22);
+}
+.study-progress-text {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #667085;
+}
+
 @media (max-width: 768px) {
     .mode-switch {
         top: 10px;
@@ -1043,12 +1293,86 @@ input:focus { border-color: #2d8cff; }
         bottom: 70px;
         font-size: 13px;
     }
+
+    .bottom-nav {
+        padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav-btn {
+        min-height: 52px;
+        border-radius: 14px;
+    }
+
+    .bottom-nav-icon {
+        font-size: 18px;
+    }
+
+    .bottom-nav-label {
+        font-size: 11px;
+    }
+
+    .voice-page-wrap, .study-page-wrap {
+        max-width: none;
+        padding: 12px 12px 20px;
+    }
+
+    .voice-title, .study-title {
+        font-size: 22px;
+        margin-top: 10px;
+        padding-top: 14px;
+    }
+
+    .voice-subtitle, .study-subtitle {
+        font-size: 11px;
+        padding: 0 12px;
+        margin-bottom: 12px;
+    }
+
+    .voice-mic-btn {
+        width: 112px;
+        height: 112px;
+        font-size: 46px;
+    }
+
+    .study-start-wrap {
+        min-height: calc(100vh - 280px);
+    }
+
+    .study-start-btn {
+        width: 142px;
+        height: 142px;
+        font-size: 28px;
+    }
+
+    .study-card {
+        min-height: 320px;
+        border-radius: 24px;
+        padding: 24px 18px 18px;
+    }
+
+    .study-word {
+        font-size: 25px;
+    }
+
+    .study-pron-value {
+        font-size: 22px;
+    }
+
+    .study-nav-btn {
+        min-width: 86px;
+        padding: 11px 14px;
+        font-size: 14px;
+    }
+
+    .study-progress-text {
+        font-size: 13px;
+    }
+
 }
 </style>
 </head>
 <body>
-<div class="version">ver19.11</div>
-<button class="mode-switch" id="modeSwitchBtn" onclick="handleModeSwitch()">📷</button>
+<div class="version">ver20.0</div>
 
 <div id="mainPage" class="page">
     <h1>🇲🇳 신나는 몽골어 번역기</h1>
@@ -1097,6 +1421,93 @@ input:focus { border-color: #2d8cff; }
         </div>
     </div>
 </div>
+
+<div id="voicePage" class="page">
+    <div class="voice-page-wrap">
+        <div class="voice-title">신나는 음성 번역기</div>
+        <div class="voice-subtitle">
+            녹음기 버튼을 누르면 들은 몽골어를 한국어로 번역합니다
+        </div>
+
+        <div class="voice-mic-wrap">
+            <button class="voice-mic-btn" id="voiceMicBtn" onclick="toggleVoiceRecognition()">🎙️</button>
+        </div>
+        <div class="voice-btn-caption" id="voiceBtnCaption">녹음기 버튼을 눌러 시작하세요</div>
+
+        <div class="voice-progress" id="voiceProgress"></div>
+
+        <div class="camera-result-wrap">
+            <div class="camera-result-box">
+                <div class="camera-box-label">들린 몽골어</div>
+                <div class="camera-box-content placeholder" id="voiceRecognizedText">음성 인식 결과가 여기에 표시됩니다</div>
+            </div>
+
+            <div class="camera-arrow">↓</div>
+
+            <div class="camera-result-box">
+                <div class="camera-box-label">한국어 번역 결과</div>
+                <div class="camera-box-content placeholder" id="voiceTranslatedText">번역 결과가 여기에 표시됩니다</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="studyPage" class="page">
+    <div class="study-page-wrap">
+        <div class="study-title">신나는 학습 모드</div>
+        <div class="study-subtitle">
+            시작 버튼을 눌러 단어장을 넘기며 발음을 확인해 보세요
+        </div>
+
+        <div class="study-start-wrap" id="studyStartWrap">
+            <button class="study-start-btn" id="studyStartBtn" onclick="startStudyMode()">시작</button>
+        </div>
+
+        <div class="study-card-area" id="studyCardArea">
+            <div class="study-card-shell">
+                <div class="study-card">
+                    <div class="study-card-top">
+                        <div class="study-card-label">원어</div>
+                        <div class="study-word" id="studyWordText">안녕하세요</div>
+
+                        <div class="study-pron-wrap">
+                            <button class="study-pron-note hidden" id="studyPronNote" onclick="toggleStudyPronunciation()">
+                                <span class="study-pron-title">몽골발음</span>
+                                <span class="study-pron-value" id="studyPronText">센배노</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="study-card-bottom">
+                        <button class="study-nav-btn" onclick="moveStudyCard(-1)">이전</button>
+                        <div class="study-progress-text" id="studyProgressText">1 / 1</div>
+                        <button class="study-nav-btn" onclick="moveStudyCard(1)">다음</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav" id="bottomNav">
+    <button class="bottom-nav-btn active" data-mode="main" onclick="switchAppMode('main')">
+        <span class="bottom-nav-icon">📷</span>
+        <span class="bottom-nav-label">카메라</span>
+    </button>
+    <button class="bottom-nav-btn" data-mode="text" onclick="switchAppMode('text')">
+        <span class="bottom-nav-icon">✏️</span>
+        <span class="bottom-nav-label">일반</span>
+    </button>
+    <button class="bottom-nav-btn" data-mode="voice" onclick="switchAppMode('voice')">
+        <span class="bottom-nav-icon">🎤</span>
+        <span class="bottom-nav-label">음성</span>
+    </button>
+    <button class="bottom-nav-btn" data-mode="study" onclick="switchAppMode('study')">
+        <span class="bottom-nav-icon">📚</span>
+        <span class="bottom-nav-label">학습</span>
+    </button>
+</nav>
+
 
 <div id="cameraFullscreen">
     <video id="cameraVideo" autoplay playsinline muted></video>
@@ -1327,6 +1738,13 @@ const glossaryBook = [
 ];
 
 let historyList = [];
+let appMode = "main";
+let studyIndex = 0;
+let studyStarted = false;
+let studyPronVisible = false;
+let voiceRecognition = null;
+let voiceListening = false;
+let voiceFinalTranscript = "";
 let screenFontSize = 48;
 const screenFontMin = 28;
 const screenFontMax = 120;
@@ -1382,6 +1800,17 @@ const cameraScanOverlay = document.getElementById("cameraScanOverlay");
 const cameraProgress = document.getElementById("cameraProgress");
 const cameraRecognizedText = document.getElementById("cameraRecognizedText");
 const cameraTranslatedText = document.getElementById("cameraTranslatedText");
+const voiceMicBtn = document.getElementById("voiceMicBtn");
+const voiceBtnCaption = document.getElementById("voiceBtnCaption");
+const voiceProgress = document.getElementById("voiceProgress");
+const voiceRecognizedText = document.getElementById("voiceRecognizedText");
+const voiceTranslatedText = document.getElementById("voiceTranslatedText");
+const studyStartWrap = document.getElementById("studyStartWrap");
+const studyCardArea = document.getElementById("studyCardArea");
+const studyPronNote = document.getElementById("studyPronNote");
+const studyWordText = document.getElementById("studyWordText");
+const studyPronText = document.getElementById("studyPronText");
+const studyProgressText = document.getElementById("studyProgressText");
 
 if (cameraZoomSlider) {
     cameraZoomSlider.addEventListener("input", (event) => {
@@ -2138,31 +2567,223 @@ function closeGearMenu() {
     document.getElementById("gearMenu").classList.remove("open");
 }
 
+
+function stopVoiceRecognition(resetText = false) {
+    if (voiceRecognition) {
+        try { voiceRecognition.onend = null; } catch (e) {}
+        try { voiceRecognition.stop(); } catch (e) {}
+    }
+    voiceListening = false;
+    if (voiceMicBtn) voiceMicBtn.classList.remove("listening");
+    if (voiceBtnCaption) voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+    if (resetText) {
+        setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
+        setVoiceProgress("");
+    }
+}
+
+function setVoiceText(recognized, translated, recognizedPlaceholder = false, translatedPlaceholder = false) {
+    voiceRecognizedText.textContent = recognized;
+    voiceTranslatedText.textContent = translated;
+    voiceRecognizedText.classList.toggle("placeholder", recognizedPlaceholder);
+    voiceTranslatedText.classList.toggle("placeholder", translatedPlaceholder);
+}
+
+function setVoiceProgress(text) {
+    voiceProgress.textContent = text;
+}
+
+async function translateMongolianToKorean(text) {
+    const res = await fetch(
+        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=mn&tl=ko&dt=t&q=" + encodeURIComponent(text)
+    );
+    const data = await res.json();
+    return data?.[0]?.map(row => row[0]).join("") || "";
+}
+
+function createVoiceRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return null;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "mn-MN";
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+    return recognition;
+}
+
+async function toggleVoiceRecognition() {
+    if (voiceListening) {
+        stopVoiceRecognition();
+        setVoiceProgress("음성 듣기를 중지했습니다");
+        return;
+    }
+
+    const recognition = createVoiceRecognition();
+    if (!recognition) {
+        setVoiceProgress("이 브라우저에서는 음성 인식이 지원되지 않습니다");
+        showToast("음성 인식 미지원");
+        return;
+    }
+
+    voiceRecognition = recognition;
+    voiceFinalTranscript = "";
+    voiceListening = true;
+    setVoiceText("듣는 중입니다...", "번역 결과가 여기에 표시됩니다", true, true);
+    setVoiceProgress("몽골어를 듣는 중입니다");
+    voiceMicBtn.classList.add("listening");
+    voiceBtnCaption.textContent = "듣는 중... 다시 누르면 중지";
+
+    recognition.onresult = (event) => {
+        let interim = "";
+        let finalText = voiceFinalTranscript;
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0]?.transcript?.trim() || "";
+            if (event.results[i].isFinal) finalText += (finalText ? " " : "") + transcript;
+            else interim += (interim ? " " : "") + transcript;
+        }
+
+        voiceFinalTranscript = finalText.trim();
+        const displayText = (voiceFinalTranscript || interim || "").trim();
+
+        if (displayText) {
+            setVoiceText(displayText, voiceTranslatedText.textContent || "번역 결과가 여기에 표시됩니다", false, voiceTranslatedText.classList.contains("placeholder"));
+        }
+        setVoiceProgress(interim ? "듣는 중..." : "음성을 정리하는 중입니다");
+    };
+
+    recognition.onerror = (event) => {
+        voiceListening = false;
+        voiceMicBtn.classList.remove("listening");
+        voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+
+        const errorCode = event?.error || "";
+        if (errorCode === "not-allowed" || errorCode === "service-not-allowed") {
+            setVoiceProgress("마이크 권한이 필요합니다");
+        } else if (errorCode === "no-speech") {
+            setVoiceProgress("음성이 들리지 않았습니다");
+        } else {
+            setVoiceProgress("음성 인식 중 오류가 발생했습니다");
+        }
+    };
+
+    recognition.onend = async () => {
+        const finalText = (voiceFinalTranscript || voiceRecognizedText.textContent || "").trim();
+        voiceListening = false;
+        voiceMicBtn.classList.remove("listening");
+        voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+
+        if (!finalText || finalText === "듣는 중입니다..." || finalText === "음성 인식 결과가 여기에 표시됩니다") {
+            setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
+            if (!voiceProgress.textContent) setVoiceProgress("다시 시도해 주세요");
+            return;
+        }
+
+        try {
+            setVoiceProgress("번역 중입니다");
+            const translated = await translateMongolianToKorean(finalText);
+            setVoiceText(finalText, translated || "번역 결과가 비어 있습니다", false, !translated);
+            setVoiceProgress(translated ? "완료되었습니다" : "번역 결과를 받지 못했습니다");
+        } catch (error) {
+            console.error(error);
+            setVoiceText(finalText, "번역 중 오류가 발생했습니다", false, true);
+            setVoiceProgress("번역 중 오류가 발생했습니다");
+        }
+    };
+
+    try {
+        recognition.start();
+    } catch (error) {
+        console.error(error);
+        setVoiceProgress("음성 인식을 시작하지 못했습니다");
+        voiceListening = false;
+        voiceMicBtn.classList.remove("listening");
+        voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+    }
+}
+
+function renderStudyCard() {
+    const total = glossaryBook.length;
+    if (!total) return;
+    if (studyIndex < 0) studyIndex = total - 1;
+    if (studyIndex >= total) studyIndex = 0;
+
+    const current = glossaryBook[studyIndex];
+    studyWordText.textContent = current[0];
+    studyPronText.textContent = current[1];
+    studyProgressText.textContent = `${studyIndex + 1} / ${total}`;
+    studyPronVisible = false;
+    studyPronNote.classList.add("hidden");
+}
+
+function startStudyMode() {
+    studyStarted = true;
+    studyStartWrap.style.display = "none";
+    studyCardArea.style.display = "block";
+    renderStudyCard();
+}
+
+function toggleStudyPronunciation() {
+    if (!studyStarted) return;
+    studyPronVisible = !studyPronVisible;
+    studyPronNote.classList.toggle("hidden", !studyPronVisible);
+}
+
+function moveStudyCard(direction) {
+    if (!studyStarted) return;
+    studyIndex += direction;
+    renderStudyCard();
+}
+
+function switchAppMode(mode) {
+    appMode = mode;
+
+    document.getElementById("mainPage").style.display = mode === "text" ? "block" : "none";
+    document.getElementById("cameraPage").style.display = mode === "main" ? "block" : "none";
+    document.getElementById("voicePage").style.display = mode === "voice" ? "block" : "none";
+    document.getElementById("studyPage").style.display = mode === "study" ? "block" : "none";
+
+    document.querySelectorAll(".bottom-nav-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
+
+    if (mode !== "main") {
+        stopCameraStream();
+        hideFullscreenCamera();
+        if (cameraOcrRunning) abortCameraRecognition(true);
+    }
+
+    if (mode !== "voice") {
+        stopVoiceRecognition();
+        setVoiceProgress("");
+    }
+
+    if (mode === "voice" && voiceRecognizedText.textContent.trim() === "") {
+        setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
+    }
+}
+
+
 function handleModeSwitch() {
     if (cameraOcrRunning) {
         abortCameraRecognition(true);
         return;
     }
-
-    if (isCameraMode) {
-        closeCameraModeToMain();
-    } else {
-        toggleMode("camera");
-    }
+    switchAppMode(appMode === "main" ? "text" : "main");
 }
 
 function toggleMode(forceMode) {
-    if (forceMode === "camera") isCameraMode = true;
-    else if (forceMode === "main") isCameraMode = false;
-    else isCameraMode = !isCameraMode;
-
-    document.getElementById("mainPage").style.display = isCameraMode ? "none" : "block";
-    document.getElementById("cameraPage").style.display = isCameraMode ? "block" : "none";
-    document.getElementById("modeSwitchBtn").textContent = isCameraMode ? "✏️" : "📷";
-
-    if (!isCameraMode) {
-        stopCameraStream();
-        hideFullscreenCamera();
+    if (forceMode === "camera") {
+        switchAppMode("main");
+        isCameraMode = true;
+    } else if (forceMode === "main") {
+        switchAppMode("text");
+        isCameraMode = false;
+    } else {
+        switchAppMode(appMode === "main" ? "text" : "main");
+        isCameraMode = appMode === "main";
     }
 }
 
@@ -2422,7 +3043,7 @@ function showFullscreenCamera() {
 
 function closeCameraModeToMain() {
     resetCameraUi();
-    toggleMode("main");
+    switchAppMode("text");
 }
 
 
@@ -3311,7 +3932,8 @@ if ("speechSynthesis" in window) {
 }
 
 resetCameraUi();
-toggleMode("main");
+setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
+switchAppMode("main");
 </script>
 </body>
 </html>
