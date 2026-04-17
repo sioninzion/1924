@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🇲🇳 신나는 몽골어 번역기 ver20.3.7.2</title>
+<title>🇲🇳 신나는 몽골어 번역기 ver20.3.7.3</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 * { box-sizing: border-box; }
@@ -866,19 +866,20 @@ input:focus { border-color: #2d8cff; }
 }
 .voice-aura {
     position: absolute;
-    width: 184px;
-    height: 184px;
+    width: 228px;
+    height: 228px;
     border-radius: 999px;
     background: radial-gradient(circle,
-        rgba(120, 218, 255, 0.16) 0%,
-        rgba(120, 218, 255, 0.10) 32%,
-        rgba(120, 218, 255, 0.055) 56%,
-        rgba(120, 218, 255, 0.02) 76%,
+        rgba(120, 218, 255, 0.34) 0%,
+        rgba(120, 218, 255, 0.24) 26%,
+        rgba(120, 218, 255, 0.14) 48%,
+        rgba(120, 218, 255, 0.075) 66%,
+        rgba(120, 218, 255, 0.025) 84%,
         rgba(120, 218, 255, 0.00) 100%);
-    filter: blur(12px);
+    filter: blur(18px);
     opacity: 0;
-    transform: scale(0.82);
-    transition: transform 0.1s linear, opacity 0.12s ease;
+    transform: scale(0.9);
+    transition: transform 0.08s linear, opacity 0.1s ease;
     pointer-events: none;
 }
 .voice-aura.active {
@@ -1749,8 +1750,8 @@ input:focus { border-color: #2d8cff; }
     }
 
     .voice-aura {
-        width: 170px;
-        height: 170px;
+        width: 206px;
+        height: 206px;
     }
 
     .voice-mic-btn {
@@ -1876,7 +1877,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver20.3.7.2</div>
+<div class="version">ver20.3.7.3</div>
 
 <div id="mainPage" class="page">
     <h1>🇲🇳 신나는 몽골어 번역기</h1>
@@ -2177,7 +2178,7 @@ input:focus { border-color: #2d8cff; }
 
 <script>
 /*
-ver20.3.7.2
+ver20.3.7.3
 - 기준 버전: 20.3.2
 - 목표: 기능 변경 최소화, 내부 코드 파트별 분류/정리
 - 원칙: 동작 로직은 최대한 유지하고 섹션 주석과 구획만 추가
@@ -3268,7 +3269,7 @@ function clearVoiceMobileAutoStopTimer() {
 function resetVoiceAura() {
     if (voiceAura) {
         voiceAura.classList.remove("active");
-        voiceAura.style.transform = "scale(0.82)";
+        voiceAura.style.transform = "scale(0.9)";
         voiceAura.style.opacity = "0";
     }
 }
@@ -3338,8 +3339,8 @@ async function startVoiceMeter() {
 
             if (voiceAura) {
                 voiceAura.classList.add("active");
-                voiceAura.style.opacity = String(0.18 + strength * 0.42);
-                voiceAura.style.transform = `scale(${0.92 + strength * 1.68})`;
+                voiceAura.style.opacity = String(0.24 + strength * 0.56);
+                voiceAura.style.transform = `scale(${1.08 + strength * 2.12})`;
             }
 
             if (strength < VOICE_SILENCE_THRESHOLD) {
