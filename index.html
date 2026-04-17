@@ -1174,6 +1174,218 @@ input:focus { border-color: #2d8cff; }
     transform: scale(0.98);
 }
 
+.study-mode-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.study-mode-btn {
+    border: none;
+    border-radius: 18px;
+    padding: 14px 14px;
+    background: #fff;
+    color: #2d8cff;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.study-mode-btn.active {
+    background: #2d8cff;
+    color: #fff;
+}
+.study-mode-btn:active {
+    transform: scale(0.98);
+}
+.study-options-wrap {
+    width: 100%;
+    min-height: 126px;
+    position: relative;
+}
+.study-option-panel {
+    width: 100%;
+    background: linear-gradient(180deg, #3f9dff 0%, #2d8cff 100%);
+    border-radius: 22px;
+    padding: 16px 16px 18px;
+    color: white;
+    box-shadow: 0 12px 28px rgba(45,140,255,0.18);
+    transition: opacity 0.28s ease, transform 0.28s ease, max-height 0.28s ease, margin-top 0.28s ease, padding 0.28s ease;
+    max-height: 220px;
+    opacity: 1;
+    transform: translateY(0);
+    overflow: hidden;
+}
+.study-option-panel.hidden {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-18px);
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    pointer-events: none;
+}
+.study-switch-row.in-panel {
+    width: 100%;
+    background: rgba(255,255,255,0.16);
+    box-shadow: none;
+    padding: 12px 14px;
+}
+.study-switch-row.in-panel .study-switch-title,
+.study-switch-row.in-panel .study-switch-subtitle {
+    color: white;
+}
+.study-option-title {
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    text-align: left;
+}
+.study-quiz-count-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.study-quiz-count-btn {
+    border: none;
+    border-radius: 18px;
+    background: #fff;
+    color: #2d8cff;
+    padding: 14px 10px;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.study-quiz-count-btn.active {
+    box-shadow: inset 0 0 0 2px #ffffff, inset 0 0 0 4px #2d8cff, 0 4px 14px rgba(0,0,0,0.10);
+}
+.study-quiz-count-btn:active {
+    transform: scale(0.98);
+}
+.study-start-warning {
+    min-height: 20px;
+    font-size: 13px;
+    color: #2d5b94;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+.study-start-warning.show {
+    opacity: 1;
+}
+.study-start-btn.ripple-run {
+    animation: studyStartRippleButton 0.56s ease-out;
+}
+@keyframes studyStartRippleButton {
+    0% { transform: scale(1); box-shadow: 0 12px 28px rgba(45,140,255,0.28), 0 0 0 0 rgba(45,140,255,0.25); }
+    40% { transform: scale(0.98); box-shadow: 0 12px 28px rgba(45,140,255,0.28), 0 0 0 22px rgba(45,140,255,0.16); }
+    100% { transform: scale(1); box-shadow: 0 12px 28px rgba(45,140,255,0.28), 0 0 0 44px rgba(45,140,255,0.00); }
+}
+.study-mode-board {
+    width: min(100%, 560px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.study-flashcard-view,
+.study-quiz-view,
+.study-quiz-result {
+    display: none;
+}
+.study-flashcard-view.active,
+.study-quiz-view.active,
+.study-quiz-result.active {
+    display: block;
+}
+.study-quiz-progress-bar {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: #e3e9f1;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+}
+.study-quiz-progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #45cf6f 0%, #2fb85a 100%);
+    transition: width 0.28s ease;
+}
+.study-quiz-progress-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #5c6775;
+    text-align: center;
+}
+.study-quiz-options {
+    margin-top: 26px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+.study-quiz-option-btn {
+    border: none;
+    border-radius: 18px;
+    background: #fff;
+    color: #2d8cff;
+    padding: 14px 16px;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.study-quiz-option-btn:active {
+    transform: scale(0.98);
+}
+.study-quiz-option-btn.correct {
+    background: #2fb85a;
+    color: white;
+}
+.study-quiz-option-btn.wrong {
+    background: #e05656;
+    color: white;
+}
+.study-quiz-option-btn.reveal-correct {
+    box-shadow: inset 0 0 0 3px #2fb85a, 0 8px 20px rgba(0,0,0,0.06);
+}
+.study-quiz-feedback {
+    min-height: 24px;
+    margin-top: 12px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #617083;
+}
+.study-quiz-result-card {
+    width: min(100%, 520px);
+    background: linear-gradient(180deg, #fffdf8 0%, #fff8ea 100%);
+    border: 1px solid #f0e3c9;
+    border-radius: 28px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+    padding: 32px 22px 24px;
+    margin: 0 auto;
+}
+.study-quiz-result-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: #24292f;
+    margin-bottom: 12px;
+}
+.study-quiz-result-score {
+    font-size: 28px;
+    font-weight: 900;
+    color: #2d8cff;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+
 @media (max-width: 768px) {
     .mode-switch {
         top: 10px;
@@ -1560,6 +1772,53 @@ input:focus { border-color: #2d8cff; }
         font-size: 13px;
     }
 
+    .study-mode-btn {
+        padding: 13px 12px;
+        font-size: 14px;
+        border-radius: 16px;
+    }
+
+    .study-options-wrap {
+        min-height: 120px;
+    }
+
+    .study-option-panel {
+        border-radius: 20px;
+        padding: 14px 14px 16px;
+    }
+
+    .study-quiz-count-btn {
+        padding: 13px 10px;
+        font-size: 17px;
+        border-radius: 16px;
+    }
+
+    .study-start-warning {
+        font-size: 12px;
+    }
+
+    .study-mode-board {
+        gap: 12px;
+    }
+
+    .study-quiz-progress-bar {
+        height: 10px;
+    }
+
+    .study-quiz-option-btn {
+        font-size: 16px;
+        padding: 13px 14px;
+        border-radius: 16px;
+    }
+
+    .study-quiz-result-title {
+        font-size: 20px;
+    }
+
+    .study-quiz-result-score {
+        font-size: 24px;
+    }
+
 }
 </style>
 </head>
@@ -1650,51 +1909,113 @@ input:focus { border-color: #2d8cff; }
     </div>
 </div>
 
+
 <div id="studyPage" class="page">
     <div class="study-page-wrap">
         <div class="study-title">신나는 학습 모드</div>
         <div class="study-subtitle">
-            시작 버튼을 눌러 단어장을 넘기며 발음을 확인해 보세요
+            원하는 학습 방식을 선택하고 시작해 보세요
         </div>
 
         <div class="study-start-wrap" id="studyStartWrap">
             <div class="study-start-panel">
                 <button class="study-start-btn" id="studyStartBtn" onclick="startStudyMode()">시작</button>
-                <div class="study-switch-row">
-                    <div class="study-switch-copy">
-                        <span class="study-switch-title">셔플</span>
-                        <span class="study-switch-subtitle">켜면 단어 순서를 무작위로 섞습니다</span>
-                    </div>
-                    <label class="study-switch" aria-label="셔플 토글">
-                        <input type="checkbox" id="studyShuffleToggle" onchange="setStudyOrder()" />
-                        <span class="study-switch-slider"></span>
-                    </label>
+
+                <div class="study-mode-row">
+                    <button class="study-mode-btn active" id="studyFlashcardModeBtn" onclick="setStudyMode('flashcard')">📘 단어장 모드</button>
+                    <button class="study-mode-btn" id="studyQuizModeBtn" onclick="setStudyMode('quiz')">🎯 퀴즈 모드</button>
                 </div>
+
+                <div class="study-options-wrap">
+                    <div class="study-option-panel" id="studyFlashcardOptions">
+                        <div class="study-switch-row in-panel">
+                            <div class="study-switch-copy">
+                                <span class="study-switch-title">셔플</span>
+                                <span class="study-switch-subtitle">켜면 단어 순서를 무작위로 섞습니다</span>
+                            </div>
+                            <label class="study-switch" aria-label="셔플 토글">
+                                <input type="checkbox" id="studyShuffleToggle" onchange="setStudyOrder()" />
+                                <span class="study-switch-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="study-option-panel hidden" id="studyQuizOptions">
+                        <div class="study-option-title">문제 수 선택:</div>
+                        <div class="study-quiz-count-grid">
+                            <button class="study-quiz-count-btn active" data-quiz-count="10" onclick="setStudyQuizCount(10)">10</button>
+                            <button class="study-quiz-count-btn" data-quiz-count="20" onclick="setStudyQuizCount(20)">20</button>
+                            <button class="study-quiz-count-btn" data-quiz-count="30" onclick="setStudyQuizCount(30)">30</button>
+                            <button class="study-quiz-count-btn" data-quiz-count="40" onclick="setStudyQuizCount(40)">40</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="study-start-warning" id="studyStartWarning"></div>
             </div>
         </div>
 
         <div class="study-card-area" id="studyCardArea">
-            <div class="study-card-shell">
-                <div class="study-card">
-                    <div class="study-card-top">
-                        <div class="study-card-label">원어</div>
-                        <div class="study-word" id="studyWordText">안녕하세요</div>
+            <div class="study-mode-board">
+                <div class="study-flashcard-view active" id="studyFlashcardView">
+                    <div class="study-card-shell">
+                        <div class="study-card">
+                            <div class="study-card-top">
+                                <div class="study-card-label">원어</div>
+                                <div class="study-word" id="studyWordText">안녕하세요</div>
 
-                        <div class="study-pron-wrap">
-                            <button class="study-pron-note hidden" id="studyPronNote" onclick="toggleStudyPronunciation()">
-                                <span class="study-pron-title">몽골발음</span>
-                                <span class="study-pron-value" id="studyPronText">센배노</span>
-                            </button>
+                                <div class="study-pron-wrap">
+                                    <button class="study-pron-note hidden" id="studyPronNote" onclick="toggleStudyPronunciation()">
+                                        <span class="study-pron-title">몽골발음</span>
+                                        <span class="study-pron-value" id="studyPronText">센배노</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="study-card-bottom">
+                                <button class="study-nav-btn" onclick="moveStudyCard(-1)">이전</button>
+                                <div class="study-progress-stack">
+                                    <div class="study-progress-text" id="studyProgressText">1 / 1</div>
+                                    <button class="study-reset-btn" id="studyResetBtn" onclick="resetStudyMode()">처음으로</button>
+                                </div>
+                                <button class="study-nav-btn" onclick="moveStudyCard(1)">다음</button>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="study-card-bottom">
-                        <button class="study-nav-btn" onclick="moveStudyCard(-1)">이전</button>
-                        <div class="study-progress-stack">
-                            <div class="study-progress-text" id="studyProgressText">1 / 1</div>
-                            <button class="study-reset-btn" id="studyResetBtn" onclick="resetStudyMode()">처음으로</button>
+                <div class="study-quiz-view" id="studyQuizView">
+                    <div class="study-quiz-progress-bar">
+                        <div class="study-quiz-progress-fill" id="studyQuizProgressFill"></div>
+                    </div>
+                    <div class="study-quiz-progress-label" id="studyQuizProgressLabel">1 / 10</div>
+
+                    <div class="study-card-shell">
+                        <div class="study-card">
+                            <div class="study-card-top">
+                                <div class="study-card-label">원어</div>
+                                <div class="study-word" id="studyQuizWordText">안녕하세요</div>
+
+                                <div class="study-quiz-options" id="studyQuizOptionsWrap"></div>
+                                <div class="study-quiz-feedback" id="studyQuizFeedback"></div>
+                            </div>
+
+                            <div class="study-card-bottom">
+                                <button class="study-nav-btn" onclick="resetStudyMode()">처음으로</button>
+                                <div class="study-progress-stack">
+                                    <div class="study-progress-text" id="studyQuizScoreText">0문제 중 0문제 정답</div>
+                                </div>
+                                <button class="study-nav-btn" id="studyQuizNextBtn" onclick="goToNextQuizQuestion()" disabled>다음</button>
+                            </div>
                         </div>
-                        <button class="study-nav-btn" onclick="moveStudyCard(1)">다음</button>
+                    </div>
+                </div>
+
+                <div class="study-quiz-result" id="studyQuizResult">
+                    <div class="study-quiz-result-card">
+                        <div class="study-quiz-result-title">퀴즈 완료!</div>
+                        <div class="study-quiz-result-score" id="studyQuizResultScore">10문제 중 8문제 맞았습니다</div>
+                        <button class="study-nav-btn" onclick="resetStudyMode()">처음으로</button>
                     </div>
                 </div>
             </div>
@@ -1956,7 +2277,16 @@ let studyIndex = 0;
 let studyStarted = false;
 let studyPronVisible = false;
 let studyOrderMode = "default";
+let studyMode = "flashcard";
 let studyDeck = [...glossaryBook];
+let studyQuizCount = 10;
+let studyQuizQuestions = [];
+let studyQuizIndex = 0;
+let studyQuizCorrect = 0;
+let studyQuizAnswered = false;
+let studyWarningTimer = null;
+let studyStartTransitionTimer = null;
+const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
 let voiceRecognition = null;
 let voiceListening = false;
 let voiceFinalTranscript = "";
@@ -1968,6 +2298,7 @@ let voiceAudioContext = null;
 let voiceAnalyser = null;
 let voiceMeterData = null;
 let voiceMeterAnimationFrame = null;
+let voiceStatusDotInterval = null;
 let voiceSilenceStartAt = null;
 const VOICE_SILENCE_THRESHOLD = 0.022;
 const VOICE_AUTO_STOP_MS = 4000;
@@ -2043,6 +2374,23 @@ const studyPronText = document.getElementById("studyPronText");
 const studyProgressText = document.getElementById("studyProgressText");
 const studyShuffleToggle = document.getElementById("studyShuffleToggle");
 const studyResetBtn = document.getElementById("studyResetBtn");
+const studyStartBtn = document.getElementById("studyStartBtn");
+const studyFlashcardModeBtn = document.getElementById("studyFlashcardModeBtn");
+const studyQuizModeBtn = document.getElementById("studyQuizModeBtn");
+const studyFlashcardOptions = document.getElementById("studyFlashcardOptions");
+const studyQuizOptions = document.getElementById("studyQuizOptions");
+const studyStartWarning = document.getElementById("studyStartWarning");
+const studyFlashcardView = document.getElementById("studyFlashcardView");
+const studyQuizView = document.getElementById("studyQuizView");
+const studyQuizResult = document.getElementById("studyQuizResult");
+const studyQuizProgressFill = document.getElementById("studyQuizProgressFill");
+const studyQuizProgressLabel = document.getElementById("studyQuizProgressLabel");
+const studyQuizWordText = document.getElementById("studyQuizWordText");
+const studyQuizOptionsWrap = document.getElementById("studyQuizOptionsWrap");
+const studyQuizFeedback = document.getElementById("studyQuizFeedback");
+const studyQuizScoreText = document.getElementById("studyQuizScoreText");
+const studyQuizNextBtn = document.getElementById("studyQuizNextBtn");
+const studyQuizResultScore = document.getElementById("studyQuizResultScore");
 
 if (cameraZoomSlider) {
     cameraZoomSlider.addEventListener("input", (event) => {
@@ -2881,12 +3229,16 @@ async function startVoiceMeter() {
                 voiceAura.style.transform = `scale(${0.96 + strength * 1.34})`;
             }
 
-            if (strength < VOICE_SILENCE_THRESHOLD) {
-                if (!voiceSilenceStartAt) voiceSilenceStartAt = Date.now();
-                if (Date.now() - voiceSilenceStartAt >= VOICE_AUTO_STOP_MS && voiceListening && voiceRecognition) {
-                    setVoiceProgress("조용한 상태가 이어져 녹음을 마칩니다");
-                    requestVoiceRecognitionStop(false);
-                    return;
+            if (!IS_MOBILE) {
+                if (strength < VOICE_SILENCE_THRESHOLD) {
+                    if (!voiceSilenceStartAt) voiceSilenceStartAt = Date.now();
+                    if (Date.now() - voiceSilenceStartAt >= VOICE_AUTO_STOP_MS && voiceListening && voiceRecognition) {
+                        setVoiceProgress("조용한 상태가 이어져 녹음을 마칩니다");
+                        requestVoiceRecognitionStop(false);
+                        return;
+                    }
+                } else {
+                    voiceSilenceStartAt = null;
                 }
             } else {
                 voiceSilenceStartAt = null;
@@ -2914,7 +3266,7 @@ async function ensureVoicePermission() {
         const tempStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         tempStream.getTracks().forEach(track => track.stop());
         voicePermissionGranted = true;
-        if (voicePermissionNote) voicePermissionNote.textContent = "마이크 사용 준비가 되었습니다";
+        if (voicePermissionNote) voicePermissionNote.textContent = IS_MOBILE ? "모바일에서는 버튼으로 시작하고 버튼으로 종료합니다" : "마이크 사용 준비가 되었습니다";
         if (!voiceProgress.textContent) setVoiceProgress("마이크 권한이 확인되었습니다");
         return true;
     } catch (error) {
@@ -2923,6 +3275,32 @@ async function ensureVoicePermission() {
         if (voicePermissionNote) voicePermissionNote.textContent = "마이크 권한이 필요합니다";
         setVoiceProgress("브라우저에서 마이크 권한을 허용해 주세요");
         return false;
+    }
+}
+
+
+function stopVoiceCaptionDots() {
+    clearInterval(voiceStatusDotInterval);
+    voiceStatusDotInterval = null;
+}
+
+function setVoiceCaptionState(state) {
+    stopVoiceCaptionDots();
+    if (!voiceBtnCaption) return;
+
+    if (state === "idle") {
+        voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+    } else if (state === "listening") {
+        let dots = 0;
+        voiceBtnCaption.textContent = "녹음 중";
+        voiceStatusDotInterval = setInterval(() => {
+            dots = (dots + 1) % 4;
+            voiceBtnCaption.textContent = "녹음 중" + ".".repeat(dots);
+        }, 500);
+    } else if (state === "stopped") {
+        voiceBtnCaption.textContent = "녹음 중지";
+    } else if (state === "readyAgain") {
+        voiceBtnCaption.textContent = "녹음기 버튼을 눌러 녹음을 다시 시작하세요";
     }
 }
 
@@ -2939,7 +3317,7 @@ function stopVoiceRecognition(resetText = false) {
     voiceListening = false;
     stopVoiceMeter();
     if (voiceMicBtn) voiceMicBtn.classList.remove("listening");
-    if (voiceBtnCaption) voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+    setVoiceCaptionState("idle");
     if (resetText) {
         setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
         setVoiceProgress("");
@@ -2950,6 +3328,7 @@ function requestVoiceRecognitionStop(isManual = true) {
     if (!voiceRecognition || !voiceListening) return;
     voiceManualStopRequested = !!isManual;
     playVoiceBurst("stop");
+    setVoiceCaptionState("stopped");
     setVoiceProgress(isManual ? "음성 듣기를 마치는 중입니다" : "조용한 상태가 이어져 녹음을 마칩니다");
     try {
         voiceRecognition.stop();
@@ -3012,9 +3391,9 @@ async function toggleVoiceRecognition() {
     voiceManualStopRequested = false;
     voiceListening = true;
     setVoiceText("듣는 중입니다...", "번역 결과가 여기에 표시됩니다", true, true);
-    setVoiceProgress("몽골어를 듣는 중입니다");
+    setVoiceProgress(IS_MOBILE ? "몽골어를 듣는 중입니다. 다시 누르면 종료됩니다" : "몽골어를 듣는 중입니다");
     voiceMicBtn.classList.add("listening");
-    voiceBtnCaption.textContent = "녹음 중... 다시 누르면 중지";
+    setVoiceCaptionState("listening");
     if (voicePermissionNote) voicePermissionNote.textContent = "마이크가 켜져 있습니다";
     playVoiceBurst("start");
     const meterStarted = await startVoiceMeter();
@@ -3049,7 +3428,7 @@ async function toggleVoiceRecognition() {
         voiceListening = false;
         stopVoiceMeter();
         voiceMicBtn.classList.remove("listening");
-        voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+        setVoiceCaptionState("readyAgain");
 
         if (errorCode === "not-allowed" || errorCode === "service-not-allowed") {
             voicePermissionGranted = false;
@@ -3072,7 +3451,7 @@ async function toggleVoiceRecognition() {
         voiceManualStopRequested = false;
         stopVoiceMeter();
         voiceMicBtn.classList.remove("listening");
-        voiceBtnCaption.textContent = "녹음기 버튼을 눌러 시작하세요";
+        setVoiceCaptionState("readyAgain");
         if (voicePermissionNote) voicePermissionNote.textContent = "마이크 사용 준비가 되었습니다";
         voiceRecognition = null;
 
@@ -3104,6 +3483,7 @@ async function toggleVoiceRecognition() {
     }
 }
 
+
 function setStudyOrder(mode) {
     if (typeof mode === "string") {
         studyOrderMode = mode === "shuffle" ? "shuffle" : "default";
@@ -3113,6 +3493,21 @@ function setStudyOrder(mode) {
     }
 }
 
+function setStudyMode(mode) {
+    studyMode = mode === "quiz" ? "quiz" : "flashcard";
+    if (studyFlashcardModeBtn) studyFlashcardModeBtn.classList.toggle("active", studyMode === "flashcard");
+    if (studyQuizModeBtn) studyQuizModeBtn.classList.toggle("active", studyMode === "quiz");
+    if (studyFlashcardOptions) studyFlashcardOptions.classList.toggle("hidden", studyMode !== "flashcard");
+    if (studyQuizOptions) studyQuizOptions.classList.toggle("hidden", studyMode !== "quiz");
+}
+
+function setStudyQuizCount(count) {
+    studyQuizCount = count;
+    document.querySelectorAll(".study-quiz-count-btn").forEach(btn => {
+        btn.classList.toggle("active", Number(btn.dataset.quizCount) === count);
+    });
+}
+
 function shuffleStudyDeck(source) {
     const deck = [...source];
     for (let i = deck.length - 1; i > 0; i--) {
@@ -3120,6 +3515,45 @@ function shuffleStudyDeck(source) {
         [deck[i], deck[j]] = [deck[j], deck[i]];
     }
     return deck;
+}
+
+function showStudyWarning(message) {
+    if (!studyStartWarning) return;
+    clearTimeout(studyWarningTimer);
+    studyStartWarning.textContent = message;
+    studyStartWarning.classList.add("show");
+    studyWarningTimer = setTimeout(() => {
+        studyStartWarning.classList.remove("show");
+    }, 1500);
+}
+
+function normalizedPronLength(text) {
+    return String(text || "").replace(/\s+/g, "").replace(/[^\p{L}\p{N}가-힣]/gu, "").length;
+}
+
+function getQuizWrongChoices(correctPron) {
+    const correctLen = normalizedPronLength(correctPron);
+    const candidates = glossaryBook
+        .filter(([, pron]) => pron !== correctPron)
+        .map(([word, pron]) => ({
+            word, pron, diff: Math.abs(normalizedPronLength(pron) - correctLen)
+        }))
+        .sort((a, b) => a.diff - b.diff);
+
+    let pool = candidates.filter(item => item.diff <= 1).slice(0, 20);
+    if (pool.length < 20) {
+        pool = candidates.slice(0, 20);
+    }
+    const shuffled = shuffleStudyDeck(pool);
+    return shuffled.slice(0, 3).map(item => item.pron);
+}
+
+function buildStudyQuizQuestions() {
+    const base = shuffleStudyDeck(glossaryBook).slice(0, Math.min(studyQuizCount, glossaryBook.length));
+    return base.map(([word, pron]) => {
+        const options = shuffleStudyDeck([pron, ...getQuizWrongChoices(pron)]);
+        return { word, correct: pron, options };
+    });
 }
 
 function renderStudyCard() {
@@ -3136,36 +3570,155 @@ function renderStudyCard() {
     studyPronNote.classList.add("hidden");
 }
 
+function renderStudyQuizQuestion() {
+    const total = studyQuizQuestions.length;
+    if (!total || studyQuizIndex >= total) {
+        showStudyQuizResult();
+        return;
+    }
+
+    const current = studyQuizQuestions[studyQuizIndex];
+    studyQuizAnswered = false;
+    studyQuizWordText.textContent = current.word;
+    studyQuizProgressLabel.textContent = `${studyQuizIndex + 1} / ${total}`;
+    studyQuizScoreText.textContent = `${total}문제 중 ${studyQuizCorrect}문제 맞음`;
+    studyQuizFeedback.textContent = "";
+    if (studyQuizNextBtn) studyQuizNextBtn.disabled = true;
+    if (studyQuizProgressFill) {
+        const percent = total ? ((studyQuizIndex) / total) * 100 : 0;
+        studyQuizProgressFill.style.width = `${percent}%`;
+    }
+
+    studyQuizOptionsWrap.innerHTML = "";
+    current.options.forEach((option, index) => {
+        const btn = document.createElement("button");
+        btn.className = "study-quiz-option-btn";
+        btn.textContent = option;
+        btn.onclick = () => answerStudyQuiz(index);
+        studyQuizOptionsWrap.appendChild(btn);
+    });
+}
+
+function answerStudyQuiz(index) {
+    if (studyQuizAnswered) return;
+    const current = studyQuizQuestions[studyQuizIndex];
+    if (!current) return;
+
+    studyQuizAnswered = true;
+    const buttons = [...studyQuizOptionsWrap.querySelectorAll(".study-quiz-option-btn")];
+    const selectedBtn = buttons[index];
+    const correctIndex = current.options.findIndex(option => option === current.correct);
+
+    if (index === correctIndex) {
+        studyQuizCorrect += 1;
+        selectedBtn.classList.add("correct");
+        studyQuizFeedback.textContent = "정답입니다!";
+    } else {
+        selectedBtn.classList.add("wrong");
+        if (buttons[correctIndex]) buttons[correctIndex].classList.add("reveal-correct");
+        studyQuizFeedback.textContent = `정답: ${current.correct}`;
+    }
+
+    buttons.forEach(btn => btn.disabled = true);
+    studyQuizScoreText.textContent = `${studyQuizQuestions.length}문제 중 ${studyQuizCorrect}문제 맞음`;
+    if (studyQuizNextBtn) studyQuizNextBtn.disabled = false;
+    if (studyQuizProgressFill) {
+        const percent = ((studyQuizIndex + 1) / studyQuizQuestions.length) * 100;
+        studyQuizProgressFill.style.width = `${percent}%`;
+    }
+}
+
+function goToNextQuizQuestion() {
+    if (!studyQuizAnswered) return;
+    studyQuizIndex += 1;
+    if (studyQuizIndex >= studyQuizQuestions.length) {
+        showStudyQuizResult();
+        return;
+    }
+    renderStudyQuizQuestion();
+}
+
+function showStudyQuizResult() {
+    studyFlashcardView.classList.remove("active");
+    studyQuizView.classList.remove("active");
+    studyQuizResult.classList.add("active");
+    studyQuizResultScore.textContent = `${studyQuizQuestions.length}문제 중 ${studyQuizCorrect}문제 맞았습니다`;
+    if (studyQuizProgressFill) studyQuizProgressFill.style.width = "100%";
+}
+
+function runStudyStartRippleThen(callback) {
+    clearTimeout(studyStartTransitionTimer);
+    if (studyStartBtn) {
+        studyStartBtn.classList.remove("ripple-run");
+        void studyStartBtn.offsetWidth;
+        studyStartBtn.classList.add("ripple-run");
+    }
+    studyStartTransitionTimer = setTimeout(() => {
+        if (studyStartBtn) studyStartBtn.classList.remove("ripple-run");
+        callback();
+    }, 520);
+}
+
 function startStudyMode() {
-    studyOrderMode = studyShuffleToggle?.checked ? "shuffle" : "default";
-    studyDeck = studyOrderMode === "shuffle" ? shuffleStudyDeck(glossaryBook) : [...glossaryBook];
-    studyIndex = 0;
-    studyStarted = true;
-    studyStartWrap.style.display = "none";
-    studyCardArea.style.display = "block";
-    renderStudyCard();
+    if (!studyMode) {
+        showStudyWarning("모드를 선택해 주세요.");
+        return;
+    }
+
+    runStudyStartRippleThen(() => {
+        studyStarted = true;
+        studyStartWrap.style.display = "none";
+        studyCardArea.style.display = "block";
+
+        if (studyMode === "flashcard") {
+            studyOrderMode = studyShuffleToggle?.checked ? "shuffle" : "default";
+            studyDeck = studyOrderMode === "shuffle" ? shuffleStudyDeck(glossaryBook) : [...glossaryBook];
+            studyIndex = 0;
+            studyFlashcardView.classList.add("active");
+            studyQuizView.classList.remove("active");
+            studyQuizResult.classList.remove("active");
+            renderStudyCard();
+        } else {
+            studyQuizQuestions = buildStudyQuizQuestions();
+            studyQuizIndex = 0;
+            studyQuizCorrect = 0;
+            studyFlashcardView.classList.remove("active");
+            studyQuizView.classList.add("active");
+            studyQuizResult.classList.remove("active");
+            renderStudyQuizQuestion();
+        }
+    });
 }
 
 function resetStudyMode() {
     studyStarted = false;
     studyIndex = 0;
     studyPronVisible = false;
+    studyQuizQuestions = [];
+    studyQuizIndex = 0;
+    studyQuizCorrect = 0;
+    studyQuizAnswered = false;
     studyStartWrap.style.display = "flex";
     studyCardArea.style.display = "none";
     studyPronNote.classList.add("hidden");
+    studyFlashcardView.classList.add("active");
+    studyQuizView.classList.remove("active");
+    studyQuizResult.classList.remove("active");
+    if (studyQuizProgressFill) studyQuizProgressFill.style.width = "0%";
 }
 
 function toggleStudyPronunciation() {
-    if (!studyStarted) return;
+    if (!studyStarted || studyMode !== "flashcard") return;
     studyPronVisible = !studyPronVisible;
     studyPronNote.classList.toggle("hidden", !studyPronVisible);
 }
 
 function moveStudyCard(direction) {
-    if (!studyStarted) return;
+    if (!studyStarted || studyMode !== "flashcard") return;
     studyIndex += direction;
     renderStudyCard();
 }
+
 
 function switchAppMode(mode) {
     appMode = mode;
@@ -3188,18 +3741,19 @@ function switchAppMode(mode) {
     if (mode !== "voice") {
         stopVoiceRecognition();
         setVoiceProgress("");
-        if (voicePermissionNote) voicePermissionNote.textContent = "음성 모드 진입 시 마이크 권한을 확인합니다";
+        if (voicePermissionNote) voicePermissionNote.textContent = IS_MOBILE ? "모바일에서는 버튼으로 시작하고 버튼으로 종료합니다" : "음성 모드 진입 시 마이크 권한을 확인합니다";
     }
 
     if (mode === "voice") {
         if (!voiceRecognizedText.textContent.trim()) {
             setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
         }
+        setVoiceCaptionState(voiceListening ? "listening" : "idle");
         if (!voicePermissionRequested) {
             setVoiceProgress("마이크 권한을 확인하는 중입니다");
             ensureVoicePermission();
         } else if (voicePermissionGranted) {
-            if (voicePermissionNote) voicePermissionNote.textContent = "마이크 사용 준비가 되었습니다";
+            if (voicePermissionNote) voicePermissionNote.textContent = IS_MOBILE ? "모바일에서는 버튼으로 시작하고 버튼으로 종료합니다" : "마이크 사용 준비가 되었습니다";
         }
     }
 }
@@ -4372,8 +4926,11 @@ if ("speechSynthesis" in window) {
 
 resetCameraUi();
 setStudyOrder("default");
+setStudyMode("flashcard");
+setStudyQuizCount(10);
 resetStudyMode();
 setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
+setVoiceCaptionState("idle");
 switchAppMode("main");
 </script>
 </body>
