@@ -3158,6 +3158,49 @@ function closeGearMenu() {
 }
 
 
+function switchAppMode(mode) {
+    appMode = mode;
+
+    const mainPageEl = document.getElementById("mainPage");
+    const cameraPageEl = document.getElementById("cameraPage");
+    const voicePageEl = document.getElementById("voicePage");
+    const studyPageEl = document.getElementById("studyPage");
+    const navButtons = document.querySelectorAll(".bottom-nav-btn");
+
+    if (!mainPageEl || !cameraPageEl || !voicePageEl || !studyPageEl) return;
+
+    if (mode !== "voice" && voiceListening) {
+        stopVoiceRecognition(false);
+    }
+
+    if (mode !== "camera") {
+        if (document.getElementById("cameraFullscreen")?.classList.contains("active")) {
+            resetCameraUi();
+        } else {
+            hideFullscreenCamera();
+        }
+    }
+
+    mainPageEl.style.display = mode === "text" ? "block" : "none";
+    cameraPageEl.style.display = mode === "main" ? "block" : "none";
+    voicePageEl.style.display = mode === "voice" ? "block" : "none";
+    studyPageEl.style.display = mode === "study" ? "block" : "none";
+
+    navButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
+
+    closeCopyPanels();
+    closeGearMenu();
+
+    if (mode === "voice" && voicePermissionNote) {
+        voicePermissionNote.textContent = IS_MOBILE
+            ? "모바일은 버튼을 누르면 바로 시작합니다"
+            : (voicePermissionGranted ? "마이크 사용 준비가 되었습니다" : "브라우저에서 마이크 권한을 허용해 주세요");
+    }
+}
+
+
 
 function resetVoiceAura() {
     if (voiceAura) {
