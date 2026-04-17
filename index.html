@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🇲🇳 신나는 몽골어 번역기 ver20.1</title>
+<title>🇲🇳 신나는 몽골어 번역기 ver20.2</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 * { box-sizing: border-box; }
@@ -869,10 +869,10 @@ input:focus { border-color: #2d8cff; }
     width: 128px;
     height: 128px;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(125,220,255,0.42) 0%, rgba(125,220,255,0.22) 45%, rgba(125,220,255,0.00) 74%);
+    background: radial-gradient(circle, rgba(88,205,255,0.68) 0%, rgba(88,205,255,0.38) 44%, rgba(88,205,255,0.08) 68%, rgba(88,205,255,0.00) 82%);
     opacity: 0;
     transform: scale(0.78);
-    transition: transform 0.10s linear, opacity 0.10s linear;
+    transition: transform 0.16s linear, opacity 0.16s linear;
     pointer-events: none;
 }
 .voice-aura.active {
@@ -888,18 +888,18 @@ input:focus { border-color: #2d8cff; }
     pointer-events: none;
 }
 .voice-burst.start-burst {
-    animation: voiceStartBurst 0.46s ease-out forwards;
+    animation: voiceStartBurst 0.78s ease-out forwards;
 }
 .voice-burst.stop-burst {
-    animation: voiceStopBurst 0.46s ease-out forwards;
+    animation: voiceStopBurst 0.78s ease-out forwards;
 }
 @keyframes voiceStartBurst {
-    0% { opacity: 0.56; transform: scale(0.42); background: rgba(56, 214, 110, 0.48); }
-    100% { opacity: 0; transform: scale(2.15); background: rgba(56, 214, 110, 0); }
+    0% { opacity: 0.82; transform: scale(0.42); background: rgba(56, 214, 110, 0.74); }
+    100% { opacity: 0; transform: scale(2.85); background: rgba(56, 214, 110, 0); }
 }
 @keyframes voiceStopBurst {
-    0% { opacity: 0.52; transform: scale(0.42); background: rgba(244, 78, 78, 0.46); }
-    100% { opacity: 0; transform: scale(2.15); background: rgba(244, 78, 78, 0); }
+    0% { opacity: 0.82; transform: scale(0.42); background: rgba(244, 78, 78, 0.74); }
+    100% { opacity: 0; transform: scale(2.85); background: rgba(244, 78, 78, 0); }
 }
 .voice-mic-btn {
     width: 124px;
@@ -1077,6 +1077,101 @@ input:focus { border-color: #2d8cff; }
     font-size: 14px;
     font-weight: 700;
     color: #667085;
+}
+
+
+.study-start-panel {
+    width: min(100%, 380px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+.study-switch-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+.study-switch-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    text-align: left;
+}
+.study-switch-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #243041;
+}
+.study-switch-subtitle {
+    font-size: 12px;
+    color: #7b8696;
+    line-height: 1.4;
+}
+.study-switch {
+    position: relative;
+    width: 54px;
+    height: 32px;
+    display: inline-block;
+    flex: 0 0 auto;
+}
+.study-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.study-switch-slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: #d4d9e2;
+    border-radius: 999px;
+    transition: background 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+}
+.study-switch-slider::before {
+    content: "";
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    left: 3px;
+    top: 3px;
+    border-radius: 999px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+    transition: transform 0.22s ease;
+}
+.study-switch input:checked + .study-switch-slider {
+    background: #34c759;
+}
+.study-switch input:checked + .study-switch-slider::before {
+    transform: translateX(22px);
+}
+.study-progress-stack {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.study-reset-btn {
+    border: none;
+    background: transparent;
+    color: #7b8696;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+}
+.study-reset-btn:active {
+    transform: scale(0.98);
 }
 
 @media (max-width: 768px) {
@@ -1404,10 +1499,31 @@ input:focus { border-color: #2d8cff; }
         gap: 14px;
     }
 
-    .study-order-btn {
+    .study-switch-row {
         padding: 13px 14px;
+        border-radius: 18px;
+    }
+
+    .study-switch-title {
         font-size: 14px;
-        border-radius: 16px;
+    }
+
+    .study-switch-subtitle {
+        font-size: 11px;
+    }
+
+    .study-switch {
+        width: 52px;
+        height: 30px;
+    }
+
+    .study-switch-slider::before {
+        width: 24px;
+        height: 24px;
+    }
+
+    .study-switch input:checked + .study-switch-slider::before {
+        transform: translateX(22px);
     }
 
     .study-start-wrap {
@@ -1448,7 +1564,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver20.1</div>
+<div class="version">ver20.2</div>
 
 <div id="mainPage" class="page">
     <h1>🇲🇳 신나는 몽골어 번역기</h1>
@@ -1543,11 +1659,17 @@ input:focus { border-color: #2d8cff; }
 
         <div class="study-start-wrap" id="studyStartWrap">
             <div class="study-start-panel">
-                <div class="study-order-select" id="studyOrderSelect">
-                    <button class="study-order-btn active" data-study-order="default" onclick="setStudyOrder('default')">기존 순서대로 보기</button>
-                    <button class="study-order-btn" data-study-order="shuffle" onclick="setStudyOrder('shuffle')">셔플해서 보기</button>
-                </div>
                 <button class="study-start-btn" id="studyStartBtn" onclick="startStudyMode()">시작</button>
+                <div class="study-switch-row">
+                    <div class="study-switch-copy">
+                        <span class="study-switch-title">셔플</span>
+                        <span class="study-switch-subtitle">켜면 단어 순서를 무작위로 섞습니다</span>
+                    </div>
+                    <label class="study-switch" aria-label="셔플 토글">
+                        <input type="checkbox" id="studyShuffleToggle" onchange="setStudyOrder()" />
+                        <span class="study-switch-slider"></span>
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -1568,7 +1690,10 @@ input:focus { border-color: #2d8cff; }
 
                     <div class="study-card-bottom">
                         <button class="study-nav-btn" onclick="moveStudyCard(-1)">이전</button>
-                        <div class="study-progress-text" id="studyProgressText">1 / 1</div>
+                        <div class="study-progress-stack">
+                            <div class="study-progress-text" id="studyProgressText">1 / 1</div>
+                            <button class="study-reset-btn" id="studyResetBtn" onclick="resetStudyMode()">처음으로</button>
+                        </div>
                         <button class="study-nav-btn" onclick="moveStudyCard(1)">다음</button>
                     </div>
                 </div>
@@ -1843,6 +1968,9 @@ let voiceAudioContext = null;
 let voiceAnalyser = null;
 let voiceMeterData = null;
 let voiceMeterAnimationFrame = null;
+let voiceSilenceStartAt = null;
+const VOICE_SILENCE_THRESHOLD = 0.022;
+const VOICE_AUTO_STOP_MS = 4000;
 let screenFontSize = 48;
 const screenFontMin = 28;
 const screenFontMax = 120;
@@ -1913,6 +2041,8 @@ const studyPronNote = document.getElementById("studyPronNote");
 const studyWordText = document.getElementById("studyWordText");
 const studyPronText = document.getElementById("studyPronText");
 const studyProgressText = document.getElementById("studyProgressText");
+const studyShuffleToggle = document.getElementById("studyShuffleToggle");
+const studyResetBtn = document.getElementById("studyResetBtn");
 
 if (cameraZoomSlider) {
     cameraZoomSlider.addEventListener("input", (event) => {
@@ -2681,7 +2811,7 @@ function closeGearMenu() {
 function resetVoiceAura() {
     if (voiceAura) {
         voiceAura.classList.remove("active");
-        voiceAura.style.transform = "scale(0.78)";
+        voiceAura.style.transform = "scale(0.74)";
         voiceAura.style.opacity = "0";
     }
 }
@@ -2714,6 +2844,7 @@ function stopVoiceMeter() {
 
 async function startVoiceMeter() {
     stopVoiceMeter();
+    voiceSilenceStartAt = null;
     if (!navigator.mediaDevices?.getUserMedia) return false;
 
     try {
@@ -2742,12 +2873,25 @@ async function startVoiceMeter() {
                 sum += normalized * normalized;
             }
             const rms = Math.sqrt(sum / voiceMeterData.length);
-            const strength = Math.min(1, rms * 6.2);
+            const strength = Math.min(1, rms * 7.8);
+
             if (voiceAura) {
                 voiceAura.classList.add("active");
-                voiceAura.style.opacity = String(0.18 + strength * 0.72);
-                voiceAura.style.transform = `scale(${0.88 + strength * 1.12})`;
+                voiceAura.style.opacity = String(0.34 + strength * 0.62);
+                voiceAura.style.transform = `scale(${0.96 + strength * 1.34})`;
             }
+
+            if (strength < VOICE_SILENCE_THRESHOLD) {
+                if (!voiceSilenceStartAt) voiceSilenceStartAt = Date.now();
+                if (Date.now() - voiceSilenceStartAt >= VOICE_AUTO_STOP_MS && voiceListening && voiceRecognition) {
+                    setVoiceProgress("조용한 상태가 이어져 녹음을 마칩니다");
+                    requestVoiceRecognitionStop(false);
+                    return;
+                }
+            } else {
+                voiceSilenceStartAt = null;
+            }
+
             voiceMeterAnimationFrame = requestAnimationFrame(renderMeter);
         };
         renderMeter();
@@ -2784,6 +2928,7 @@ async function ensureVoicePermission() {
 
 function stopVoiceRecognition(resetText = false) {
     voiceManualStopRequested = false;
+    voiceSilenceStartAt = null;
     if (voiceRecognition) {
         try { voiceRecognition.onend = null; } catch (e) {}
         try { voiceRecognition.onerror = null; } catch (e) {}
@@ -2801,11 +2946,11 @@ function stopVoiceRecognition(resetText = false) {
     }
 }
 
-function requestVoiceRecognitionStop() {
+function requestVoiceRecognitionStop(isManual = true) {
     if (!voiceRecognition || !voiceListening) return;
-    voiceManualStopRequested = true;
+    voiceManualStopRequested = !!isManual;
     playVoiceBurst("stop");
-    setVoiceProgress("음성 듣기를 마치는 중입니다");
+    setVoiceProgress(isManual ? "음성 듣기를 마치는 중입니다" : "조용한 상태가 이어져 녹음을 마칩니다");
     try {
         voiceRecognition.stop();
     } catch (error) {
@@ -2933,7 +3078,7 @@ async function toggleVoiceRecognition() {
 
         if (!finalText) {
             setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
-            setVoiceProgress(wasManualStop ? "다시 시도해 주세요" : "음성이 들리지 않았습니다");
+            setVoiceProgress(wasManualStop ? "다시 시도해 주세요" : "음성이 들리지 않았거나 자동 종료되었습니다");
             return;
         }
 
@@ -2960,10 +3105,12 @@ async function toggleVoiceRecognition() {
 }
 
 function setStudyOrder(mode) {
-    studyOrderMode = mode === "shuffle" ? "shuffle" : "default";
-    document.querySelectorAll(".study-order-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.studyOrder === studyOrderMode);
-    });
+    if (typeof mode === "string") {
+        studyOrderMode = mode === "shuffle" ? "shuffle" : "default";
+        if (studyShuffleToggle) studyShuffleToggle.checked = studyOrderMode === "shuffle";
+    } else {
+        studyOrderMode = studyShuffleToggle?.checked ? "shuffle" : "default";
+    }
 }
 
 function shuffleStudyDeck(source) {
@@ -2990,12 +3137,22 @@ function renderStudyCard() {
 }
 
 function startStudyMode() {
+    studyOrderMode = studyShuffleToggle?.checked ? "shuffle" : "default";
     studyDeck = studyOrderMode === "shuffle" ? shuffleStudyDeck(glossaryBook) : [...glossaryBook];
     studyIndex = 0;
     studyStarted = true;
     studyStartWrap.style.display = "none";
     studyCardArea.style.display = "block";
     renderStudyCard();
+}
+
+function resetStudyMode() {
+    studyStarted = false;
+    studyIndex = 0;
+    studyPronVisible = false;
+    studyStartWrap.style.display = "flex";
+    studyCardArea.style.display = "none";
+    studyPronNote.classList.add("hidden");
 }
 
 function toggleStudyPronunciation() {
@@ -4214,6 +4371,8 @@ if ("speechSynthesis" in window) {
 }
 
 resetCameraUi();
+setStudyOrder("default");
+resetStudyMode();
 setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
 switchAppMode("main");
 </script>
