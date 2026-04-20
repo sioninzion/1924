@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🇲🇳 신나는 몽골어 번역기 ver20.3.7.3</title>
+<title>🇲🇳 신나는 몽골어 번역기 ver20.4.0</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 * { box-sizing: border-box; }
@@ -1440,6 +1440,433 @@ input:focus { border-color: #2d8cff; }
 }
 
 
+
+:root {
+    --translation-scale: 1;
+    --mn-font-weight: 700;
+    --koen-font-weight: 700;
+    --koen-font-family: Arial, sans-serif;
+}
+.mn-text {
+    font-weight: var(--mn-font-weight) !important;
+}
+.ko-text,
+.en-text,
+.glossary-line,
+.highlighted-input,
+.result-line-label,
+.voice-btn-caption,
+.voice-permission-note,
+.voice-progress,
+.camera-box-label,
+.study-card-label,
+.study-progress-text,
+.study-quiz-progress-label,
+.study-quiz-feedback,
+.study-quiz-result-title,
+.study-quiz-result-score,
+.ui-koen-text {
+    font-family: var(--koen-font-family) !important;
+    font-weight: var(--koen-font-weight);
+}
+.highlighted-input {
+    font-size: calc(14px * var(--translation-scale));
+}
+.result-line {
+    font-size: calc(19px * var(--translation-scale));
+}
+.result-english {
+    font-size: calc(17px * var(--translation-scale));
+}
+.glossary-line {
+    font-size: calc(16px * var(--translation-scale));
+}
+.history-main {
+    font-size: calc(18px * var(--translation-scale));
+}
+.camera-box-content {
+    font-size: calc(22px * var(--translation-scale));
+}
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.34);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 4000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+}
+.settings-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+.settings-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: min(420px, 100vw);
+    height: 100%;
+    background: rgba(255,255,255,0.96);
+    box-shadow: 12px 0 36px rgba(0,0,0,0.14);
+    padding: 18px 16px 26px;
+    overflow-y: auto;
+    transform: translateX(-102%);
+    transition: transform 0.24s ease;
+}
+.settings-overlay.open .settings-panel {
+    transform: translateX(0);
+}
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.settings-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1f2937;
+    text-align: left;
+}
+.settings-close {
+    border: none;
+    background: #eef2f7;
+    color: #243041;
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    font-size: 20px;
+    cursor: pointer;
+}
+.settings-subtitle {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #748092;
+    text-align: left;
+    margin-bottom: 14px;
+}
+.settings-group {
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.settings-group-btn {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 16px 16px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 800;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+}
+.settings-group-btn::after {
+    content: "▾";
+    font-size: 16px;
+    color: #7b8696;
+    transition: transform 0.2s ease;
+}
+.settings-group.open .settings-group-btn::after {
+    transform: rotate(180deg);
+}
+.settings-group-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.26s ease, opacity 0.2s ease, padding 0.2s ease;
+    padding: 0 16px;
+}
+.settings-group.open .settings-group-content {
+    max-height: 520px;
+    opacity: 1;
+    padding: 0 16px 16px;
+}
+.settings-row {
+    text-align: left;
+}
+.settings-row + .settings-row {
+    margin-top: 14px;
+}
+.settings-label {
+    display: block;
+    font-size: 13px;
+    color: #4b5563;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.settings-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #7b8696;
+    line-height: 1.5;
+}
+.settings-segment {
+    display: grid;
+    gap: 8px;
+}
+.settings-segment.three {
+    grid-template-columns: repeat(3, 1fr);
+}
+.settings-segment.four {
+    grid-template-columns: repeat(4, 1fr);
+}
+.settings-segment button {
+    border: none;
+    border-radius: 14px;
+    background: #eef3fb;
+    color: #2d5b94;
+    padding: 12px 10px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+.settings-segment button.active {
+    background: #2d8cff;
+    color: white;
+}
+.settings-segment button:active {
+    transform: scale(0.98);
+}
+.settings-slider-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 10px;
+}
+.settings-slider-row input[type="range"] {
+    width: 100%;
+    margin: 0;
+}
+.settings-value {
+    min-width: 48px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 800;
+    color: #2d5b94;
+}
+.settings-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 0;
+}
+.settings-toggle + .settings-toggle {
+    border-top: 1px solid #edf2f7;
+}
+.settings-toggle-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+.settings-toggle-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1f2937;
+}
+.settings-toggle-subtitle {
+    font-size: 11px;
+    color: #7b8696;
+    line-height: 1.45;
+}
+.settings-switch {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    flex: 0 0 auto;
+}
+.settings-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.settings-switch-slider {
+    position: absolute;
+    inset: 0;
+    background: #d7dce5;
+    border-radius: 999px;
+    transition: background 0.2s ease;
+}
+.settings-switch-slider::before {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+    transition: transform 0.2s ease;
+}
+.settings-switch input:checked + .settings-switch-slider {
+    background: #34c759;
+}
+.settings-switch input:checked + .settings-switch-slider::before {
+    transform: translateX(22px);
+}
+.settings-select {
+    width: 100%;
+    border: 1px solid #d8deea;
+    border-radius: 12px;
+    background: white;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #243041;
+}
+.settings-preview-btn,
+.settings-reset-btn {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.settings-preview-btn {
+    background: #2d8cff;
+    color: white;
+}
+.settings-reset-btn {
+    background: #eef2f7;
+    color: #243041;
+}
+body.theme-dark {
+    background: #111827;
+    color: #e5eefb;
+}
+body.theme-dark .version {
+    color: #aab6c9;
+}
+body.theme-dark input,
+body.theme-dark .result-card,
+body.theme-dark .history-card,
+body.theme-dark .camera-result-box,
+body.theme-dark .item,
+body.theme-dark .study-card,
+body.theme-dark .study-quiz-result-card,
+body.theme-dark .study-start-panel,
+body.theme-dark .study-switch-row,
+body.theme-dark .study-mode-btn,
+body.theme-dark .copy-panel,
+body.theme-dark .settings-panel,
+body.theme-dark .settings-group {
+    background: #1f2937;
+    color: #e5eefb;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+}
+body.theme-dark .subtitle,
+body.theme-dark .camera-subtitle,
+body.theme-dark .voice-subtitle,
+body.theme-dark .study-subtitle,
+body.theme-dark .hint,
+body.theme-dark .loading-text,
+body.theme-dark .highlighted-input,
+body.theme-dark .camera-box-label,
+body.theme-dark .voice-progress,
+body.theme-dark .voice-permission-note,
+body.theme-dark .voice-btn-caption,
+body.theme-dark .study-card-label,
+body.theme-dark .study-progress-text,
+body.theme-dark .study-quiz-progress-label,
+body.theme-dark .study-quiz-feedback,
+body.theme-dark .settings-subtitle,
+body.theme-dark .settings-label,
+body.theme-dark .settings-toggle-title,
+body.theme-dark .settings-title {
+    color: #d6e0ee;
+}
+body.theme-dark .result-line-label,
+body.theme-dark .study-switch-subtitle,
+body.theme-dark .settings-hint,
+body.theme-dark .settings-toggle-subtitle {
+    color: #aab6c9;
+}
+body.theme-dark .bottom-nav,
+body.theme-dark .mode-switch {
+    background: rgba(17,24,39,0.92);
+    color: #e5eefb;
+    border-color: rgba(255,255,255,0.08);
+}
+body.theme-dark .bottom-nav-btn {
+    color: #aab6c9;
+}
+body.theme-dark .bottom-nav-btn.active {
+    background: rgba(45,140,255,0.18);
+    color: #7fb8ff;
+}
+body.theme-dark .copy-btn,
+body.theme-dark .settings-close,
+body.theme-dark .settings-reset-btn,
+body.theme-dark .study-quiz-option-btn,
+body.theme-dark .study-pron-note,
+body.theme-dark .study-quiz-count-btn {
+    background: #253244;
+    color: #e5eefb;
+}
+body.theme-dark .settings-segment button {
+    background: #253244;
+    color: #bcd3f7;
+}
+body.theme-dark .settings-segment button.active {
+    background: #2d8cff;
+    color: white;
+}
+body.theme-dark .settings-select {
+    background: #253244;
+    border-color: #34455d;
+    color: #e5eefb;
+}
+body.theme-dark .study-card,
+body.theme-dark .study-quiz-result-card {
+    border-color: #34455d;
+    background: linear-gradient(180deg, #1f2937 0%, #18212f 100%);
+}
+body.theme-dark .study-pron-note {
+    box-shadow: inset 0 0 0 1px #34455d;
+}
+body.theme-dark .study-word,
+body.theme-dark .study-pron-value,
+body.theme-dark .history-main,
+body.theme-dark .camera-box-content,
+body.theme-dark .result-line-value,
+body.theme-dark .result-english,
+body.theme-dark .glossary-line {
+    color: #f3f7ff;
+}
+body.theme-dark .camera-box-content.placeholder,
+body.theme-dark .voiceRecognizedText,
+body.theme-dark .voiceTranslatedText {
+    color: #9fb0c9;
+}
+body.theme-dark .main-btn,
+body.theme-dark .camera-start-btn,
+body.theme-dark .camera-control-btn.primary,
+body.theme-dark .study-nav-btn,
+body.theme-dark .settings-preview-btn {
+    background: #2d8cff;
+    color: white;
+}
+body.theme-dark .listen-btn,
+body.theme-dark .screen-btn {
+    background: #34455d;
+    color: white;
+}
+
 @media (max-width: 768px) {
     .mode-switch {
         top: 10px;
@@ -1873,11 +2300,207 @@ input:focus { border-color: #2d8cff; }
         font-size: 24px;
     }
 
+    .settings-panel {
+        width: 100vw;
+        padding: 16px 12px 24px;
+    }
+
+    .settings-title {
+        font-size: 20px;
+    }
+
+    .settings-group-btn {
+        padding: 15px 14px;
+        font-size: 14px;
+    }
+
+    .settings-group.open .settings-group-content {
+        padding: 0 14px 14px;
+    }
+
+    .settings-segment button {
+        font-size: 12px;
+        padding: 11px 8px;
+    }
+
 }
+
 </style>
 </head>
 <body>
-<div class="version">ver20.3.7.3</div>
+<div class="version">ver20.4.0</div>
+
+<button class="mode-switch" id="settingsOpenBtn" onclick="openSettingsPanel()">⚙️</button>
+
+<div class="settings-overlay" id="settingsOverlay" onclick="handleSettingsOverlayClick(event)">
+    <div class="settings-panel">
+        <div class="settings-header">
+            <div class="settings-title">설정</div>
+            <button class="settings-close" onclick="closeSettingsPanel()">✕</button>
+        </div>
+        <div class="settings-subtitle">메뉴 제목만 보이다가 누르면 해당 설정이 아래로 펼쳐집니다</div>
+
+        <div class="settings-group" id="settingsGroup-theme">
+            <button class="settings-group-btn" onclick="toggleSettingsSection('theme')">1. 다크모드</button>
+            <div class="settings-group-content">
+                <div class="settings-row">
+                    <label class="settings-label">테마 선택</label>
+                    <div class="settings-segment three">
+                        <button id="themeModeLightBtn" onclick="setThemeMode('light')">라이트</button>
+                        <button id="themeModeDarkBtn" onclick="setThemeMode('dark')">다크</button>
+                        <button id="themeModeSystemBtn" onclick="setThemeMode('system')">시스템</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group" id="settingsGroup-tts">
+            <button class="settings-group-btn" onclick="toggleSettingsSection('tts')">2. TTS 설정</button>
+            <div class="settings-group-content">
+                <div class="settings-row">
+                    <label class="settings-label" for="ttsVoiceSelect">목소리</label>
+                    <select class="settings-select" id="ttsVoiceSelect" onchange="handleTtsVoiceChange()"></select>
+                    <span class="settings-hint">기기마다 사용할 수 있는 목소리 수가 다를 수 있습니다</span>
+                </div>
+                <div class="settings-row">
+                    <label class="settings-label" for="ttsRateSlider">속도</label>
+                    <div class="settings-slider-row">
+                        <input type="range" id="ttsRateSlider" min="0.5" max="1.2" step="0.01" />
+                        <span class="settings-value" id="ttsRateValue">0.72</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <label class="settings-label" for="ttsPitchSlider">톤</label>
+                    <div class="settings-slider-row">
+                        <input type="range" id="ttsPitchSlider" min="0.7" max="1.4" step="0.01" />
+                        <span class="settings-value" id="ttsPitchValue">1.00</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <button class="settings-preview-btn" onclick="previewTtsSettings()">미리듣기</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group" id="settingsGroup-quiz">
+            <button class="settings-group-btn" onclick="toggleSettingsSection('quiz')">3. 퀴즈모드 난이도</button>
+            <div class="settings-group-content">
+                <div class="settings-row">
+                    <label class="settings-label">난이도 선택</label>
+                    <div class="settings-segment three">
+                        <button id="quizDifficultyLowBtn" onclick="setQuizDifficulty('하')">하</button>
+                        <button id="quizDifficultyMidBtn" onclick="setQuizDifficulty('중')">중</button>
+                        <button id="quizDifficultyHighBtn" onclick="setQuizDifficulty('상')">상</button>
+                    </div>
+                    <span class="settings-hint">하: 완전 랜덤 / 중: 글자수 비슷 / 상: 같은 테마끼리</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group" id="settingsGroup-exposure">
+            <button class="settings-group-btn" onclick="toggleSettingsSection('exposure')">4. 번역결과 노출 설정</button>
+            <div class="settings-group-content">
+                <div class="settings-toggle">
+                    <div class="settings-toggle-copy">
+                        <span class="settings-toggle-title">영어 번역</span>
+                        <span class="settings-toggle-subtitle">ENGLISH 줄을 표시합니다</span>
+                    </div>
+                    <label class="settings-switch"><input type="checkbox" id="showEnglishToggle"><span class="settings-switch-slider"></span></label>
+                </div>
+                <div class="settings-toggle">
+                    <div class="settings-toggle-copy">
+                        <span class="settings-toggle-title">로마발음</span>
+                        <span class="settings-toggle-subtitle">로마 표기 줄을 표시합니다</span>
+                    </div>
+                    <label class="settings-switch"><input type="checkbox" id="showRomanToggle"><span class="settings-switch-slider"></span></label>
+                </div>
+                <div class="settings-toggle">
+                    <div class="settings-toggle-copy">
+                        <span class="settings-toggle-title">한국독음</span>
+                        <span class="settings-toggle-subtitle">한국발음 줄을 표시합니다</span>
+                    </div>
+                    <label class="settings-switch"><input type="checkbox" id="showKorToggle"><span class="settings-switch-slider"></span></label>
+                </div>
+                <div class="settings-toggle">
+                    <div class="settings-toggle-copy">
+                        <span class="settings-toggle-title">단어장 매칭</span>
+                        <span class="settings-toggle-subtitle">✝️ 몽골발음 안내를 표시합니다</span>
+                    </div>
+                    <label class="settings-switch"><input type="checkbox" id="showGlossaryToggle"><span class="settings-switch-slider"></span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group" id="settingsGroup-vibration">
+            <button class="settings-group-btn" onclick="toggleSettingsSection('vibration')">5. 번역 완료 시 진동</button>
+            <div class="settings-group-content">
+                <div class="settings-toggle">
+                    <div class="settings-toggle-copy">
+                        <span class="settings-toggle-title">진동 사용</span>
+                        <span class="settings-toggle-subtitle">일반/카메라/음성 번역 완료 시 짧게 진동합니다</span>
+                    </div>
+                    <label class="settings-switch"><input type="checkbox" id="vibrationToggle"><span class="settings-switch-slider"></span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group" id="settingsGroup-ocr">
+            <button class="settings-group-btn" onclick="toggleSettingsSection('ocr')">6. OCR 수준</button>
+            <div class="settings-group-content">
+                <div class="settings-row">
+                    <label class="settings-label">인식 수준 선택</label>
+                    <div class="settings-segment three">
+                        <button id="ocrLevelFastBtn" onclick="setOcrLevel('빠름')">빠름</button>
+                        <button id="ocrLevelBasicBtn" onclick="setOcrLevel('기본')">기본</button>
+                        <button id="ocrLevelPreciseBtn" onclick="setOcrLevel('정밀')">정밀</button>
+                    </div>
+                    <span class="settings-hint">빠름은 더 빨리, 정밀은 더 많은 전처리와 해상도로 시도합니다</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group" id="settingsGroup-font">
+            <button class="settings-group-btn" onclick="toggleSettingsSection('font')">7. 번역 글씨 설정</button>
+            <div class="settings-group-content">
+                <div class="settings-row">
+                    <label class="settings-label" for="fontScaleSlider">전체 글씨 크기</label>
+                    <div class="settings-slider-row">
+                        <input type="range" id="fontScaleSlider" min="90" max="130" step="1" />
+                        <span class="settings-value" id="fontScaleValue">100%</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <label class="settings-label">키릴 굵기</label>
+                    <div class="settings-segment three">
+                        <button id="mnWeightLightBtn" onclick="setCyrillicWeight('얇')">얇게</button>
+                        <button id="mnWeightMidBtn" onclick="setCyrillicWeight('중')">중간</button>
+                        <button id="mnWeightBoldBtn" onclick="setCyrillicWeight('굵')">굵게</button>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <label class="settings-label">한글·영어 굵기</label>
+                    <div class="settings-segment three">
+                        <button id="koWeightLightBtn" onclick="setKoEnWeight('얇')">얇게</button>
+                        <button id="koWeightMidBtn" onclick="setKoEnWeight('중')">중간</button>
+                        <button id="koWeightBoldBtn" onclick="setKoEnWeight('굵')">굵게</button>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <label class="settings-label">한글·영어 스타일</label>
+                    <div class="settings-segment three">
+                        <button id="koStyleRoundBtn" onclick="setKoEnStyle('둥근글씨')">둥근글씨</button>
+                        <button id="koStyleCleanBtn" onclick="setKoEnStyle('깔끔')">깔끔</button>
+                        <button id="koStyleClassicBtn" onclick="setKoEnStyle('궁서체 느낌')">궁서체 느낌</button>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <button class="settings-reset-btn" onclick="resetSettingsToDefault()">설정 초기화</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div id="mainPage" class="page">
     <h1>🇲🇳 신나는 몽골어 번역기</h1>
@@ -2178,7 +2801,7 @@ input:focus { border-color: #2d8cff; }
 
 <script>
 /*
-ver20.3.7.3
+ver20.4.0
 - 기준 버전: 20.3.2
 - 목표: 기능 변경 최소화, 내부 코드 파트별 분류/정리
 - 원칙: 동작 로직은 최대한 유지하고 섹션 주석과 구획만 추가
@@ -2407,6 +3030,26 @@ let currentSpeakingId = null;
 let currentUtterance = null;
 let cachedVoices = [];
 
+const DEFAULT_SETTINGS = {
+    themeMode: "light",
+    ttsVoiceName: "auto",
+    ttsRate: 0.72,
+    ttsPitch: 1.0,
+    quizDifficulty: "중",
+    showEnglish: true,
+    showRoman: true,
+    showKor: true,
+    showGlossary: true,
+    vibrationEnabled: false,
+    ocrLevel: "기본",
+    translationFontScale: 100,
+    cyrillicWeight: "굵",
+    koEnWeight: "중",
+    koEnStyle: "깔끔"
+};
+let appSettings = { ...DEFAULT_SETTINGS };
+let settingsPanelOpen = false;
+let openSettingsSectionId = null;
 
 /* DOM 참조 */
 const cameraVideo = document.getElementById("cameraVideo");
@@ -2443,6 +3086,21 @@ const voiceTranslatedText = document.getElementById("voiceTranslatedText");
 const voiceAura = document.getElementById("voiceAura");
 const voiceStartBurst = document.getElementById("voiceStartBurst");
 const voiceStopBurst = document.getElementById("voiceStopBurst");
+
+const settingsOverlay = document.getElementById("settingsOverlay");
+const ttsVoiceSelect = document.getElementById("ttsVoiceSelect");
+const ttsRateSlider = document.getElementById("ttsRateSlider");
+const ttsRateValue = document.getElementById("ttsRateValue");
+const ttsPitchSlider = document.getElementById("ttsPitchSlider");
+const ttsPitchValue = document.getElementById("ttsPitchValue");
+const showEnglishToggle = document.getElementById("showEnglishToggle");
+const showRomanToggle = document.getElementById("showRomanToggle");
+const showKorToggle = document.getElementById("showKorToggle");
+const showGlossaryToggle = document.getElementById("showGlossaryToggle");
+const vibrationToggle = document.getElementById("vibrationToggle");
+const fontScaleSlider = document.getElementById("fontScaleSlider");
+const fontScaleValue = document.getElementById("fontScaleValue");
+
 const studyStartWrap = document.getElementById("studyStartWrap");
 const studyCardArea = document.getElementById("studyCardArea");
 const studyPronNote = document.getElementById("studyPronNote");
@@ -2468,6 +3126,8 @@ const studyQuizFeedback = document.getElementById("studyQuizFeedback");
 const studyQuizScoreText = document.getElementById("studyQuizScoreText");
 const studyQuizNextBtn = document.getElementById("studyQuizNextBtn");
 const studyQuizResultScore = document.getElementById("studyQuizResultScore");
+[cameraRecognizedText, voiceRecognizedText].forEach(el => el && el.classList.add("mn-text"));
+[cameraTranslatedText, voiceTranslatedText].forEach(el => el && el.classList.add("ko-text"));
 
 if (cameraZoomSlider) {
     cameraZoomSlider.addEventListener("input", (event) => {
@@ -2487,6 +3147,317 @@ if (cameraHeightSlider) {
     });
 }
 updateGuideSizeUi();
+
+
+function applyIOSVoiceDisabledUI() {
+    if (IS_IOS && voiceMicBtn) {
+        voiceMicBtn.classList.add("ios-disabled");
+    }
+}
+
+function loadSettings() {
+    try {
+        const saved = JSON.parse(localStorage.getItem("mongolianTranslatorSettings") || "{}");
+        appSettings = { ...DEFAULT_SETTINGS, ...(saved || {}) };
+    } catch (error) {
+        appSettings = { ...DEFAULT_SETTINGS };
+    }
+}
+
+function saveSettings() {
+    localStorage.setItem("mongolianTranslatorSettings", JSON.stringify(appSettings));
+}
+
+function setBodyThemeClass(themeClass) {
+    document.body.classList.remove("theme-light", "theme-dark");
+    if (themeClass) document.body.classList.add(themeClass);
+}
+
+function applyThemeSetting() {
+    const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (appSettings.themeMode === "dark") setBodyThemeClass("theme-dark");
+    else if (appSettings.themeMode === "system") setBodyThemeClass(systemDark ? "theme-dark" : "theme-light");
+    else setBodyThemeClass("theme-light");
+}
+
+function getKoEnFontFamily(style) {
+    if (style === "둥근글씨") return '"Arial Rounded MT Bold","NanumSquareRound","Malgun Gothic","Apple SD Gothic Neo",sans-serif';
+    if (style === "궁서체 느낌") return '"Nanum Myeongjo","Batang","Times New Roman",serif';
+    return '"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif';
+}
+
+function getWeightValue(label, fallback = 700) {
+    if (label === "얇") return 400;
+    if (label === "중") return 600;
+    if (label === "굵") return 800;
+    return fallback;
+}
+
+function applyFontSettings() {
+    document.documentElement.style.setProperty("--translation-scale", String((Number(appSettings.translationFontScale || 100) / 100).toFixed(2)));
+    document.documentElement.style.setProperty("--mn-font-weight", String(getWeightValue(appSettings.cyrillicWeight, 700)));
+    document.documentElement.style.setProperty("--koen-font-weight", String(getWeightValue(appSettings.koEnWeight, 600)));
+    document.documentElement.style.setProperty("--koen-font-family", getKoEnFontFamily(appSettings.koEnStyle));
+}
+
+function notifyTranslationComplete() {
+    if (!appSettings.vibrationEnabled) return;
+    if (!navigator.vibrate) return;
+    try { navigator.vibrate(30); } catch (error) {}
+}
+
+function setActiveButtons(ids, activeId) {
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle("active", id === activeId);
+    });
+}
+
+function updateSettingsAccordionUi() {
+    document.querySelectorAll(".settings-group").forEach(group => {
+        group.classList.toggle("open", group.id === `settingsGroup-${openSettingsSectionId}`);
+    });
+}
+
+function toggleSettingsSection(sectionId) {
+    openSettingsSectionId = openSettingsSectionId === sectionId ? null : sectionId;
+    updateSettingsAccordionUi();
+}
+
+function openSettingsPanel() {
+    settingsPanelOpen = true;
+    if (settingsOverlay) settingsOverlay.classList.add("open");
+}
+
+function closeSettingsPanel() {
+    settingsPanelOpen = false;
+    if (settingsOverlay) settingsOverlay.classList.remove("open");
+}
+
+function handleSettingsOverlayClick(event) {
+    if (event.target === settingsOverlay) closeSettingsPanel();
+}
+
+function setThemeMode(mode) {
+    appSettings.themeMode = mode;
+    saveSettings();
+    applyThemeSetting();
+    syncSettingsUi();
+}
+
+function setQuizDifficulty(level) {
+    appSettings.quizDifficulty = level;
+    saveSettings();
+    syncSettingsUi();
+}
+
+function setOcrLevel(level) {
+    appSettings.ocrLevel = level;
+    saveSettings();
+    syncSettingsUi();
+}
+
+function setCyrillicWeight(level) {
+    appSettings.cyrillicWeight = level;
+    saveSettings();
+    applyFontSettings();
+    rerenderVisibleTranslations();
+    syncSettingsUi();
+}
+
+function setKoEnWeight(level) {
+    appSettings.koEnWeight = level;
+    saveSettings();
+    applyFontSettings();
+    rerenderVisibleTranslations();
+    syncSettingsUi();
+}
+
+function setKoEnStyle(style) {
+    appSettings.koEnStyle = style;
+    saveSettings();
+    applyFontSettings();
+    rerenderVisibleTranslations();
+    syncSettingsUi();
+}
+
+function populateTtsVoiceOptions() {
+    if (!ttsVoiceSelect) return;
+    const voices = cachedVoices.length ? cachedVoices : refreshVoices();
+    const current = appSettings.ttsVoiceName || "auto";
+    ttsVoiceSelect.innerHTML = "";
+    const autoOption = document.createElement("option");
+    autoOption.value = "auto";
+    autoOption.textContent = "자동 선택";
+    ttsVoiceSelect.appendChild(autoOption);
+
+    voices.forEach(voice => {
+        const option = document.createElement("option");
+        option.value = voice.name;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        ttsVoiceSelect.appendChild(option);
+    });
+    ttsVoiceSelect.value = Array.from(ttsVoiceSelect.options).some(option => option.value === current) ? current : "auto";
+}
+
+function getSelectedTtsVoice() {
+    const selected = appSettings.ttsVoiceName || "auto";
+    if (selected !== "auto") {
+        const matched = (cachedVoices.length ? cachedVoices : refreshVoices()).find(voice => voice.name === selected);
+        if (matched) return matched;
+    }
+    return getBestEnglishVoice();
+}
+
+function handleTtsVoiceChange() {
+    appSettings.ttsVoiceName = ttsVoiceSelect?.value || "auto";
+    saveSettings();
+    syncSettingsUi();
+}
+
+function previewTtsSettings() {
+    const previewItem = { id: "__preview__", roman: "sain baina uu" };
+    const existing = historyList.find(item => item.id === "__preview__");
+    if (!existing) historyList.unshift(previewItem);
+    speakHistoryRoman("__preview__");
+    historyList = historyList.filter(item => item.id !== "__preview__");
+}
+
+function syncSettingsUi() {
+    setActiveButtons(["themeModeLightBtn","themeModeDarkBtn","themeModeSystemBtn"], appSettings.themeMode === "dark" ? "themeModeDarkBtn" : (appSettings.themeMode === "system" ? "themeModeSystemBtn" : "themeModeLightBtn"));
+    setActiveButtons(["quizDifficultyLowBtn","quizDifficultyMidBtn","quizDifficultyHighBtn"], appSettings.quizDifficulty === "하" ? "quizDifficultyLowBtn" : (appSettings.quizDifficulty === "상" ? "quizDifficultyHighBtn" : "quizDifficultyMidBtn"));
+    setActiveButtons(["ocrLevelFastBtn","ocrLevelBasicBtn","ocrLevelPreciseBtn"], appSettings.ocrLevel === "빠름" ? "ocrLevelFastBtn" : (appSettings.ocrLevel === "정밀" ? "ocrLevelPreciseBtn" : "ocrLevelBasicBtn"));
+    setActiveButtons(["mnWeightLightBtn","mnWeightMidBtn","mnWeightBoldBtn"], appSettings.cyrillicWeight === "얇" ? "mnWeightLightBtn" : (appSettings.cyrillicWeight === "중" ? "mnWeightMidBtn" : "mnWeightBoldBtn"));
+    setActiveButtons(["koWeightLightBtn","koWeightMidBtn","koWeightBoldBtn"], appSettings.koEnWeight === "얇" ? "koWeightLightBtn" : (appSettings.koEnWeight === "중" ? "koWeightMidBtn" : "koWeightBoldBtn"));
+    setActiveButtons(["koStyleRoundBtn","koStyleCleanBtn","koStyleClassicBtn"], appSettings.koEnStyle === "둥근글씨" ? "koStyleRoundBtn" : (appSettings.koEnStyle === "궁서체 느낌" ? "koStyleClassicBtn" : "koStyleCleanBtn"));
+
+    if (showEnglishToggle) showEnglishToggle.checked = !!appSettings.showEnglish;
+    if (showRomanToggle) showRomanToggle.checked = !!appSettings.showRoman;
+    if (showKorToggle) showKorToggle.checked = !!appSettings.showKor;
+    if (showGlossaryToggle) showGlossaryToggle.checked = !!appSettings.showGlossary;
+    if (vibrationToggle) vibrationToggle.checked = !!appSettings.vibrationEnabled;
+
+    if (ttsRateSlider) ttsRateSlider.value = String(appSettings.ttsRate);
+    if (ttsRateValue) ttsRateValue.textContent = Number(appSettings.ttsRate).toFixed(2);
+    if (ttsPitchSlider) ttsPitchSlider.value = String(appSettings.ttsPitch);
+    if (ttsPitchValue) ttsPitchValue.textContent = Number(appSettings.ttsPitch).toFixed(2);
+
+    if (fontScaleSlider) fontScaleSlider.value = String(appSettings.translationFontScale);
+    if (fontScaleValue) fontScaleValue.textContent = `${appSettings.translationFontScale}%`;
+
+    populateTtsVoiceOptions();
+    updateSettingsAccordionUi();
+}
+
+function resetSettingsToDefault() {
+    appSettings = { ...DEFAULT_SETTINGS };
+    saveSettings();
+    applyThemeSetting();
+    applyFontSettings();
+    syncSettingsUi();
+    rerenderVisibleTranslations();
+    showToast("설정 초기화됨");
+}
+
+function setupSettingsEvents() {
+    if (ttsRateSlider) {
+        ttsRateSlider.addEventListener("input", () => {
+            appSettings.ttsRate = Number(ttsRateSlider.value);
+            saveSettings();
+            syncSettingsUi();
+        });
+    }
+    if (ttsPitchSlider) {
+        ttsPitchSlider.addEventListener("input", () => {
+            appSettings.ttsPitch = Number(ttsPitchSlider.value);
+            saveSettings();
+            syncSettingsUi();
+        });
+    }
+    if (fontScaleSlider) {
+        fontScaleSlider.addEventListener("input", () => {
+            appSettings.translationFontScale = Number(fontScaleSlider.value);
+            saveSettings();
+            applyFontSettings();
+            syncSettingsUi();
+            rerenderVisibleTranslations();
+        });
+    }
+    [
+        [showEnglishToggle, "showEnglish"],
+        [showRomanToggle, "showRoman"],
+        [showKorToggle, "showKor"],
+        [showGlossaryToggle, "showGlossary"],
+        [vibrationToggle, "vibrationEnabled"]
+    ].forEach(([el, key]) => {
+        if (!el) return;
+        el.addEventListener("change", () => {
+            appSettings[key] = !!el.checked;
+            saveSettings();
+            rerenderVisibleTranslations();
+            syncSettingsUi();
+        });
+    });
+
+    if (window.matchMedia) {
+        const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
+        const onChange = () => {
+            if (appSettings.themeMode === "system") applyThemeSetting();
+        };
+        if (darkMedia.addEventListener) darkMedia.addEventListener("change", onChange);
+        else if (darkMedia.addListener) darkMedia.addListener(onChange);
+    }
+}
+
+function buildVisibleGlossaryMatches(matches) {
+    return appSettings.showGlossary ? matches : [];
+}
+
+function buildTranslationCardHtml(item) {
+    const visibleGlossary = buildVisibleGlossaryMatches(item.glossaryMatches || []);
+    const lines = [
+        `<div class="result-line"><span class="result-line-label ui-koen-text">몽골어</span><span class="result-line-value mn-text">${item.mn}</span></div>`
+    ];
+    if (appSettings.showRoman) {
+        lines.push(`<div class="result-line"><span class="result-line-label ui-koen-text">로마발음</span><span class="result-line-value en-text">${item.roman}</span></div>`);
+    }
+    if (appSettings.showKor) {
+        lines.push(`<div class="result-line"><span class="result-line-label ui-koen-text">한국발음</span><span class="result-line-value ko-text">${item.kor}</span></div>`);
+    }
+    return `
+        <div class="result-card">
+            <div class="highlighted-input ko-text">${visibleGlossary.length ? highlightMatchedOrigins(item.input, visibleGlossary) : item.input}</div>
+            <div class="result-main">
+                <div class="result-lines">${lines.join("")}</div>
+            </div>
+            ${appSettings.showEnglish && item.en ? `<div class="result-english en-text">ENGLISH: ${item.en}</div>` : ""}
+            ${buildGlossaryHtml(visibleGlossary)}
+        </div>
+    `;
+}
+
+function rerenderVisibleTranslations() {
+    const resultBox = document.getElementById("result");
+    const latest = historyList[0];
+    if (resultBox && latest) {
+        resultBox.innerHTML = buildTranslationCardHtml(latest);
+    }
+    renderHistory();
+}
+
+function getGlossaryTheme(word) {
+    const text = String(word || "");
+    if (/^\d[\d, ]*$/.test(text)) return "숫자";
+    if (/색|무지개/.test(text)) return "색깔";
+    if (/예수|하나님|목사|십자가|교회|믿음|소망|은혜|예배|기도|찬양|성경|아멘/.test(text)) return "신앙";
+    if (/무엇|얼마|어디|몇 살|습니까\?|입니까\?|겠습니까\?|맞습니까|아닙니까/.test(text)) return "질문문";
+    if (/왼쪽|오른쪽|똑바로|이리오세요|오세요|갑시다/.test(text)) return "방향";
+    if (/안녕|만나서|다음에 또|잘자|실례|죄송|감사|환영/.test(text)) return "인사";
+    if (/오늘|내일|시간|시 /.test(text)) return "시간";
+    if (/맛있|예쁘|귀엽|멋지|아름답|배부르|차갑|뜨겁|따뜻/.test(text)) return "형용사";
+    if (/이름|대학생|회사원|선생님|공부|과자|음식|사진|사랑/.test(text)) return "일상";
+    return "기타";
+}
 
 /* =========================
    공통 유틸
@@ -2758,7 +3729,7 @@ function stopLoadingMessage() {
 
 function buildGlossaryHtml(matches) {
     return matches.length
-        ? `<div class="glossary-wrap">${matches.map(match => `<div class="glossary-line">✝️: ${match.pronunciation}</div>`).join("")}</div>`
+        ? `<div class="glossary-wrap">${matches.map(match => `<div class="glossary-line ko-text">✝️: ${match.pronunciation}</div>`).join("")}</div>`
         : "";
 }
 
@@ -2784,33 +3755,22 @@ async function run() {
         const roman = toRoman(mn);
         const kor = romanToKorean(roman);
         const glossaryMatches = findGlossaryMatches(input);
-
-        document.getElementById("result").innerHTML = `
-            <div class="result-card">
-                <div class="highlighted-input">${glossaryMatches.length ? highlightMatchedOrigins(input, glossaryMatches) : input}</div>
-                <div class="result-main">
-                    <div class="result-lines">
-                        <div class="result-line"><span class="result-line-label">몽골어</span><span class="result-line-value">${mn}</span></div>
-                        <div class="result-line"><span class="result-line-label">로마발음</span><span class="result-line-value">${roman}</span></div>
-                        <div class="result-line"><span class="result-line-label">한국발음</span><span class="result-line-value">${kor}</span></div>
-                    </div>
-                </div>
-                <div class="result-english">ENGLISH: ${en}</div>
-                ${buildGlossaryHtml(glossaryMatches)}
-            </div>
-        `;
-
-        historyList.unshift({
+        const entry = {
             id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
-            input, mn, roman, kor, glossaryMatches
-        });
+            input, mn, roman, kor, en, glossaryMatches
+        };
+
+        document.getElementById("result").innerHTML = buildTranslationCardHtml(entry);
+
+        historyList.unshift(entry);
 
         if (historyList.length > 12) historyList.pop();
         closeCopyPanels();
         renderHistory();
+        notifyTranslationComplete();
     } catch (error) {
         document.getElementById("result").innerHTML = `
-            <div class="result-card"><div class="result-main">번역 중 오류가 발생했습니다.</div></div>
+            <div class="result-card"><div class="result-main ko-text">번역 중 오류가 발생했습니다.</div></div>
         `;
         console.error(error);
     } finally {
@@ -2984,7 +3944,7 @@ function speakHistoryRoman(id) {
     }
 
     const utterance = new SpeechSynthesisUtterance(ttsText);
-    const voice = getBestEnglishVoice();
+    const voice = getSelectedTtsVoice();
 
     if (voice) {
         utterance.voice = voice;
@@ -2993,8 +3953,8 @@ function speakHistoryRoman(id) {
         utterance.lang = "en-US";
     }
 
-    utterance.rate = 0.72;
-    utterance.pitch = 1.0;
+    utterance.rate = Number(appSettings.ttsRate || 0.72);
+    utterance.pitch = Number(appSettings.ttsPitch || 1.0);
     utterance.volume = 1.0;
 
     utterance.onstart = () => {
@@ -3082,7 +4042,6 @@ function renderHistory() {
     box.innerHTML = "";
 
     historyList.forEach(item => {
-        const glossaryHtml = buildGlossaryHtml(item.glossaryMatches);
         const isOpen = openCopyPanelId === item.id;
 
         const div = document.createElement("div");
@@ -3092,8 +4051,14 @@ function renderHistory() {
         content.className = "item-content";
         content.innerHTML = `
             <div class="history-card">
-                <div class="history-main">${item.input} / ${item.mn} / ${item.roman} / ${item.kor}</div>
-                ${glossaryHtml}
+                <div class="highlighted-input ko-text">${item.input}</div>
+                <div class="result-lines">
+                    <div class="result-line"><span class="result-line-label ui-koen-text">몽골어</span><span class="result-line-value mn-text">${item.mn}</span></div>
+                    ${appSettings.showRoman ? `<div class="result-line"><span class="result-line-label ui-koen-text">로마발음</span><span class="result-line-value en-text">${item.roman}</span></div>` : ""}
+                    ${appSettings.showKor ? `<div class="result-line"><span class="result-line-label ui-koen-text">한국발음</span><span class="result-line-value ko-text">${item.kor}</span></div>` : ""}
+                </div>
+                ${appSettings.showEnglish && item.en ? `<div class="result-english en-text">ENGLISH: ${item.en}</div>` : ""}
+                ${buildGlossaryHtml(buildVisibleGlossaryMatches(item.glossaryMatches || []))}
             </div>
         `;
 
@@ -3117,8 +4082,8 @@ function renderHistory() {
         copyPanel.innerHTML = `
             <label class="copy-option"><input type="checkbox" class="copy-check-input"><span>한국어</span></label>
             <label class="copy-option"><input type="checkbox" class="copy-check-mn" checked><span>몽골어</span></label>
-            <label class="copy-option"><input type="checkbox" class="copy-check-roman" checked><span>로마발음</span></label>
-            <label class="copy-option"><input type="checkbox" class="copy-check-kor"><span>한국독음</span></label>
+            <label class="copy-option"><input type="checkbox" class="copy-check-roman" ${appSettings.showRoman ? "checked" : ""}><span>로마발음</span></label>
+            <label class="copy-option"><input type="checkbox" class="copy-check-kor" ${appSettings.showKor ? "checked" : ""}><span>한국독음</span></label>
             <button class="copy-action-btn">복사하기</button>
         `;
 
@@ -3501,6 +4466,7 @@ async function finalizeVoiceTranslation(finalText, wasManualStop = false) {
         const translated = await translateMongolianToKorean(cleaned);
         setVoiceText(cleaned, translated || "번역 결과가 비어 있습니다", false, !translated);
         setVoiceProgress(translated ? "완료되었습니다" : "번역 결과를 받지 못했습니다");
+        if (translated) notifyTranslationComplete();
     } catch (error) {
         console.error(error);
         setVoiceText(cleaned, "번역 중 오류가 발생했습니다", false, true);
@@ -3797,27 +4763,47 @@ function normalizedPronLength(text) {
     return String(text || "").replace(/\s+/g, "").replace(/[^\p{L}\p{N}가-힣]/gu, "").length;
 }
 
-function getQuizWrongChoices(correctPron) {
-    const correctLen = normalizedPronLength(correctPron);
-    const candidates = glossaryBook
-        .filter(([, pron]) => pron !== correctPron)
+function getQuizWrongChoices(correctEntry) {
+    const correctPron = correctEntry.pron;
+    const allCandidates = glossaryBook
+        .filter(([word, pron]) => word !== correctEntry.word && pron !== correctPron)
         .map(([word, pron]) => ({
-            word, pron, diff: Math.abs(normalizedPronLength(pron) - correctLen)
-        }))
-        .sort((a, b) => a.diff - b.diff);
+            word,
+            pron,
+            theme: getGlossaryTheme(word),
+            diff: Math.abs(normalizedPronLength(pron) - normalizedPronLength(correctPron))
+        }));
 
-    let pool = candidates.filter(item => item.diff <= 1).slice(0, 20);
-    if (pool.length < 20) {
-        pool = candidates.slice(0, 20);
+    let pool = [];
+
+    if (appSettings.quizDifficulty === "하") {
+        pool = shuffleStudyDeck(allCandidates).slice(0, 24);
+    } else if (appSettings.quizDifficulty === "상") {
+        pool = allCandidates.filter(item => item.theme === correctEntry.theme);
+        if (pool.length < 4) {
+            pool = [...pool, ...allCandidates.filter(item => item.theme !== correctEntry.theme).sort((a, b) => a.diff - b.diff)];
+        }
+    } else {
+        pool = allCandidates.sort((a, b) => a.diff - b.diff);
     }
-    const shuffled = shuffleStudyDeck(pool);
-    return shuffled.slice(0, 3).map(item => item.pron);
+
+    const unique = [];
+    const seen = new Set();
+    for (const item of pool) {
+        if (!item || seen.has(item.pron)) continue;
+        seen.add(item.pron);
+        unique.push(item);
+        if (unique.length >= 12) break;
+    }
+
+    return shuffleStudyDeck(unique).slice(0, 3).map(item => item.pron);
 }
 
 function buildStudyQuizQuestions() {
     const base = shuffleStudyDeck(glossaryBook).slice(0, Math.min(studyQuizCount, glossaryBook.length));
     return base.map(([word, pron]) => {
-        const options = shuffleStudyDeck([pron, ...getQuizWrongChoices(pron)]);
+        const entry = { word, pron, theme: getGlossaryTheme(word) };
+        const options = shuffleStudyDeck([pron, ...getQuizWrongChoices(entry)]);
         return { word, correct: pron, options };
     });
 }
@@ -4708,6 +5694,13 @@ function updateAttemptProgress(text) {
 }
 
 
+function getOcrResolutionPlan() {
+    if (appSettings.ocrLevel === "빠름") return [960];
+    if (appSettings.ocrLevel === "정밀") return [1280, 1160, 1040, 960, 840];
+    return [1160, 960, 840];
+}
+
+
 /* =========================
    [11] OCR 시도 생성 / 워커 실행
    ========================= */
@@ -4940,7 +5933,7 @@ async function startRecognitionFlow() {
             throw new Error("CROP_TOO_SMALL");
         }
 
-        const resolutions = [1160, 960, 840];
+        const resolutions = getOcrResolutionPlan();
         let startIndex = 0;
 
         for (const width of resolutions) {
@@ -5067,6 +6060,7 @@ ${winner.detail}
 
         cameraTranslatedText.textContent = translatedKo;
         cameraTranslatedText.classList.remove("placeholder");
+        notifyTranslationComplete();
         showToast("인식 완료");
     } catch (error) {
         console.error(error);
@@ -5144,6 +6138,11 @@ document.getElementById("input").addEventListener("keydown", e => {
     if (e.key === "Enter") run();
 });
 
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && settingsPanelOpen) closeSettingsPanel();
+});
+
+
 document.getElementById("screenMode").addEventListener("click", (e) => {
     const gearCluster = document.getElementById("gearCluster");
     const exitCluster = document.querySelector(".exit-cluster");
@@ -5219,10 +6218,15 @@ if ("speechSynthesis" in window) {
     if (typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
         window.speechSynthesis.onvoiceschanged = () => {
             refreshVoices();
+            populateTtsVoiceOptions();
         };
     }
 }
 
+loadSettings();
+refreshVoices();
+applyThemeSetting();
+applyFontSettings();
 resetCameraUi();
 setStudyOrder("default");
 setStudyMode("flashcard");
@@ -5231,6 +6235,8 @@ resetStudyMode();
 setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
 setVoiceCaptionState("idle");
 applyIOSVoiceDisabledUI();
+setupSettingsEvents();
+syncSettingsUi();
 switchAppMode("main");
 </script>
 </body>
