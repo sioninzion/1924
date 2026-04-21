@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>🇲🇳 신나는 몽골어 번역기 ver20.4.2</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
@@ -10,6 +10,7 @@
 
 body {
     font-family: Arial, sans-serif;
+    touch-action: manipulation;
     background: #f5f7fb;
     text-align: center;
     margin: 0;
@@ -2232,6 +2233,10 @@ input:focus { border-color: #2d8cff; }
                     </div>
                     <label class="settings-switch"><input type="checkbox" id="toggleVibration" onchange="setVibrationEnabled(this.checked)"><span class="settings-switch-slider"></span></label>
                 </div>
+                <div class="settings-row stack">
+                    <div class="settings-helper" id="vibrationSupportMessage">iOS 기기에서는 웹 환경에서 진동 기능이 제한됩니다.</div>
+                    <div class="settings-helper" id="vibrationDeviceMessage">현재 사용 기기: iOS가 아닙니다.</div>
+                </div>
             </div>
         </section>
 
@@ -3223,6 +3228,7 @@ async function run() {
         if (historyList.length > 12) historyList.pop();
         closeCopyPanels();
         renderHistory();
+        document.getElementById("input").value = "";
         triggerCompleteVibration();
     } catch (error) {
         document.getElementById("result").innerHTML = `
@@ -5629,9 +5635,25 @@ function setVisibilityClasses() {
     document.body.classList.toggle("hide-glossary", !appSettings.visibility.showGlossary);
 }
 function setVisibilitySetting(key, checked) { appSettings.visibility[key] = checked; saveSettings(); setVisibilityClasses(); }
-function setVibrationEnabled(checked) { appSettings.vibrationEnabled = checked; saveSettings(); }
+function setVibrationEnabled(checked) {
+    appSettings.vibrationEnabled = !!checked;
+    saveSettings();
+    syncVibrationUi();
+}
+function syncVibrationUi() {
+    const toggle = document.getElementById("toggleVibration");
+    const support = document.getElementById("vibrationSupportMessage");
+    const device = document.getElementById("vibrationDeviceMessage");
+    if (toggle) {
+        toggle.checked = !!appSettings.vibrationEnabled;
+        toggle.disabled = IS_IOS;
+    }
+    if (support) support.textContent = "iOS 기기에서는 웹 환경에서 진동 기능이 제한됩니다.";
+    if (device) device.textContent = `현재 사용 기기: ${IS_IOS ? "iOS 입니다." : "iOS가 아닙니다."}`;
+}
 function triggerCompleteVibration() {
     if (!appSettings.vibrationEnabled) return;
+    if (IS_IOS) return;
     if (navigator.vibrate) navigator.vibrate(40);
 }
 function getOcrResolutionPlan() {
@@ -5663,7 +5685,7 @@ function getPreferredTtsVoices() {
             used.add(voice.name);
         }
     }
-    return ranked.slice(0, 8);
+    return ranked.slice(0, 5);
 }
 function getSelectedTtsVoice() {
     const voices = getPreferredTtsVoices();
@@ -5740,7 +5762,7 @@ function syncSettingsUI() {
     document.getElementById("toggleRoman").checked = appSettings.visibility.showRoman;
     document.getElementById("toggleKorPron").checked = appSettings.visibility.showKorPron;
     document.getElementById("toggleGlossary").checked = appSettings.visibility.showGlossary;
-    document.getElementById("toggleVibration").checked = appSettings.vibrationEnabled;
+    syncVibrationUi();
     document.getElementById("fontScaleRange").value = appSettings.typography.fontScale;
     document.getElementById("fontScaleValue").textContent = Number(appSettings.typography.fontScale).toFixed(2);
     [["quiz", "low"],["quiz","mid"],["quiz","high"],["ocr","fast"],["ocr","normal"],["ocr","precise"],["cyrillic","light"],["cyrillic","mid"],["cyrillic","bold"],["latin","light"],["latin","mid"],["latin","bold"],["font","rounded"],["font","clean"],["font","neo"],["font","classic"]].forEach(([group,val])=>{ const el=document.getElementById(`${group}-${val}`); if(!el) return; const active = (group==='quiz'&&appSettings.quizDifficulty===val)||(group==='ocr'&&appSettings.ocrLevel===val)||(group==='cyrillic'&&appSettings.typography.cyrillicWeight===val)||(group==='latin'&&appSettings.typography.latinWeight===val)||(group==='font'&&appSettings.typography.latinStyle===val); el.classList.toggle('active', active); });
