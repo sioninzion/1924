@@ -2150,25 +2150,25 @@ input:focus { border-color: #2d8cff; }
 <aside class="settings-panel" id="settingsPanel">
     <div class="settings-header">
         <div class="settings-title">설정</div>
-        <button class="settings-close" onclick="toggleSettingsPanel(false)">닫기</button>
+        <button type="button" class="settings-close" onclick="toggleSettingsPanel(false)">닫기</button>
     </div>
     <div class="settings-list">
         <section class="settings-section" id="settingsSectionDisplay">
-            <button class="settings-section-header" onclick="toggleSettingsSection('display')"><span>1. 다크모드</span><span class="settings-section-arrow">⌄</span></button>
+            <button type="button" class="settings-section-header" onclick="toggleSettingsSection('display')"><span>1. 다크모드</span><span class="settings-section-arrow">⌄</span></button>
             <div class="settings-section-body">
                 <div class="settings-row stack">
                     <div class="settings-label">화면 테마</div>
                     <div class="settings-segment">
-                        <button class="settings-pill" id="theme-light" onclick="setThemeMode('light')">라이트</button>
-                        <button class="settings-pill" id="theme-dark" onclick="setThemeMode('dark')">다크</button>
-                        <button class="settings-pill" id="theme-system" onclick="setThemeMode('system')">시스템</button>
+                        <button type="button" class="settings-pill" id="theme-light" onclick="setThemeMode('light')">라이트</button>
+                        <button type="button" class="settings-pill" id="theme-dark" onclick="setThemeMode('dark')">다크</button>
+                        <button type="button" class="settings-pill" id="theme-system" onclick="setThemeMode('system')">시스템</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="settings-section" id="settingsSectionTts">
-            <button class="settings-section-header" onclick="toggleSettingsSection('tts')"><span>2. TTS 설정</span><span class="settings-section-arrow">⌄</span></button>
+            <button type="button" class="settings-section-header" onclick="toggleSettingsSection('tts')"><span>2. TTS 설정</span><span class="settings-section-arrow">⌄</span></button>
             <div class="settings-section-body">
                 <div class="settings-row stack">
                     <div class="settings-label">목소리</div>
@@ -2193,28 +2193,28 @@ input:focus { border-color: #2d8cff; }
                 <input class="settings-range" type="range" min="0.7" max="1.4" step="0.01" id="ttsPitchRange" oninput="onTtsPitchChange(this.value)">
                 <div class="tts-settings-card">
                     <div class="tts-settings-card-title">미리듣기</div>
-                    <button class="main-btn" onclick="playTtsPreview()">설정된 목소리로 미리듣기</button>
+                    <button type="button" class="main-btn" onclick="playTtsPreview()">설정된 목소리로 미리듣기</button>
                 </div>
             </div>
         </section>
 
         <section class="settings-section" id="settingsSectionQuiz">
-            <button class="settings-section-header" onclick="toggleSettingsSection('quiz')"><span>3. 퀴즈모드 난이도</span><span class="settings-section-arrow">⌄</span></button>
+            <button type="button" class="settings-section-header" onclick="toggleSettingsSection('quiz')"><span>3. 퀴즈모드 난이도</span><span class="settings-section-arrow">⌄</span></button>
             <div class="settings-section-body">
                 <div class="settings-row stack">
                     <div class="settings-label">난이도</div>
                     <div class="settings-helper">하: 완전 랜덤 / 중: 글자수 비슷 / 상: 같은 테마끼리 보기</div>
                     <div class="settings-segment">
-                        <button class="settings-pill" id="quiz-low" onclick="setQuizDifficulty('low')">하</button>
-                        <button class="settings-pill" id="quiz-mid" onclick="setQuizDifficulty('mid')">중</button>
-                        <button class="settings-pill" id="quiz-high" onclick="setQuizDifficulty('high')">상</button>
+                        <button type="button" class="settings-pill" id="quiz-low" onclick="setQuizDifficulty('low')">하</button>
+                        <button type="button" class="settings-pill" id="quiz-mid" onclick="setQuizDifficulty('mid')">중</button>
+                        <button type="button" class="settings-pill" id="quiz-high" onclick="setQuizDifficulty('high')">상</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="settings-section" id="settingsSectionVisibility">
-            <button class="settings-section-header" onclick="toggleSettingsSection('visibility')"><span>4. 번역결과 노출 설정</span><span class="settings-section-arrow">⌄</span></button>
+            <button type="button" class="settings-section-header" onclick="toggleSettingsSection('visibility')"><span>4. 번역결과 노출 설정</span><span class="settings-section-arrow">⌄</span></button>
             <div class="settings-section-body">
                 <div class="settings-row"><div><div class="settings-label">영어 번역 표시</div></div><label class="settings-switch"><input type="checkbox" id="toggleEnglish" onchange="setVisibilitySetting('showEnglish', this.checked)"><span class="settings-switch-slider"></span></label></div>
                 <div class="settings-row"><div><div class="settings-label">로마발음 표시</div></div><label class="settings-switch"><input type="checkbox" id="toggleRoman" onchange="setVisibilitySetting('showRoman', this.checked)"><span class="settings-switch-slider"></span></label></div>
@@ -2224,7 +2224,7 @@ input:focus { border-color: #2d8cff; }
         </section>
 
         <section class="settings-section" id="settingsSectionVibrate">
-            <button class="settings-section-header" onclick="toggleSettingsSection('vibrate')"><span>5. 번역 완료 시 진동</span><span class="settings-section-arrow">⌄</span></button>
+            <button type="button" class="settings-section-header" onclick="toggleSettingsSection('vibrate')"><span>5. 번역 완료 시 진동</span><span class="settings-section-arrow">⌄</span></button>
             <div class="settings-section-body">
                 <div class="settings-row">
                     <div>
@@ -2241,37 +2241,37 @@ input:focus { border-color: #2d8cff; }
         </section>
 
         <section class="settings-section" id="settingsSectionOcr">
-            <button class="settings-section-header" onclick="toggleSettingsSection('ocr')"><span>6. OCR 수준</span><span class="settings-section-arrow">⌄</span></button>
+            <button type="button" class="settings-section-header" onclick="toggleSettingsSection('ocr')"><span>6. OCR 수준</span><span class="settings-section-arrow">⌄</span></button>
             <div class="settings-section-body">
                 <div class="settings-row stack">
                     <div class="settings-label">인식 품질</div>
                     <div class="settings-helper">빠름은 속도 우선, 정밀은 더 많은 시도를 사용합니다.</div>
                     <div class="settings-segment">
-                        <button class="settings-pill" id="ocr-fast" onclick="setOcrLevel('fast')">빠름</button>
-                        <button class="settings-pill" id="ocr-normal" onclick="setOcrLevel('normal')">기본</button>
-                        <button class="settings-pill" id="ocr-precise" onclick="setOcrLevel('precise')">정밀</button>
+                        <button type="button" class="settings-pill" id="ocr-fast" onclick="setOcrLevel('fast')">빠름</button>
+                        <button type="button" class="settings-pill" id="ocr-normal" onclick="setOcrLevel('normal')">기본</button>
+                        <button type="button" class="settings-pill" id="ocr-precise" onclick="setOcrLevel('precise')">정밀</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="settings-section" id="settingsSectionFont">
-            <button class="settings-section-header" onclick="toggleSettingsSection('font')"><span>7. 번역 글씨 설정</span><span class="settings-section-arrow">⌄</span></button>
+            <button type="button" class="settings-section-header" onclick="toggleSettingsSection('font')"><span>7. 번역 글씨 설정</span><span class="settings-section-arrow">⌄</span></button>
             <div class="settings-section-body">
                 <div class="settings-row stack">
                     <div class="settings-label">키릴 굵기</div>
                     <div class="settings-segment">
-                        <button class="settings-pill" id="cyrillic-light" onclick="setCyrillicWeight('light')">얇게</button>
-                        <button class="settings-pill" id="cyrillic-mid" onclick="setCyrillicWeight('mid')">중간</button>
-                        <button class="settings-pill" id="cyrillic-bold" onclick="setCyrillicWeight('bold')">굵게</button>
+                        <button type="button" class="settings-pill" id="cyrillic-light" onclick="setCyrillicWeight('light')">얇게</button>
+                        <button type="button" class="settings-pill" id="cyrillic-mid" onclick="setCyrillicWeight('mid')">중간</button>
+                        <button type="button" class="settings-pill" id="cyrillic-bold" onclick="setCyrillicWeight('bold')">굵게</button>
                     </div>
                 </div>
                 <div class="settings-row stack">
                     <div class="settings-label">한글·영어 굵기</div>
                     <div class="settings-segment">
-                        <button class="settings-pill" id="latin-light" onclick="setLatinWeight('light')">얇게</button>
-                        <button class="settings-pill" id="latin-mid" onclick="setLatinWeight('mid')">중간</button>
-                        <button class="settings-pill" id="latin-bold" onclick="setLatinWeight('bold')">굵게</button>
+                        <button type="button" class="settings-pill" id="latin-light" onclick="setLatinWeight('light')">얇게</button>
+                        <button type="button" class="settings-pill" id="latin-mid" onclick="setLatinWeight('mid')">중간</button>
+                        <button type="button" class="settings-pill" id="latin-bold" onclick="setLatinWeight('bold')">굵게</button>
                     </div>
                 </div>
                 <div class="settings-preview-box">
@@ -2288,10 +2288,10 @@ input:focus { border-color: #2d8cff; }
                     <div class="settings-label">한글·영어 스타일</div>
                     <div class="settings-helper">모바일에서도 차이가 느껴지도록 서로 다른 느낌의 4가지로 맞췄습니다.</div>
                     <div class="settings-segment four">
-                        <button class="settings-pill" id="font-rounded" onclick="setLatinStyle('rounded')">둥근</button>
-                        <button class="settings-pill" id="font-clean" onclick="setLatinStyle('clean')">깔끔</button>
-                        <button class="settings-pill" id="font-neo" onclick="setLatinStyle('neo')">단정</button>
-                        <button class="settings-pill" id="font-classic" onclick="setLatinStyle('classic')">클래식</button>
+                        <button type="button" class="settings-pill" id="font-rounded" onclick="setLatinStyle('rounded')">둥근</button>
+                        <button type="button" class="settings-pill" id="font-clean" onclick="setLatinStyle('clean')">깔끔</button>
+                        <button type="button" class="settings-pill" id="font-neo" onclick="setLatinStyle('neo')">단정</button>
+                        <button type="button" class="settings-pill" id="font-classic" onclick="setLatinStyle('classic')">클래식</button>
                     </div>
                 </div>
             </div>
@@ -5636,6 +5636,11 @@ function setVisibilityClasses() {
 }
 function setVisibilitySetting(key, checked) { appSettings.visibility[key] = checked; saveSettings(); setVisibilityClasses(); }
 function setVibrationEnabled(checked) {
+    if (IS_IOS) {
+        appSettings.vibrationEnabled = false;
+        syncVibrationUi();
+        return;
+    }
     appSettings.vibrationEnabled = !!checked;
     saveSettings();
     syncVibrationUi();
@@ -5645,7 +5650,8 @@ function syncVibrationUi() {
     const support = document.getElementById("vibrationSupportMessage");
     const device = document.getElementById("vibrationDeviceMessage");
     if (toggle) {
-        toggle.checked = !!appSettings.vibrationEnabled;
+        if (IS_IOS) appSettings.vibrationEnabled = false;
+        toggle.checked = IS_IOS ? false : !!appSettings.vibrationEnabled;
         toggle.disabled = IS_IOS;
     }
     if (support) support.textContent = "iOS 기기에서는 웹 환경에서 진동 기능이 제한됩니다.";
@@ -5777,6 +5783,13 @@ document.getElementById("input").addEventListener("keydown", e => {
     if (e.key === "Enter") run();
 });
 
+
+document.getElementById("settingsPanel")?.addEventListener("click", (e) => {
+    if (e.target.closest(".settings-pill, .settings-switch, .settings-range, .settings-select, .settings-close, .tts-settings-card .main-btn")) {
+        e.stopPropagation();
+    }
+});
+
 document.getElementById("screenMode").addEventListener("click", (e) => {
     const gearCluster = document.getElementById("gearCluster");
     const exitCluster = document.querySelector(".exit-cluster");
@@ -5865,6 +5878,7 @@ resetStudyMode();
 setVoiceText("음성 인식 결과가 여기에 표시됩니다", "번역 결과가 여기에 표시됩니다", true, true);
 setVoiceCaptionState("idle");
 applyIOSVoiceDisabledUI();
+initializeSettings();
 switchAppMode("main");
 </script>
 </body>
