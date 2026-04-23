@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>🇲🇳 신나는 몽골어 번역기 ver20.4.2</title>
+<title>🇲🇳 신나는 몽골어 번역기 ver20.5</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 * { box-sizing: border-box; }
@@ -2140,7 +2140,7 @@ input:focus { border-color: #2d8cff; }
 </style>
 </head>
 <body>
-<div class="version">ver20.4.2</div>
+<div class="version">ver20.5</div>
 
 
 <button class="settings-button" id="settingsButton" onclick="toggleSettingsPanel(true)" aria-label="설정 열기">
@@ -2598,7 +2598,7 @@ input:focus { border-color: #2d8cff; }
 
 <script>
 /*
-ver20.4.2
+ver20.5
 - 기준 버전: 20.3.2
 - 목표: 기능 변경 최소화, 내부 코드 파트별 분류/정리
 - 원칙: 동작 로직은 최대한 유지하고 섹션 주석과 구획만 추가
@@ -2752,8 +2752,45 @@ const glossaryBook = [
     ["밝은 색", "게렐테이 옹고"],
     ["연한 색", "졸-롱 옹고"],
     ["짙은 색", "터드 옹고"],
-    ["무지개", "솔롱고"]
+    ["무지개", "솔롱고"],
+
+    ["풍선", "샤-르"],
+    ["왕관", "티템"],
+    ["신발", "구탈"],
+    ["선물", "벨렉(베뎋)"],
+    ["예쁘다", "흐~르흥"],
+    ["귀엽다", "액뚜테"],
+    ["잘하고있어요", "새응 히즈 밴"],
+    ["이리 오세요", "나쉬 이르레"],
+    ["똑바로 가세요", "치게레 야와레"],
+    ["(모두) 일어나세요", "(북데레) 버서-래"],
+    ["(모두) 앉으세요", "(함트)소-가-래"],
+    ["함께 사진찍자", "함트 조르가"],
+    ["우리 같이하자", "비드 함트 히츠게이"],
+    ["조금만 기다려 주세요", "조흥 훌레게레"],
+    ["시작합니다", "고로와 이크"],
+    ["다시할께요", "보르와 이크"],
+    ["훌륭해요", "가이할태-"],
+    ["말을 따라 하세요", "다갓 헬레래"],
+    ["행동을 따라하세요", "다갓 히게래"],
+    ["조심하세요", "볼곰쥬때 배가래"]
 ];
+
+function normalizeStudyKey(text) {
+    return String(text || "").replace(/\s+/g, "").trim();
+}
+
+function buildStudySourceBook(source) {
+    const map = new Map();
+    source.forEach(([word, pron]) => {
+        const key = normalizeStudyKey(word);
+        if (!key) return;
+        map.set(key, [word, pron]);
+    });
+    return [...map.values()];
+}
+
+const studySourceBook = buildStudySourceBook(glossaryBook);
 
 
 /* 전역 상태값 */
@@ -2764,7 +2801,7 @@ let studyStarted = false;
 let studyPronVisible = false;
 let studyOrderMode = "default";
 let studyMode = "flashcard";
-let studyDeck = [...glossaryBook];
+let studyDeck = [...studySourceBook];
 let studyQuizCount = 10;
 let studyQuizQuestions = [];
 let studyQuizIndex = 0;
@@ -4226,36 +4263,64 @@ function normalizedPronLength(text) {
     return String(text || "").replace(/\s+/g, "").replace(/[^\p{L}\p{N}가-힣]/gu, "").length;
 }
 
+function uniquePronunciationChoices(source) {
+    const seen = new Set();
+    const result = [];
+    source.forEach(item => {
+        const word = Array.isArray(item) ? item[0] : item.word;
+        const pron = Array.isArray(item) ? item[1] : item.pron;
+        const key = String(pron || "").trim();
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        result.push({ word, pron });
+    });
+    return result;
+}
+
 function getQuizWrongChoices(correctPron, correctWord = "") {
     const difficulty = appSettings.quizDifficulty;
+    const correctWordKey = normalizeStudyKey(correctWord);
+    const basePool = uniquePronunciationChoices(
+        studySourceBook.filter(([word, pron]) => pron !== correctPron && normalizeStudyKey(word) !== correctWordKey)
+    );
 
     if (difficulty === "low") {
-        return shuffleStudyDeck(glossaryBook.filter(([, pron]) => pron !== correctPron)).slice(0, 3).map(item => item[1]);
-    }
-
-    if (difficulty === "high") {
-        const theme = getGlossaryTheme(correctWord, correctPron);
-        const themed = glossaryBook.filter(([word, pron]) => pron !== correctPron && getGlossaryTheme(word, pron) === theme);
-        if (themed.length >= 3) {
-            return shuffleStudyDeck(themed).slice(0, 3).map(item => item[1]);
-        }
+        return shuffleStudyDeck(basePool).slice(0, 3).map(item => item.pron);
     }
 
     const correctLen = normalizedPronLength(correctPron);
-    const candidates = glossaryBook
-        .filter(([, pron]) => pron !== correctPron)
-        .map(([word, pron]) => ({
-            word, pron, diff: Math.abs(normalizedPronLength(pron) - correctLen)
-        }))
-        .sort((a, b) => a.diff - b.diff);
+    const currentTheme = getGlossaryTheme(correctWord, correctPron);
+    const enriched = basePool.map(({ word, pron }) => ({
+        word,
+        pron,
+        diff: Math.abs(normalizedPronLength(pron) - correctLen),
+        sameTheme: getGlossaryTheme(word, pron) === currentTheme,
+        wordGap: Math.abs(normalizeStudyKey(word).length - correctWordKey.length)
+    }));
 
-    let pool = candidates.filter(item => item.diff <= 1).slice(0, 20);
-    if (pool.length < 20) pool = candidates.slice(0, 20);
+    if (difficulty === "high") {
+        const themed = enriched
+            .filter(item => item.sameTheme)
+            .sort((a, b) => (a.diff - b.diff) || (a.wordGap - b.wordGap));
+        if (themed.length >= 3) {
+            return shuffleStudyDeck(themed.slice(0, 12)).slice(0, 3).map(item => item.pron);
+        }
+    }
+
+    const candidates = enriched.sort((a, b) => {
+        if (a.sameTheme !== b.sameTheme) return a.sameTheme ? -1 : 1;
+        if (a.diff !== b.diff) return a.diff - b.diff;
+        return a.wordGap - b.wordGap;
+    });
+
+    let pool = candidates.filter(item => item.sameTheme && item.diff <= 2).slice(0, 16);
+    if (pool.length < 6) pool = candidates.filter(item => item.diff <= 2).slice(0, 20);
+    if (pool.length < 6) pool = candidates.slice(0, 20);
     return shuffleStudyDeck(pool).slice(0, 3).map(item => item.pron);
 }
 
 function buildStudyQuizQuestions() {
-    const base = shuffleStudyDeck(glossaryBook).slice(0, Math.min(studyQuizCount, glossaryBook.length));
+    const base = shuffleStudyDeck(studySourceBook).slice(0, Math.min(studyQuizCount, studySourceBook.length));
     return base.map(([word, pron]) => {
         const options = shuffleStudyDeck([pron, ...getQuizWrongChoices(pron, word)]);
         return { word, correct: pron, options };
@@ -4378,7 +4443,7 @@ function startStudyMode() {
 
         if (studyMode === "flashcard") {
             studyOrderMode = studyShuffleToggle?.checked ? "shuffle" : "default";
-            studyDeck = studyOrderMode === "shuffle" ? shuffleStudyDeck(glossaryBook) : [...glossaryBook];
+            studyDeck = studyOrderMode === "shuffle" ? shuffleStudyDeck(studySourceBook) : [...studySourceBook];
             studyIndex = 0;
             studyFlashcardView.classList.add("active");
             studyQuizView.classList.remove("active");
